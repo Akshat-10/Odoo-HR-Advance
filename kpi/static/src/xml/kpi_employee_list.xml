@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="kpi.EmployeeList">
+        <t t-if="employeeCount > 0">
+            <div class="o_kpi_employee_list">
+                <div class="o_horizontal_separator mb-3 text-uppercase fw-bolder small">Department Employees</div>
+                <div>
+                    <span>Employees: <t t-esc="employeeCount"/></span>
+                    <button class="btn btn-link" t-on-click="openEmployees">View Employees</button>
+                </div>
+            </div>
+        </t>
+    </t>
+</templates>
