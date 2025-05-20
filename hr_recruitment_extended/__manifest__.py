@@ -13,6 +13,7 @@
     "summary": "Custom modification in recruitment module",
     "depends": ["hr", "hr_recruitment", "mail", 'website', 'website_hr_recruitment', 'hr_recruitment_survey', 'hr_recruitment_skills', 'hr_skills'],
     "data": [
+        'data/mail_template.xml',
         "data/hr_recruitment_data.xml",
         "security/ir.model.access.csv",
         "views/cft_approval_views.xml",

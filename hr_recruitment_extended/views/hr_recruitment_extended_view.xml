@@ -46,23 +46,23 @@
             <button string="Interview Scheduling" name="action_move_to_next_stage" type="object" confirm="Are you sure you want to move this application to the next stage?"
                 invisible="state_sequence != 1 or not active" class="btn btn-yellow"/>
             <!-- Interview Scheduling (sequence 2) to Job Application -->
-            <button string="Job Application" name="action_move_to_next_stage" type="object" confirm="Are you sure you want to move this application to the next stage?"
-                invisible="state_sequence != 2 or not active" class="btn btn-light-blue"/>
+            <!-- <button string="Job Application" name="action_move_to_next_stage" type="object" confirm="Are you sure you want to move this application to the next stage?"
+                invisible="state_sequence != 2 or not active" class="btn btn-light-blue"/> -->
             <!-- Job Application (sequence 3) to First Interview -->
             <button string="First Interview" name="action_move_to_next_stage" type="object" confirm="Are you sure you want to move this application to the next stage?"
-                invisible="state_sequence != 3 or not active" class="btn btn-indigo"/>
+                invisible="state_sequence != 2 or not active" class="btn btn-indigo"/>
             <!-- First Interview (sequence 4) to Second Interview -->
             <button string="Second Interview" name="action_move_to_next_stage" type="object" confirm="Are you sure you want to move this application to the next stage?"
-                invisible="state_sequence != 4 or not active" class="btn btn-blue"/>
+                invisible="state_sequence != 3 or not active" class="btn btn-blue"/>
             <!-- Second Interview (sequence 5) to Salary Negotiation -->
             <button string="Salary Negotiation" name="action_move_to_next_stage" type="object" confirm="Are you sure you want to move this application to the next stage?"
-                invisible="state_sequence != 5 or not active" class="btn btn-violet"/>
+                invisible="state_sequence != 4 or not active" class="btn btn-violet"/>
             <!-- Salary Negotiation (sequence 6) to Offer Letter Release -->
             <button string="Offer Letter Release" name="action_move_to_next_stage" type="object" confirm="Are you sure you want to move this application to the next stage?"
-                invisible="state_sequence != 6 or not active" class="btn btn-teal"/>
+                invisible="state_sequence != 5 or not active" class="btn btn-teal"/>
             <!-- Offer Letter Release (sequence 7) to Contract Signed -->
             <button string="Contract Signed" name="action_move_to_next_stage" type="object" confirm="Are you sure you want to move this application to the next stage?"
-                invisible="state_sequence != 7 or not active" class="btn btn-success"/>
+                invisible="state_sequence != 6 or not active" class="btn btn-success"/>
             <button string="Undo" name="action_move_to_previous_stage" type="object" confirm="Are you sure you want to undo this application to the previous stage?"
                 invisible="state_sequence == 0 or not active" class="btn btn-secondary"/>
             
