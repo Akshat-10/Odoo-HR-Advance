@@ -17,6 +17,7 @@
                 ],
     "data": [
         'views/hr_employee_views.xml',
+        'views/hr_contract_views.xml',
     ],
     
     
