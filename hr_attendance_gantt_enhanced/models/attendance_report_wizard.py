@@ -1,4 +1,7 @@
 from odoo import models, fields, api
+import datetime
+from odoo.tools import date_utils
+
 
 class AttendanceReportWizard(models.TransientModel):
     _name = 'attendance.report.wizard'
@@ -6,11 +9,29 @@ class AttendanceReportWizard(models.TransientModel):
     start_date = fields.Date(string='Start Date', required=True)
     end_date = fields.Date(string='End Date', required=True)
     employee_ids = fields.Many2many('hr.employee', string='Employees')
+    
+    @api.model
+    def default_get(self, fields_list):
+        """Set default values for start_date and end_date."""
+        res = super().default_get(fields_list)
+        today = fields.Date.today()
+        first_day = date_utils.start_of(today, 'month')
+        last_day = date_utils.end_of(today, 'month')
+        res['start_date'] = first_day
+        res['end_date'] = last_day
+        return res
+
+    @api.onchange('start_date')
+    def _onchange_start_date(self):
+        """Update end_date to the last day of the month when start_date changes."""
+        if self.start_date:
+            self.end_date = date_utils.end_of(self.start_date, 'month')
 
     def action_generate_report(self):
         self.ensure_one()
         employees = self.employee_ids or self.env['hr.employee'].search([])
         data = []
+        date_range = [self.start_date + datetime.timedelta(days=x) for x in range((self.end_date - self.start_date).days + 1)]
         for employee in employees:
             metrics = employee._get_attendance_metrics(self.start_date, self.end_date)
             row = {
@@ -26,6 +47,10 @@ class AttendanceReportWizard(models.TransientModel):
                 'age': '',
                 'gender': employee.gender if employee.gender else None,
                 'date_of_joining': employee.first_contract_date or '',
+                'days_p|p': metrics.get('days_p|p', 0),
+                'days_p|a': metrics.get('days_p|a', 0),
+                'days_a|p': metrics.get('days_a|p', 0),
+                'days_a|a': metrics.get('days_a|a', 0),
                 'expected_work_days': metrics.get('expected_work_days', 0),
                 'present': metrics.get('present', 0),
                 'weekoff': metrics.get('weekoff', 0),
@@ -46,7 +71,6 @@ class AttendanceReportWizard(models.TransientModel):
                 'count_of_od': metrics.get('count_of_od', 0),
                 'count_of_short_leave': metrics.get('count_of_short_leave', 0),
                 'count_of_early_late': metrics.get('count_of_early_late', 0),
-                # New fields
                 'last_attendance_worked_hours': metrics.get('last_attendance_worked_hours', 0),
                 'attendance_state': metrics.get('attendance_state', ''),
                 'total_overtime': metrics.get('total_overtime', 0),
@@ -61,5 +85,8 @@ class AttendanceReportWizard(models.TransientModel):
                 'expense_manager_id': metrics.get('expense_manager_id', ''),
                 'leave_manager_id': metrics.get('leave_manager_id', ''),
             }
+            # Add daily statuses
+            for date in date_range:
+                row[str(date)] = metrics['daily_status'].get(str(date), '')
             data.append(row)
         return self.env.ref('hr_attendance_gantt_enhanced.attendance_report_xlsx').report_action(self, data={'data': data})
