@@ -2,17 +2,17 @@
 <odoo>
 <data noupdate="0">
 
-        <record model="hr.recruitment.stage" id="hr_recruitment.stage_job0">
+        <record model="hr.recruitment.stage" id="stage_job0">
             <field name="name">New</field>
             <field name="sequence">0</field>
             <field name="template_id" ref="hr_recruitment.email_template_data_applicant_congratulations"/> 
         </record>
-        <record model="hr.recruitment.stage" id="hr_recruitment.stage_job1">
+        <record model="hr.recruitment.stage" id="stage_job1">
             <field name="name">Initial Qualification</field>
             <field name="sequence">1</field>
             <field name="template_id" ref="hr_recruitment_extended.email_template_initial_qualification"/>
         </record>
-        <record model="hr.recruitment.stage" id="hr_recruitment.stage_job2">
+        <record model="hr.recruitment.stage" id="stage_job2">
             <field name="name">Interview Scheduling</field>
             <field name="sequence">2</field>
             <field name="template_id" ref="hr_recruitment_extended.email_template_interview_scheduling"/>
@@ -21,15 +21,15 @@
             <field name="name">Job Application</field>
             <field name="sequence">3</field>
         </record> -->
-        <record model="hr.recruitment.stage" id="hr_recruitment.stage_job3">
+        <record model="hr.recruitment.stage" id="stage_job3">
             <field name="name">First Interview</field>
             <field name="sequence">3</field>
             <field name="template_id" ref="hr_recruitment_extended.email_template_first_interview"/>
         </record>
-        <record model="hr.recruitment.stage" id="hr_recruitment.stage_job4">
+        <record model="hr.recruitment.stage" id="stage_job4">
             <field name="name">Second Interview</field>
-            <field name="fold" eval="False"/>
-            <field name="hired_stage">False</field>
+            <!-- <field name="fold" eval="False"/> -->
+            <!-- <field name="hired_stage">False</field> -->
             <field name="sequence">4</field>
             <field name="template_id" ref="hr_recruitment_extended.email_template_second_interview"/>
         </record>

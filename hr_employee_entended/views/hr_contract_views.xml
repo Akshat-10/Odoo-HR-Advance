@@ -9,7 +9,10 @@
             <xpath expr="//field[@name='department_id']" position="before">
                 <field name="default_structure_id" readonly="1" />
             </xpath>
-            <xpath expr="//notebook" position="inside">
+            <xpath expr="//field[@name='hr_responsible_id']" position="after">
+                <field name="contract_wage" /> 
+            </xpath>
+            <xpath expr="//page[@name='other']" position="after">
                 <page string="Salary Rules" name="salary_rules">
                     <!-- <button name="action_open_structure" type="object" string="Open Salary Structure" class="oe_highlight" /> -->
                     <field name="salary_rule_ids" widget="one2many_list" readonly="0">

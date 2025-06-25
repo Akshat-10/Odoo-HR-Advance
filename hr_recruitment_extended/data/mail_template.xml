@@ -13,8 +13,8 @@
                     <tr>
                         <td valign="top" style="padding: 0px 10px;">
                             <div style="font-size: 13px; margin: 0px; padding: 0px;">
-                                <t t-if="object.name">
-                                    <p>Dear <t t-out="object.name" />,</p>
+                                <t t-if="object.display_name">
+                                    <p>Dear <t t-out="object.display_name" />,</p>
                                 </t>
                                 <t t-if="object.job_id and object.job_id.name and object.company_id and object.company_id.name">
                                     <p>Thank you for applying to the position of <strong><t t-out="object.job_id.name" /></strong> at <strong><t t-out="object.company_id.name" /></strong>.</p>
@@ -64,8 +64,8 @@
                     <tr>
                         <td valign="top" style="padding: 0px 10px;">
                             <div style="font-size: 13px; margin: 0px; padding: 0px;">
-                                <t t-if="object.name">
-                                    <p>Dear <t t-out="object.name" />,</p>
+                                <t t-if="object.display_name">
+                                    <p>Dear <t t-out="object.display_name" />,</p>
                                 </t>
                                 <t t-if="object.job_id and object.job_id.name and object.company_id and object.company_id.name">
                                     <p>We are happy to inform you that you have been selected for an interview for the <strong><t t-out="object.job_id.name" /></strong> role at <strong><t t-out="object.company_id.name" /></strong>.</p>
@@ -116,8 +116,8 @@
                     <tr>
                         <td valign="top" style="padding: 0px 10px;">
                             <div style="font-size: 13px; margin: 0px; padding: 0px;">
-                                <t t-if="object.name">
-                                    <p>Dear <t t-out="object.name" />,</p>
+                                <t t-if="object.display_name">
+                                    <p>Dear <t t-out="object.display_name" />,</p>
                                 </t>
                                 <t t-if="object.job_id and object.job_id.name and object.company_id and object.company_id.name">
                                     <p>Thank you for attending the first interview for the <strong><t t-out="object.job_id.name" /></strong> role at <strong><t t-out="object.company_id.name" /></strong>.</p>
@@ -162,8 +162,8 @@
                     <tr>
                         <td valign="top" style="padding: 0px 10px;">
                             <div style="font-size: 13px; margin: 0px; padding: 0px;">
-                                <t t-if="object.name">
-                                    <p>Dear <t t-out="object.name" />,</p>
+                                <t t-if="object.display_name">
+                                    <p>Dear <t t-out="object.display_name" />,</p>
                                 </t>
                                 <t t-if="object.job_id and object.job_id.name and object.company_id and object.company_id.name">
                                     <p>We are pleased to invite you to a second interview for the <strong><t t-out="object.job_id.name" /></strong> role at <strong><t t-out="object.company_id.name" /></strong>.</p>
@@ -208,8 +208,8 @@
                     <tr>
                         <td valign="top" style="padding: 0px 10px;">
                             <div style="font-size: 13px; margin: 0px; padding: 0px;">
-                                <t t-if="object.name">
-                                    <p>Dear <t t-out="object.name" />,</p>
+                                <t t-if="object.display_name">
+                                    <p>Dear <t t-out="object.display_name" />,</p>
                                 </t>
                                 <t t-if="object.job_id and object.job_id.name and object.company_id and object.company_id.name">
                                     <p>Congratulations on reaching the salary negotiation stage for the <strong><t t-out="object.job_id.name" /></strong> role at <strong><t t-out="object.company_id.name" /></strong>.</p>
@@ -254,8 +254,8 @@
                     <tr>
                         <td valign="top" style="padding: 0px 10px;">
                             <div style="font-size: 13px; margin: 0px; padding: 0px;">
-                                <t t-if="object.name">
-                                    <p>Dear <t t-out="object.name" />,</p>
+                                <t t-if="object.display_name">
+                                    <p>Dear <t t-out="object.display_name" />,</p>
                                 </t>
                                 <t t-if="object.job_id and object.job_id.name and object.company_id and object.company_id.name">
                                     <p>We are delighted to offer you the position of <strong><t t-out="object.job_id.name" /></strong> at <strong><t t-out="object.company_id.name" /></strong>.</p>
@@ -312,8 +312,8 @@
                     <tr>
                         <td valign="top" style="padding: 0px 10px;">
                             <div style="font-size: 13px; margin: 0px; padding: 0px;">
-                                <t t-if="object.name">
-                                    <p>Dear <t t-out="object.name" />,</p>
+                                <t t-if="object.display_name">
+                                    <p>Dear <t t-out="object.display_name" />,</p>
                                 </t>
                                 <t t-if="object.company_id and object.company_id.name and object.job_id and object.job_id.name">
                                     <p>Welcome to <strong><t t-out="object.company_id.name" /></strong>! We are thrilled to have you on board as our new <strong><t t-out="object.job_id.name" /></strong>.</p>
