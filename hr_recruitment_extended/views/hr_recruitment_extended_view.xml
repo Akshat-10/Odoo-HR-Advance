@@ -211,4 +211,27 @@
         </field>
     </record>
 
+    <!-- invisible="not active or not survey_id" -->
+    <record id="hr_applicant_view_survey_form_inherit" model="ir.ui.view">
+        <field name="name">Jobs - Recruitment Survey Form View Inherited</field>
+        <field name="model">hr.applicant</field>
+        <field name="inherit_id" ref="hr_recruitment_survey.hr_applicant_view_form_inherit" />
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_send_survey']" position="attributes">
+                <attribute name="invisible">not active or not survey_id or state_sequence not in [2, 3, 4]</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hr_applicant_view_form_inherit_extended_for_salary" model="ir.ui.view">
+        <field name="name">Jobs - Recruitment Form View Extended for Contract Salary</field>
+        <field name="model">hr.applicant</field>
+        <field name="inherit_id" ref="hr_contract_salary.hr_applicant_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_generate_offer']" position="attributes">
+                <attribute name="invisible">not active or application_status == 'hired' or state_sequence != 5</attribute>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>

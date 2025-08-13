@@ -11,7 +11,7 @@
     "installable": True,
     "application": True,
     "summary": "Custom modification in recruitment module",
-    "depends": ["hr", "hr_recruitment", "mail", 'website', 'website_hr_recruitment', 'hr_recruitment_survey', 'hr_recruitment_skills', 'hr_skills'],
+    "depends": ["hr", "hr_recruitment", "mail", 'website', 'website_hr_recruitment', 'hr_recruitment_survey', 'hr_recruitment_skills', 'hr_skills', 'hr_contract_salary'],
     "data": [
         'data/mail_template.xml',
         "data/hr_recruitment_data.xml",
