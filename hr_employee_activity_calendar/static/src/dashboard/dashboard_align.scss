@@ -1,0 +1,16 @@
+// Align Time Off cards like the Pending Requests card
+.o_timeoff_dashboard {
+  .o_timeoff_card {
+    display: flex;
+    flex-direction: column;
+    align-items: center; // center horizontally
+    justify-content: center; // center vertically when possible
+
+    // Ensure inner content is centered consistently
+    & > * {
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+    }
+  }
+}

@@ -17,6 +17,9 @@
     ],
     'assets': {
         'web.assets_backend': [
+            'hr_employee_activity_calendar/static/src/calendar/timeoff_calendar_controller_patch.js',
+            'hr_employee_activity_calendar/static/src/calendar/popover_patch.js',
+            'hr_employee_activity_calendar/static/src/dashboard/dashboard_align.scss',
             'hr_employee_activity_calendar/static/src/dashboard/employee_activity_dashboard.js',
             'hr_employee_activity_calendar/static/src/dashboard/employee_activity_dashboard.xml',
             'hr_employee_activity_calendar/static/src/dashboard/calendar_renderer_patch.js',
