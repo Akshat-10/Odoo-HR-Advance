@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <!-- Smart button on employee to open unified calendar/gantt -->
+  <record id="hr_employee_form_inherit_activity_button" model="ir.ui.view">
+    <field name="name">hr.employee.form.activity.button</field>
+    <field name="model">hr.employee</field>
+    <field name="inherit_id" ref="hr.view_employee_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//div[@class='oe_button_box']" position="inside">
+        <button type="action" class="oe_stat_button" name="%(action_employee_activity_for_employee)d" icon="fa-calendar" string="Activity"/>
+      </xpath>
+    </field>
+  </record>
+</odoo>

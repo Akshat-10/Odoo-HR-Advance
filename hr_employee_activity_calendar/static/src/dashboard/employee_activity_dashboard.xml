@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <div t-name="hr_employee_activity.EmployeeMetrics" class="o_timeoff_card p-2 w-100">
+        <div class="d-flex flex-row justify-content-between align-items-center px-2">
+            <strong class="o_timeoff_name">Employee Metrics</strong>
+        </div>
+        <!-- <t t-if="state.loading">
+            <div class="text-muted small px-2 py-2">Loading…</div>
+        </t>
+        <t t-elif="state.error">
+            <div class="text-danger small px-2 py-2" t-esc="state.error"/>
+        </t> -->
+        <!-- <div class="d-flex flex-row justify-content-center align-items-center px-2 py-1">
+            <span class="text-muted small">
+                <t t-if="props.scale == 'day'">
+                    <t t-esc="props.date.toFormat('MMM dd, yyyy')"/>
+                </t>
+                <t t-elif="props.scale == 'week'">
+                    Week of <t t-esc="props.date.toFormat('MMM dd, yyyy')"/>
+                </t>
+                <t t-elif="props.scale == 'month'">
+                    <t t-esc="props.date.toFormat('MMMM yyyy')"/>
+                </t>
+                <t t-elif="props.scale == 'year'">
+                    <t t-esc="props.date.toFormat('yyyy')"/>
+                </t>
+                <t t-else="">
+                    <t t-esc="props.date.toFormat('MMMM yyyy')"/>
+                </t>
+            </span>
+        </div>
+        <div class="d-flex flex-row justify-content-center align-items-center px-2 py-1">
+            <span class="text-muted small">
+                <t t-if="props.scale == 'day'">
+                    <t t-esc="props.date.startOf('day').toFormat('MMM dd')"/> - <t t-esc="props.date.endOf('day').toFormat('MMM dd, yyyy')"/>
+                </t>
+                <t t-elif="props.scale == 'week'">
+                    <t t-esc="props.date.startOf('week').toFormat('MMM dd')"/> - <t t-esc="props.date.endOf('week').toFormat('MMM dd, yyyy')"/>
+                </t>
+                <t t-elif="props.scale == 'month'">
+                    <t t-esc="props.date.startOf('month').toFormat('MMM dd')"/> - <t t-esc="props.date.endOf('month').toFormat('MMM dd, yyyy')"/>
+                </t>
+                <t t-elif="props.scale == 'year'">
+                    <t t-esc="props.date.startOf('year').toFormat('MMM dd')"/> - <t t-esc="props.date.endOf('year').toFormat('MMM dd, yyyy')"/>
+                </t>
+                <t t-else="">
+                    <t t-esc="props.date.startOf('month').toFormat('MMM dd')"/> - <t t-esc="props.date.endOf('month').toFormat('MMM dd, yyyy')"/>
+                </t>
+            </span>
+        </div> -->
+        <div class="container-fluid px-2 py-2">
+            <div class="row row-cols-2 g-2 small">
+                <div class="col">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Total Days</span>
+                        <strong><t t-esc="state.metrics.total_days || 0"/></strong>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Time Off days</span>
+                        <strong><t t-esc="state.metrics.time_off_days || 0"/></strong>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Last Worked (h)</span>
+                        <strong><t t-esc="state.metrics.last_attendance_worked_hours || 0"/> hr</strong>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Today (h)</span>
+                        <strong><t t-esc="state.metrics.hours_previously_today || 0"/></strong>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Overtime (h)</span>
+                        <strong><t t-esc="state.metrics.total_overtime || 0"/> hr</strong>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Expected Hours</span>
+                        <strong><t t-esc="state.metrics.expected_working_hours || 0"/> hr</strong>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Expected Days</span>
+                        <strong><t t-esc="state.metrics.expected_work_days || 0"/></strong>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Actual Hours</span>
+                        <strong><t t-esc="state.metrics.actual_working_hours || 0"/> hr</strong>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Present</span>
+                        <strong><t t-esc="state.metrics.present || 0"/></strong>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Absent</span>
+                        <strong><t t-esc="state.metrics.absent || 0"/></strong>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Week Off</span>
+                        <strong><t t-esc="state.metrics.weekoff || 0"/></strong>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Holiday</span>
+                        <strong><t t-esc="state.metrics.holiday || 0"/></strong>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Days P|P</span>
+                        <strong><t t-esc="state.metrics.days_pp || 0"/></strong>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Days P|A</span>
+                        <strong><t t-esc="state.metrics.days_pa || 0"/></strong>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Days A|P</span>
+                        <strong><t t-esc="state.metrics.days_ap || 0"/></strong>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Days A|A</span>
+                        <strong><t t-esc="state.metrics.days_aa || 0"/></strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</templates>

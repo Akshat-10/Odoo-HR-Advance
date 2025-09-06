@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-name="hr_employee_activity.CalendarRendererPatch" t-inherit="hr_holidays.CalendarRenderer" t-inherit-mode="extension">
+        <xpath expr="//TimeOffDashboard" position="attributes">
+            <attribute name="rangeStart">props.model.rangeStart</attribute>
+            <attribute name="rangeEnd">props.model.rangeEnd</attribute>
+            <attribute name="scale">props.model.scale</attribute>
+        </xpath>
+    </t>
+    
+</templates>

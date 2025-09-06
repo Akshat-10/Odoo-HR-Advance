@@ -167,8 +167,10 @@ class HrEmployee(models.Model):
         pa = 0  # Present in morning only
         ap = 0  # Present in afternoon only
         aa = 0  # Absent in both shifts
-        current_date = start_date
-        while current_date <= end_date:
+        # Iterate over actual date objects, not the original string params
+        current_date = start.date()
+        end_date_date = stop.date()
+        while current_date <= end_date_date:
             day_start = tz.localize(datetime.datetime.combine(current_date, datetime.time.min))
             day_end = tz.localize(datetime.datetime.combine(current_date, datetime.time.max))
             attendance_intervals = calendar._attendance_intervals_batch(day_start, day_end, resources=self.resource_id)[self.resource_id.id]
@@ -225,13 +227,29 @@ class HrEmployee(models.Model):
         return len(days), total_hours
 
     def _get_weekoff_days(self, calendar, start, stop):
+        """Return number of days in [start, stop] that have NO attendance slots.
+
+        Previous implementation subtracted work intervals from the full span,
+        which included partial non-working gaps within working days and
+        overcounted week-off days. Here we simply check, per day, whether
+        there are any attendance intervals configured for the resource.
+        """
         if not self.resource_id:
             return 0
-        work_intervals = calendar._work_intervals_batch(start, stop, self.resource_id)
-        full_interval = Intervals([(start, stop, self.env['resource.calendar'])])
-        non_work_intervals = full_interval - work_intervals[self.resource_id.id]
-        weekoff_days = set(interval[0].date() for interval in non_work_intervals)
-        return len(weekoff_days)
+
+        tz = timezone(calendar.tz) if calendar.tz else UTC
+        # Iterate day by day and consider a day week-off if there is no attendance interval
+        day = start.date()
+        end_day = stop.date()
+        weekoff_count = 0
+        while day <= end_day:
+            day_start = tz.localize(datetime.datetime.combine(day, datetime.time.min))
+            day_end = tz.localize(datetime.datetime.combine(day, datetime.time.max))
+            intervals = calendar._attendance_intervals_batch(day_start, day_end, resources=self.resource_id)[self.resource_id.id]
+            if not intervals:
+                weekoff_count += 1
+            day += datetime.timedelta(days=1)
+        return weekoff_count
 
     def _get_holiday_days(self, start, stop):
         tz = timezone(self.resource_calendar_id.tz) if self.resource_calendar_id.tz else UTC

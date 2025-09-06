@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <menuitem id="menu_hr_employee_activity_root" name="Employee Activity" parent="hr_attendance.menu_hr_attendance_root" sequence="60"/>
+  <menuitem id="menu_hr_employee_cards" name="Employees (Cards)" parent="menu_hr_employee_activity_root" action="action_hr_employee_kanban_activity" sequence="5"/>
+</odoo>

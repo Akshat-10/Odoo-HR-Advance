@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <!-- unified calendar view (attendance + time off) -->
+  <record id="view_employee_activity_calendar" model="ir.ui.view">
+    <field name="name">hr.employee.activity.calendar</field>
+    <field name="model">hr.employee.activity</field>
+    <field name="arch" type="xml">
+  <calendar string="Employee Activity" date_start="start_datetime" date_stop="end_datetime" color="activity_type" mode="month" js_class="time_off_calendar_dashboard" show_unusual_days="True">
+        <field name="name"/>
+  <field name="activity_type"/>
+  <!-- Legend toggles -->
+  <field name="holiday_status_id" filters="1" string="Time Off Type" invisible="1"/>
+  <field name="activity_type" filters="1" string="Attendance" invisible="1"/>
+        <field name="check_in"/>
+        <field name="check_out"/>
+  <field name="leave_type_id"/>
+        <field name="attendance_id"/>
+        <field name="leave_id"/>
+      </calendar>
+    </field>
+  </record>
+
+  <!-- gantt view -->
+  <record id="view_employee_activity_gantt" model="ir.ui.view">
+    <field name="name">hr.employee.activity.gantt</field>
+    <field name="model">hr.employee.activity</field>
+    <field name="arch" type="xml">
+  <gantt date_start="start_datetime" date_stop="end_datetime" default_group_by="employee_id" string="Employee Activity">
+        <field name="name"/>
+        <field name="employee_id"/>
+        <field name="activity_type"/>
+        <field name="leave_type_id"/>
+      </gantt>
+    </field>
+  </record>
+
+  <!-- list view -->
+  <record id="view_employee_activity_tree" model="ir.ui.view">
+    <field name="name">hr.employee.activity.tree</field>
+    <field name="model">hr.employee.activity</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="activity_type"/>
+        <field name="employee_id"/>
+        <field name="start_datetime"/>
+        <field name="end_datetime"/>
+        <field name="duration_hours"/>
+        <field name="check_in"/>
+        <field name="check_out"/>
+        <field name="leave_type_id"/>
+        <field name="state"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- search view -->
+  <record id="view_employee_activity_search" model="ir.ui.view">
+    <field name="name">hr.employee.activity.search</field>
+    <field name="model">hr.employee.activity</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="employee_id"/>
+        <field name="activity_type"/>
+  <filter string="My Employees" name="my_emp" domain="['|',('employee_id.user_id','=',uid),('employee_id.parent_id.user_id','=',uid)]"/>
+        <filter string="Attendance (Present)" name="f_att" domain="[('activity_type','=','attendance')]"/>
+        <filter string="Time Off" name="f_leave" domain="[('activity_type','=','time_off')]"/>
+        <searchpanel>
+          <field name="leave_type_id" string="Time Off Type"/>
+          <field name="employee_id" string="Employee"/>
+        </searchpanel>
+        <group expand="0" string="Group By">
+          <filter string="Employee" name="g_emp" context="{'group_by':'employee_id'}"/>
+          <filter string="Type" name="g_type" context="{'group_by':'activity_type'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+
+  <!-- action scoped to one employee via context default -->
+  <record id="action_employee_activity_for_employee" model="ir.actions.act_window">
+    <field name="name">Activity</field>
+    <field name="res_model">hr.employee.activity</field>
+    <field name="view_mode">calendar,gantt,list</field>
+  <field name="context">{'search_default_employee_id': active_id, 'employee_id': [active_id]}</field>
+    <field name="search_view_id" ref="view_employee_activity_search"/>
+  </record>
+
+</odoo>

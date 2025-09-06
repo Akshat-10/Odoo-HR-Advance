@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <record id="view_hr_employee_kanban_activity" model="ir.ui.view">
+    <field name="name">hr.employee.kanban.activity</field>
+    <field name="model">hr.employee</field>
+    <field name="arch" type="xml">
+      <kanban class="o_kanban_small_column">
+        <field name="name"/>
+        <field name="job_title"/>
+        <field name="work_email"/>
+        <field name="work_phone"/>
+        <templates>
+          <t t-name="kanban-box">
+            <div class="oe_kanban_global_click o_hr_kanban_card">
+              <div class="o_kanban_image">
+                <img t-att-src="kanban_image('hr.employee','image_128', record.id.raw_value)" class="o_kanban_image"/>
+              </div>
+              <div class="o_kanban_details">
+                <strong><field name="name"/></strong>
+                <div><field name="job_title"/></div>
+                <div class="mt-2">
+            <a type="action"
+              name="%(action_employee_activity_for_employee)d"
+              t-att-context="{'search_default_employee_id': record.id.raw_value, 'employee_id': [record.id.raw_value]}"
+              class="btn btn-primary btn-sm oe_kanban_action oe_kanban_action_button">Open Calendar</a>
+                </div>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+
+  <record id="action_hr_employee_kanban_activity" model="ir.actions.act_window">
+    <field name="name">Employees</field>
+    <field name="res_model">hr.employee</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="view_id" ref="view_hr_employee_kanban_activity"/>
+  </record>
+
+</odoo>
