@@ -62,7 +62,7 @@ class HrEmployeeActivity(models.Model):
             FROM hr_attendance a
             WHERE a.check_in IS NOT NULL
             UNION ALL
-            -- Time off leaves (approved only)
+            -- Time off leaves (ALL statuses)
             SELECT
                 -l.id AS id,
                 COALESCE(
@@ -82,7 +82,7 @@ class HrEmployeeActivity(models.Model):
                 NULL::int AS attendance_id
             FROM hr_leave l
             LEFT JOIN hr_leave_type t ON t.id = l.holiday_status_id
-            WHERE l.state IN ('validate','validate1') AND l.date_from IS NOT NULL AND l.date_to IS NOT NULL
+            WHERE l.date_from IS NOT NULL AND l.date_to IS NOT NULL
         """
 
     def _from(self):

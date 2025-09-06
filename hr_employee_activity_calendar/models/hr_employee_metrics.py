@@ -100,11 +100,7 @@ class HrEmployee(models.Model):
 
         start_str = sd.strftime('%Y-%m-%d')
         end_str = ed.strftime('%Y-%m-%d')
-        print("ED", ed, "SD", sd, "START", start_str, "END", end_str)
-        print("Days -- ", (ed - sd).days)
         total_days = (ed - sd).days + 1
-        print("Total Days", total_days)
-        print("$$$$$$$$$$$$$$")
         metrics = {}
         if hasattr(emp, '_get_attendance_metrics'):
             try:
@@ -203,7 +199,7 @@ class HrEmployee(models.Model):
                         if isinstance(holidays, (set, list, tuple)):
                             metrics["holiday"] = len(holidays)
                         else:
-                            metrics["holiday"] = int(holidays or 0)
+                            metrics["holiday"] = len(holidays) if isinstance(holidays, (set, list, tuple)) else int(holidays or 0)
                     except Exception:
                         metrics.setdefault("holiday", 0)
 
@@ -243,16 +239,6 @@ class HrEmployee(models.Model):
                 "days_ap": ap,
                 "days_aa": aa,
             })
-
-        # Debug logging
-        # print(f"EmployeeMetrics: {emp.name} (ID: {emp_id_int})")
-        # print(f"Period: {start_str} to {end_str} (scale: {scale})")
-        # print(f"Period start month name: {sd.strftime('%B')}, period end month name: {ed.strftime('%B')}, period start month: {sd.month}, period end month: {ed.month}, period year: {sd.year}")
-        # print(f"Expected date range for {scale} view: {sd.strftime('%Y-%m-%d')} to {ed.strftime('%Y-%m-%d')}")
-        # print(f"Metrics calculated: {len(metrics)} fields")
-        # print(f"Key metrics: present={metrics.get('present', 0)}, absent={metrics.get('absent', 0)}, expected_days={metrics.get('expected_work_days', 0)}")
-        # print(f"Expected work hours: {metrics.get('expected_working_hours', 0)}")
-        # print(f"Calendar: {emp.resource_calendar_id.name if emp.resource_calendar_id else 'None'}")
 
         result = {
             "last_attendance_worked_hours": metrics.get("last_attendance_worked_hours", 0),
