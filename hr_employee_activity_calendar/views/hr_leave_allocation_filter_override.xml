@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--
+        This view inherits hr_payroll_holidays.view_hr_leave_allocation_inherit_filter
+        and replaces the injected field to remove the filter_domain.
+        We match the field by name and replace the node entirely with a plain field.
+    -->
+    <record id="view_hr_leave_allocation_inherit_filter_rm_domain" model="ir.ui.view">
+        <field name="name">hr_employee_activity_calendar.view.hr.leave.allocation.filter.remove.domain</field>
+        <field name="model">hr.leave.allocation</field>
+        <field name="inherit_id" ref="hr_payroll_holidays.view_hr_leave_allocation_inherit_filter"/>
+        <field name="arch" type="xml">
+            <!-- Replace the specific employee_id field that introduced filter_domain in hr_payroll_holidays -->
+            <xpath expr="//field[@name='employee_id' and @filter_domain]" position="replace">
+                <field name="employee_id" string="Employee"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

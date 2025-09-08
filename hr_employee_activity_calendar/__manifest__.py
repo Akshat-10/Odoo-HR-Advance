@@ -7,13 +7,14 @@
     'author': 'Akshat Gupta',
     'license': 'LGPL-3',
     'website': 'https://github.com/Akshat-10',
-    'depends': ['hr', 'hr_attendance', 'hr_holidays', 'web_gantt', 'hr_attendance_gantt_enhanced'],
+    'depends': ['hr', 'hr_attendance', 'hr_holidays', 'web_gantt', 'hr_attendance_gantt_enhanced', 'hr_payroll_holidays'],
     'data': [
         'security/ir.model.access.csv',
         'views/employee_activity_views.xml',
         'views/employees_kanban.xml',
         'views/hr_employee_views.xml',
         'views/menu.xml',
+        'views/hr_leave_allocation_filter_override.xml',
     ],
     'assets': {
         'web.assets_backend': [
