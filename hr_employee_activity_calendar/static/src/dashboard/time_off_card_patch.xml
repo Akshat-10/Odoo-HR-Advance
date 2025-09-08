@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <!-- Inject links into the time off popover for Approved and Planned -->
+    <t t-name="hr_employee_activity.TimeOffCardPopoverPatch" t-inherit="hr_holidays.TimeOffCardPopover" t-inherit-mode="extension">
+        <!-- Replace existing Approved item to inject a 'view' link -->
+        <xpath expr="//ul[@class='list-unstyled p-3 mb-0']/li[contains(normalize-space(.), 'Approved:')]" position="replace">
+            <li class="d-flex justify-content-between">
+                <span>
+                    Approved : (<span class="btn-link p-0 cursor-pointer" t-on-click="() => this.openApproved()">view</span>)
+                </span>
+                <span class="ps-1" t-esc="props.approved"/>
+            </li>
+        </xpath>
+        <!-- Replace existing Planned item to inject a 'view' link -->
+        <xpath expr="//ul[@class='list-unstyled p-3 mb-0']/li[contains(@class, 'border-bottom') and contains(normalize-space(.), 'Planned:')]" position="replace">
+            <li class="d-flex justify-content-between border-bottom">
+                <span>
+                    Planned : (<span class="btn-link p-0 cursor-pointer" t-on-click="() => this.openPlanned()">view</span>)
+                </span>
+                <span class="ps-1" t-esc="props.planned"/>
+            </li>
+        </xpath>
+    </t>
+</templates>

@@ -27,6 +27,8 @@
             'hr_employee_activity_calendar/static/src/dashboard/calendar_renderer_patch.xml',
             'hr_employee_activity_calendar/static/src/dashboard/time_off_dashboard_patch.js',
             'hr_employee_activity_calendar/static/src/dashboard/time_off_dashboard_patch.xml',
+            'hr_employee_activity_calendar/static/src/dashboard/time_off_card_patch.js',
+            'hr_employee_activity_calendar/static/src/dashboard/time_off_card_patch.xml',
         ],
     },
     'installable': True,
