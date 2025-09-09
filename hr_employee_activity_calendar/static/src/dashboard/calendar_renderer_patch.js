@@ -9,6 +9,7 @@ const __origCalendarKeyDescriptor = Object.getOwnPropertyDescriptor(
     CalendarRenderer.prototype,
     "calendarKey"
 );
+const __origEventClassNames = CalendarRenderer.prototype.eventClassNames;
 
 // Broadcasts the current visible range and scale on render changes so dashboards can react.
 patch(CalendarRenderer.prototype, {
@@ -97,5 +98,33 @@ patch(CalendarRenderer.prototype, {
                 console.error("Failed to recover from calendar broadcast error:", recoveryError);
             }
         }
+    },
+});
+
+// Ensure base time off visuals are applied using flags from our unified model
+patch(CalendarRenderer.prototype, {
+    eventClassNames(info) {
+        let classes = [];
+        if (typeof __origEventClassNames === "function") {
+            try {
+                classes = __origEventClassNames.call(this, info) || [];
+            } catch (_) {
+                // ignore
+            }
+        }
+        try {
+            const event = info?.event;
+            const props = event?.extendedProps || {};
+            const activityType = props.activity_type || props.activityType;
+            const hatched = props.is_hatched ?? props.isHatched;
+            const striked = props.is_striked ?? props.isStriked;
+            if (activityType === 'time_off') {
+                if (hatched) classes.push('o_event_hatched');
+                if (striked) classes.push('o_event_striked');
+            }
+        } catch (_) {
+            // no-op
+        }
+        return classes;
     },
 });

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models, tools
-from odoo.fields import Datetime
 
 
 class HrEmployeeActivity(models.Model):
@@ -9,7 +8,9 @@ class HrEmployeeActivity(models.Model):
     _auto = False  # SQL view
     _order = 'start_datetime desc'
 
-    name = fields.Char(string='Description')
+    # keep SQL-provided label in base_name; compute name for UI
+    base_name = fields.Char(string='Base Description')
+    name = fields.Char(string='Description', compute='_compute_name', store=False)
     activity_type = fields.Selection([
         ('attendance', 'Attendance'),
         ('time_off', 'Time Off'),
@@ -31,7 +32,31 @@ class HrEmployeeActivity(models.Model):
     leave_id = fields.Many2one('hr.leave', string='Time Off')
     attendance_id = fields.Many2one('hr.attendance', string='Attendance')
     state = fields.Char(string='State')
+    # Visual flags for base calendar hatch/strike styles
+    is_hatched = fields.Boolean('Hatched', readonly=True)
+    is_striked = fields.Boolean('Striked', readonly=True)
 
+    # @api.depends('base_name', 'activity_type', 'leave_id')
+    # def _compute_name(self):
+    #     for rec in self:
+    #         label = rec.base_name or ''
+    #         if rec.activity_type == 'time_off' and rec.leave_id:
+    #             # Append base-like friendly duration to label
+    #             duration_txt = rec.leave_id.sudo().duration_display or ''
+    #             if duration_txt:
+    #                 label = f"{label}: {duration_txt}"
+    #         rec.name = label
+
+    @api.depends('employee_id.name', 'leave_id')
+    def _compute_name(self):
+        for leave in self:
+            leave.name = leave.employee_id.name
+            if self.env.user.has_group('hr_holidays.group_hr_holidays_user'):
+                # Include the time off type name
+                leave.name += f" {leave.leave_id.holiday_status_id.name}"
+            # Include the time off duration.
+            leave.name += f": {leave.sudo().leave_id.duration_display}"
+            
     @api.model
     def get_unusual_days(self, date_from, date_to=None):
         """Expose unusual days for the dashboard calendar.
@@ -47,7 +72,7 @@ class HrEmployeeActivity(models.Model):
                 (
                     'Attendance: ' || to_char(a.check_in, 'YYYY-MM-DD HH24:MI') ||
                     COALESCE(' - ' || to_char(a.check_out, 'YYYY-MM-DD HH24:MI'), ' - ...')
-                ) AS name,
+                ) AS base_name,
                 'attendance' AS activity_type,
                 a.employee_id AS employee_id,
                 a.check_in AS start_datetime,
@@ -58,7 +83,9 @@ class HrEmployeeActivity(models.Model):
                 NULL::int AS leave_type_id,
                 NULL::int AS leave_id,
                 CASE WHEN a.check_out IS NULL THEN 'open' ELSE 'done' END AS state,
-                a.id AS attendance_id
+                a.id AS attendance_id,
+                FALSE AS is_hatched,
+                FALSE AS is_striked
             FROM hr_attendance a
             WHERE a.check_in IS NOT NULL
             UNION ALL
@@ -68,7 +95,7 @@ class HrEmployeeActivity(models.Model):
                 COALESCE(
                     NULLIF(l.private_name, ''),
                     'Time Off: ' || COALESCE(t.name->> 'en_US', t.name->> 'en', t.name::text)
-                ) AS name,
+                ) AS base_name,
                 'time_off' AS activity_type,
                 l.employee_id AS employee_id,
                 l.date_from AS start_datetime,
@@ -79,7 +106,9 @@ class HrEmployeeActivity(models.Model):
                 l.holiday_status_id AS leave_type_id,
                 l.id AS leave_id,
                 l.state AS state,
-                NULL::int AS attendance_id
+                NULL::int AS attendance_id,
+                CASE WHEN l.state IN ('confirm', 'validate1') THEN TRUE ELSE FALSE END AS is_hatched,
+                CASE WHEN l.state IN ('refuse', 'cancel') THEN TRUE ELSE FALSE END AS is_striked
             FROM hr_leave l
             LEFT JOIN hr_leave_type t ON t.id = l.holiday_status_id
             WHERE l.date_from IS NOT NULL AND l.date_to IS NOT NULL

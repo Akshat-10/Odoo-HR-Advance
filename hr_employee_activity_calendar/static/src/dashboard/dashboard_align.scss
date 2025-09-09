@@ -14,3 +14,10 @@
     }
   }
 }
+
+/* Ensure hatched/striked visuals are visible for unified calendar */
+.o_calendar_renderer .fc-event.o_event_hatched:before,
+.o_calendar_renderer .fc-event.o_event_striked .fc-event-main {
+  /* rely on base styles; ensure not hidden by overflow */
+  overflow: visible;
+}
