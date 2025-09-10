@@ -129,9 +129,72 @@ class HrEmployee(models.Model):
             metrics.setdefault("actual_working_hours", actual_hours)
 
         absent_days = metrics.get("absent")
-        if absent_days is None:
-            absent_days = max(expected_days - present_days, 0)
-            metrics["absent"] = absent_days
+        # Always ensure 'absent' does NOT include future days: only count up to today
+        today = fields.Date.context_today(self)
+        effective_end = ed if ed <= today else today
+        if effective_end < sd:
+            # Entire range is in the future -> no absence yet
+            metrics["absent"] = 0
+        else:
+            # Recompute expected and present up to today
+            eff_start_str = sd.strftime('%Y-%m-%d')
+            eff_end_str = effective_end.strftime('%Y-%m-%d')
+            expected_to_date = 0
+            if hasattr(emp, '_get_attendance_metrics'):
+                try:
+                    m_eff = emp.sudo()._get_attendance_metrics(eff_start_str, eff_end_str) or {}
+                    expected_to_date = int(m_eff.get("expected_work_days") or 0)
+                except Exception:
+                    expected_to_date = 0
+            if not expected_to_date:
+                # Fallback: approximate Mon-Fri as expected work days
+                d = sd
+                while d <= effective_end:
+                    if d.weekday() < 5:
+                        expected_to_date += 1
+                    d += timedelta(days=1)
+
+            dt_eff_start = fields.Datetime.to_datetime(f"{eff_start_str} 00:00:00")
+            dt_eff_end = fields.Datetime.to_datetime(f"{eff_end_str} 23:59:59")
+            attendances_eff = self.env["hr.attendance"].search([
+                ("employee_id", "=", emp.id),
+                ("check_in", ">=", dt_eff_start),
+                ("check_out", "<=", dt_eff_end),
+            ])
+            present_dates = {att.check_in.date() for att in attendances_eff if att.check_in}
+            present_to_date = len(present_dates)
+
+            # Subtract Approved (validate) time off days from absence within the clamped range
+            leave_recs_eff = self.env["hr.leave"].sudo().search([
+                ("employee_id", "=", emp.id),
+                ("state", "=", "validate"),
+                ("date_from", "<=", dt_eff_end),
+                ("date_to", ">=", dt_eff_start),
+            ])
+            leave_dates = set()
+            for l in leave_recs_eff:
+                try:
+                    l_start_dt = fields.Datetime.to_datetime(l.date_from)
+                    l_end_dt = fields.Datetime.to_datetime(l.date_to)
+                    if not l_start_dt or not l_end_dt:
+                        continue
+                    ov_start = max(l_start_dt.date(), sd)
+                    ov_end = min(l_end_dt.date(), effective_end)
+                    if ov_start > ov_end:
+                        continue
+                    cur = ov_start
+                    while cur <= ov_end:
+                        # Only consider weekdays for absence accounting
+                        if cur.weekday() < 5:
+                            leave_dates.add(cur)
+                        cur += timedelta(days=1)
+                except Exception:
+                    continue
+
+            # Avoid double subtraction: do not subtract leave on days already present
+            leave_exclusive = leave_dates - present_dates
+
+            metrics["absent"] = max(expected_to_date - present_to_date - len(leave_exclusive), 0)
 
         # Add extras if missing
         # Last attendance worked hours in the period
@@ -159,20 +222,18 @@ class HrEmployee(models.Model):
         if "total_overtime" not in metrics:
             metrics["total_overtime"] = float(actual_hours - expected_hours)
 
-        # Compute Time Off days from base model (approved hr.leave overlapping the period)
-        # Sum number_of_days, which accounts for the employee calendar.
-        # Keep as float in metrics, but UI can display rounded if desired.
-        if "time_off_days" not in metrics:
-            dt_start = fields.Datetime.to_datetime(f"{start_str} 00:00:00")
-            dt_end = fields.Datetime.to_datetime(f"{end_str} 23:59:59")
-            leave_recs = self.env["hr.leave"].sudo().search([
-                ("employee_id", "=", emp.id),
-                ("state", "=", "validate"),
-                ("date_from", "<=", dt_end),
-                ("date_to", ">=", dt_start),
-            ])
-            time_off_days = sum(l.number_of_days or 0.0 for l in leave_recs)
-            metrics["time_off_days"] = float(time_off_days)
+        # Compute Time Off days strictly from Approved leaves (state = 'validate')
+        # Always override any base metric to ensure consistency with the requirement.
+        dt_start = fields.Datetime.to_datetime(f"{start_str} 00:00:00")
+        dt_end = fields.Datetime.to_datetime(f"{end_str} 23:59:59")
+        leave_recs = self.env["hr.leave"].sudo().search([
+            ("employee_id", "=", emp.id),
+            ("state", "=", "validate"),
+            ("date_from", "<=", dt_end),
+            ("date_to", ">=", dt_start),
+        ])
+        time_off_days = sum(l.number_of_days or 0.0 for l in leave_recs)
+        metrics["time_off_days"] = float(time_off_days)
 
         # Fill weekoff and holiday if missing using employee helpers and calendar timezone
         if ("weekoff" not in metrics) or ("holiday" not in metrics):
@@ -216,9 +277,11 @@ class HrEmployee(models.Model):
             ])
             att_dates = {a.check_in.date() for a in att_recs if a.check_in}
             # Consider Monday-Friday as expected working days for transitions
+            # Do not count future days in transitions
             d = sd
+            end_for_transitions = ed if ed <= today else today
             flags = []  # 'P' or 'A'
-            while d <= ed:
+            while d <= end_for_transitions:
                 if d.weekday() < 5:  # 0..4 are weekdays
                     flags.append('P' if d in att_dates else 'A')
                 d += timedelta(days=1)
