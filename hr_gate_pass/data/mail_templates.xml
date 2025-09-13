@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Detailed email template for Gate Pass submission -->
+        <record id="mail_template_gatepass_submit" model="mail.template">
+            <field name="name">Gate Pass: Submission Notification</field>
+            <field name="model_id" ref="model_hr_gate_pass"/>
+            <field name="subject">Gate Pass ${object.name} Submitted (${object.pass_type})</field>
+            <field name="email_from">${object.company_id.email or user.email_formatted}</field>
+            <!-- Recipients will be provided from Python via email_values; leave empty here -->
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+                <div style="margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;font-size:14px;">
+                    <t t-set="base_url" t-value="env['ir.config_parameter'].sudo().get_param('web.base.url')"/>
+                    <p style="margin:0 0 12px 0;">Hello,</p>
+                    <p style="margin:0 0 12px 0;">
+                        A Gate Pass <strong><t t-out="object.name"/></strong> was submitted and is awaiting your approval.
+                    </p>
+
+                    <h3 style="margin:16px 0 8px 0; font-size:16px;">Summary</h3>
+                    <ul style="margin:0 0 12px 18px; padding:0;">
+                        <li><strong>Type:</strong> <t t-out="dict(object._fields['pass_type'].selection).get(object.pass_type) or object.pass_type"/></li>
+                        <li t-if="object.requester_user_id"><strong>Requester:</strong> <t t-out="object.requester_user_id.name"/></li>
+                        <li t-if="object.host_employee_id"><strong>Host Employee:</strong> <t t-out="object.host_employee_id.name"/></li>
+                        <li t-if="object.department_id"><strong>Department:</strong> <t t-out="object.department_id.name"/></li>
+                        <li t-if="object.company_id"><strong>Company:</strong> <t t-out="object.company_id.name"/></li>
+                        <li t-if="object.gate_id"><strong>Gate:</strong> <t t-out="object.gate_id.name"/></li>
+                        <li t-if="object.start_datetime"><strong>Start:</strong> <t t-out="object.start_datetime"/></li>
+                        <li t-if="object.end_datetime"><strong>End:</strong> <t t-out="object.end_datetime"/></li>
+                        <li><strong>Returnable:</strong> <t t-out="'Yes' if object.is_returnable else 'No'"/></li>
+                        <t t-if="object.is_returnable and object.expected_return_datetime">
+                            <li><strong>Expected Return:</strong> <t t-out="object.expected_return_datetime"/></li>
+                        </t>
+                        <t t-if="object.reason">
+                            <li><strong>Reason:</strong> <t t-out="object.reason"/></li>
+                        </t>
+                    </ul>
+
+                    <!-- Generic image on the gate pass record (if any) -->
+                    <t t-if="object.image">
+                        <h3 style="margin:16px 0 8px 0; font-size:16px;">Image</h3>
+                        <div style="margin:8px 0;">
+                            <img t-att-src="'data:image/png;base64,%s' % (object.image)" alt="Image" style="max-width:260px; border:1px solid #eee; border-radius:4px;"/>
+                        </div>
+                    </t>
+
+                    <t t-if="object.pass_type == 'visitor'">
+                        <h3 style="margin:16px 0 8px 0; font-size:16px;">Visitor Details</h3>
+                        <ul style="margin:0 0 12px 18px; padding:0;">
+                            <li t-if="object.visitor_name"><strong>Name:</strong> <t t-out="object.visitor_name"/></li>
+                            <li t-if="object.visitor_company"><strong>Company:</strong> <t t-out="object.visitor_company"/></li>
+                            <li t-if="object.visitor_contact"><strong>Contact:</strong> <t t-out="object.visitor_contact"/></li>
+                            <li t-if="object.id_proof_type"><strong>ID Proof:</strong> <t t-out="object.id_proof_type"/></li>
+                            <!-- ID proof attachment(s) list with thumbnails when images -->
+                            <li t-if="object.id_proof_attachment_id">
+                                <strong>ID Proof Attachment(s):</strong>
+                                <ul style="margin:4px 0 0 18px; padding:0;">
+                                    <t t-foreach="object.id_proof_attachment_id" t-as="att">
+                                        <li style="margin:0 0 6px 0;">
+                                            <a t-att-href="('%s/web/content/%s?download=true' % (base_url, att.id))" target="_blank">
+                                                <t t-out="att.name or ('Attachment %s' % att.id)"/>
+                                            </a>
+                                            <br/>
+                                            <img t-if="att.mimetype and att.mimetype.startswith('image/')" t-att-src="('%s/web/content/%s' % (base_url, att.id))" style="max-width:200px; border:1px solid #eee; border-radius:4px; margin-top:4px; display:block;"/>
+                                        </li>
+                                    </t>
+                                </ul>
+                            </li>
+                            <li t-if="object.representing_from"><strong>Representing From:</strong>
+                                <t t-out="dict(object._fields['representing_from'].selection).get(object.representing_from)"/>
+                            </li>
+                            <li t-if="object.representing_from_text"><strong>Representing Details:</strong> <t t-out="object.representing_from_text"/></li>
+                        </ul>
+                    </t>
+
+                    <t t-if="object.pass_type == 'vehicle'">
+                        <h3 style="margin:16px 0 8px 0; font-size:16px;">Vehicle Details</h3>
+                        <ul style="margin:0 0 12px 18px; padding:0;">
+                            <li t-if="object.vehicle_no"><strong>Vehicle No:</strong> <t t-out="object.vehicle_no"/></li>
+                            <li t-if="object.driver_name"><strong>Driver:</strong> <t t-out="object.driver_name"/></li>
+                        </ul>
+                        <t t-if="object.vehicle_image">
+                            <div style="margin:8px 0;">
+                                <img t-att-src="'data:image/png;base64,%s' % (object.vehicle_image)" alt="Vehicle/Image" style="max-width:260px; border:1px solid #eee; border-radius:4px;"/>
+                            </div>
+                        </t>
+                    </t>
+
+                    <t t-if="object.pass_type == 'contractor'">
+                        <h3 style="margin:16px 0 8px 0; font-size:16px;">Contractor</h3>
+                        <ul style="margin:0 0 12px 18px; padding:0;">
+                            <li t-if="object.contractor_visit_type"><strong>Visit Type:</strong>
+                                <t t-out="dict(object._fields['contractor_visit_type'].selection).get(object.contractor_visit_type)"/>
+                            </li>
+                        </ul>
+                    </t>
+
+                    <t t-if="object.pass_type == 'employee_out' and object.employee_ids">
+                        <h3 style="margin:16px 0 8px 0; font-size:16px;">Employees</h3>
+                        <p style="margin:0 0 12px 0;">
+                            <t t-out="', '.join(object.employee_ids.mapped('name'))"/>
+                        </p>
+                    </t>
+
+                    <t t-if="object.pass_type == 'material' and object.line_ids">
+                        <h3 style="margin:16px 0 8px 0; font-size:16px;">Items</h3>
+                        <table style="width:100%; border-collapse:collapse; font-size:13px;">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:left; border-bottom:1px solid #ddd; padding:6px;">Product</th>
+                                    <th style="text-align:right; border-bottom:1px solid #ddd; padding:6px;">Qty</th>
+                                    <th style="text-align:left; border-bottom:1px solid #ddd; padding:6px;">UoM</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="object.line_ids" t-as="l">
+                                    <tr>
+                                        <td style="padding:6px; border-bottom:1px solid #f0f0f0;"><t t-out="l.product_id.display_name or l.name or ''"/></td>
+                                        <td style="padding:6px; text-align:right; border-bottom:1px solid #f0f0f0;"><t t-out="l.product_uom_qty or 0.0"/></td>
+                                        <td style="padding:6px; border-bottom:1px solid #f0f0f0;"><t t-out="l.product_uom.name or ''"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                        <p style="margin:8px 0 12px 0;"><strong>Total Estimated Value:</strong> <t t-out="object.value_total"/> <t t-out="object.currency_id.symbol or ''"/></p>
+                    </t>
+
+                    <p style="margin:16px 0 6px 0;">
+                        <a t-att-href="('%s/web#id=%s&amp;model=hr.gate.pass&amp;view_type=form' % (base_url, object.id))" style="background:#6c63ff;color:#ffffff;text-decoration:none;padding:8px 12px;border-radius:4px;display:inline-block;">Open Gate Pass</a>
+                    </p>
+
+                    <p style="margin:16px 0 0 0; color:#555; font-size:12px;">This message was sent automatically from <t t-out="user.company_id.name or 'Odoo'"/>.</p>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

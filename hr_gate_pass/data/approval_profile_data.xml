@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="0">
+    <!-- Default Approval Profiles per pass type -->
+    <record id="approval_profile_employee_out" model="hr.gate.pass.approval.profile">
+        <field name="name">Employee Out - Default</field>
+        <field name="pass_type">employee_out</field>
+        <field name="approver_user_ids" eval="[(4, ref('base.user_admin'))]"/>
+        <field name="allow_override" eval="True"/>
+        <field name="notify_on_action" eval="True"/>
+    </record>
+
+    <record id="approval_profile_visitor" model="hr.gate.pass.approval.profile">
+        <field name="name">Visitor - Default</field>
+        <field name="pass_type">visitor</field>
+        <field name="approver_user_ids" eval="[(4, ref('base.user_admin'))]"/>
+        <field name="allow_override" eval="True"/>
+        <field name="notify_on_action" eval="True"/>
+    </record>
+
+    <record id="approval_profile_material" model="hr.gate.pass.approval.profile">
+        <field name="name">Material - Default</field>
+        <field name="pass_type">material</field>
+        <field name="approver_user_ids" eval="[(4, ref('base.user_admin'))]"/>
+        <field name="allow_override" eval="True"/>
+        <field name="notify_on_action" eval="True"/>
+    </record>
+
+    <record id="approval_profile_vehicle" model="hr.gate.pass.approval.profile">
+        <field name="name">Vehicle - Default</field>
+        <field name="pass_type">vehicle</field>
+        <field name="approver_user_ids" eval="[(4, ref('base.user_admin'))]"/>
+        <field name="allow_override" eval="True"/>
+        <field name="notify_on_action" eval="True"/>
+    </record>
+
+    <record id="approval_profile_contractor" model="hr.gate.pass.approval.profile">
+        <field name="name">Contractor - Default</field>
+        <field name="pass_type">contractor</field>
+        <field name="approver_user_ids" eval="[(4, ref('base.user_admin'))]"/>
+        <field name="allow_override" eval="True"/>
+        <field name="notify_on_action" eval="True"/>
+    </record>
+</odoo>

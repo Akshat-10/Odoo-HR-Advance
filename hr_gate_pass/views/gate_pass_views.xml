@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <!-- Search view with filters -->
+    <record id="hr_gate_pass_search" model="ir.ui.view">
+        <field name="name">hr.gate.pass.search</field>
+        <field name="model">hr.gate.pass</field>
+        <field name="arch" type="xml">
+            <search string="Search Gate Passes">
+                <field name="name"/>
+                <field name="pass_type"/>
+                <field name="requester_user_id"/>
+                <field name="host_employee_id"/>
+                <field name="gate_id"/>
+                <field name="department_id"/>
+                <field name="vehicle_no"/>
+                <field name="visitor_name"/>
+
+                <separator/>
+                <filter string="My Requests" name="my_requests"
+                        domain="['|', ('requester_user_id','=',uid), ('host_employee_id.user_id','=',uid)]"/>
+                <filter string="To Approve" name="to_approve"
+                        domain="[('current_approver_ids','in',uid), ('state','=','to_approve')]"/>
+
+                <separator/>
+                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                <filter string="To Approve" name="state_to_approve" domain="[('state','=','to_approve')]"/>
+                <filter string="Approved" name="approved" domain="[('state','=','approved')]"/>
+                <filter string="Issued" name="issued" domain="[('state','=','issued')]"/>
+                <filter string="Checked Out" name="checked_out" domain="[('state','=','checked_out')]"/>
+                <filter string="Returned" name="returned" domain="[('state','=','returned')]"/>
+                <filter string="Closed" name="closed" domain="[('state','=','closed')]"/>
+                <filter string="Rejected" name="rejected" domain="[('state','=','rejected')]"/>
+                <filter string="Returnable" name="is_returnable" domain="[('is_returnable','=',True)]"/>
+
+                <separator/>
+                <filter string="Start Date" name="start_date" date="start_datetime"/>
+                <filter string="Expected Return" name="expected_return_date" date="expected_return_datetime"/>
+
+                <group expand="0" string="Group By">
+                    <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Pass Type" name="group_pass_type" context="{'group_by': 'pass_type'}"/>
+                    <filter string="Gate" name="group_gate" context="{'group_by': 'gate_id'}"/>
+                    <filter string="Requester" name="group_requester" context="{'group_by': 'requester_user_id'}"/>
+                    <filter string="Host Employee" name="group_host" context="{'group_by': 'host_employee_id'}"/>
+                    <filter string="Department" name="group_department" context="{'group_by': 'department_id'}"/>
+                    <filter string="Start Date" name="group_start_date" context="{'group_by': 'start_datetime'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Tree view -->
+    <record id="hr_gate_pass_tree" model="ir.ui.view">
+        <field name="name">hr.gate.pass.tree</field>
+        <field name="model">hr.gate.pass</field>
+        <field name="arch" type="xml">
+            <list string="Gate Passes" create="1">
+                <field name="name"/>
+                <field name="pass_type"/>
+                <field name="reason" />
+                <field name="start_datetime"/>
+                <field name="expected_return_datetime"/>
+                <field name="requester_user_id"/>
+                <!-- <field name="host_employee_id"/> -->
+                <field name="gate_id"/>
+                <field name="state"/>
+            </list>
+    </field>
+    </record>
+
+    <!-- Form view (simplified MVP) -->
+    <record id="hr_gate_pass_form" model="ir.ui.view">
+        <field name="name">hr.gate.pass.form</field>
+        <field name="model">hr.gate.pass</field>
+        <field name="arch" type="xml">
+            <form string="Gate Pass" create="1">
+                <header>
+                    <button name="action_submit" type="object" string="Submit" class="btn-primary gp-btn-submit" confirm="Submit this gate pass for approval?" invisible="state != 'draft'"/>
+                    <button name="action_approve" type="object" string="Approve" class="btn-primary gp-btn-approve" groups="hr_gate_pass.group_gatepass_manager,hr_gate_pass.group_gatepass_admin" confirm="Approve this gate pass?" invisible="state != 'to_approve'"/>
+                    <button name="action_reject" type="object" string="Reject" class="gp-btn-reject" confirm="Reject this gate pass?" groups="hr_gate_pass.group_gatepass_manager,hr_gate_pass.group_gatepass_admin" invisible="state != 'to_approve'"/>
+                    <button name="action_issue" type="object" string="Issue" class="gp-btn-issue" groups="hr_gate_pass.group_gatepass_security,hr_gate_pass.group_gatepass_hr" confirm="Issue this gate pass and generate QR if needed?" invisible="state != 'approved'"/>
+                    <button name="action_checkout" type="object" string="Check Out" class="gp-btn-checkout" groups="hr_gate_pass.group_gatepass_security" confirm="Mark as checked out?" invisible="state != 'issued'"/>
+                    <button name="action_return" type="object" string="Return" class="gp-btn-return" groups="hr_gate_pass.group_gatepass_security,hr_gate_pass.group_gatepass_warehouse" confirm="Confirm items/visitor returned?" invisible="state != 'checked_out' or not is_returnable"/>
+                    <button name="action_close" type="object" string="Close" class="gp-btn-close" confirm="Close this gate pass?"  groups="hr_gate_pass.group_gatepass_manager,hr_gate_pass.group_gatepass_admin" invisible="not (state == 'returned' or (state == 'checked_out' and not is_returnable))"/>
+                    <button name="action_cancel" type="object" string="Cancel" class="gp-btn-cancel" confirm="Cancel this gate pass?" groups="hr_gate_pass.group_gatepass_manager,hr_gate_pass.group_gatepass_admin" invisible="not (state in ['draft','to_approve'])"/>
+                    <button name="action_back" type="object" string="Back" class="btn-secondary gp-btn-back" confirm="Revert to previous step?" invisible="not (state in ['issued','checked_out','returned','closed','rejected','cancel'])"/>
+                    <button name="action_reset_to_draft" type="object" string="Set to Draft" class="btn-secondary gp-btn-reset" confirm="Reset this gate pass to Draft?" invisible="not (state in ['closed','checked_out', 'rejected','cancel'])" groups="hr_gate_pass.group_gatepass_admin"/>
+                    <button name="action_print" type="object" string="Print" class="gp-btn-print" invisible="not (state in ['approved','issued','checked_out','returned'])"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,to_approve,approved,issued,checked_out,returned,closed,rejected"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" class="oe_stat_button gp-stat-qr" name="action_generate_qr" icon="fa-qrcode" string="QR"/>
+                        <button type="object" class="oe_stat_button gp-stat-logs" name="action_view_logs" icon="fa-history" string="Logs"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company" invisible="1"/>
+                            <field name="gate_id"/>
+                            <field name="pass_type" required="1"/>
+                            <field name="requester_user_id"/>
+                            <field name="host_employee_id" invisible="pass_type != 'visitor'" required="pass_type == 'visitor'" />
+                            <field name="representing_from" invisible="pass_type != 'visitor'" required="pass_type == 'visitor'" />
+                            <field name="representing_from_text" invisible="pass_type != 'visitor'" required="pass_type == 'visitor'" />
+                            <field name="employee_ids" widget="many2many_tags" invisible="pass_type != 'employee_out'"/>
+                            <field name="contractor_visit_type" invisible="pass_type != 'contractor'"  required="pass_type == 'contractor'" />
+                            <field name="department_id"/>
+                            <field name="reason" required="1"/>
+                        </group>
+                        <group>
+                            <field name="start_datetime"/>
+                            <field name="end_datetime" readonly="1"/>
+                            <field name="is_returnable"/>
+                            <field name="expected_return_datetime" required="is_returnable" invisible="not is_returnable"/>
+                            <field name="qr_image" widget="image" class="oe_avatar"/>
+                            <field name="image" widget="image" class="float-end bg-view" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Vehicle">
+                            <group>
+                                <field name="vehicle_no"/>
+                                <field name="driver_name" />
+                                <field name="vehicle_image" widget="image" class="float-end bg-view"/>
+                            </group>
+                        </page>
+                        <page string="Visitor Details" invisible="pass_type != 'visitor'">
+                            <group>
+                                <field name="visitor_name"/>
+                                <field name="visitor_contact"/>
+                                <field name="visitor_company"/>
+                                <field name="id_proof_type"/>
+                                <field name="id_proof_attachment_id" widget="many2many_binary"/>
+                            </group>
+                        </page>
+                        <page string="Items" invisible="pass_type != 'material'">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="name"/>
+                                    <field name="product_uom_qty"/>
+                                    <field name="product_uom"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Approvals">
+                            <group>
+                                <field name="approval_profile_id" required="1"/>
+                                <field name="current_approver_ids" widget="many2many_tags" required="1"/>
+                            </group>
+                        </page>
+                        <page string="Logs">
+                            <field name="log_ids">
+                                <list create="0" >
+                                    <field name="timestamp"/>
+                                    <field name="action"/>
+                                    <field name="by_user_id"/>
+                                    <field name="gate_id"/>
+                                    <field name="remarks"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+        <!-- Actions -->
+    <record id="action_hr_gate_pass_my" model="ir.actions.act_window">
+        <field name="name">My Requests</field>
+        <field name="res_model">hr.gate.pass</field>
+        <field name="view_mode">list,form,kanban,graph</field>
+        <field name="search_view_id" ref="hr_gate_pass_search"/>
+        <field name="context">{'search_default_my_requests': 1}</field>
+    </record>
+
+    <record id="action_hr_gate_pass_all" model="ir.actions.act_window">
+        <field name="name">All Passes</field>
+        <field name="res_model">hr.gate.pass</field>
+        <field name="search_view_id" ref="hr_gate_pass_search"/>
+        <field name="view_mode">list,form,kanban,pivot,graph</field>
+    </record>
+
+    <record id="action_hr_gate_pass_approvals" model="ir.actions.act_window">
+        <field name="name">My Approvals</field>
+        <field name="res_model">hr.gate.pass</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="search_view_id" ref="hr_gate_pass_search"/>
+        <field name="domain">[('current_approver_ids','in',uid), ('state','=','to_approve')]</field>
+    </record>
+
+    <record id="action_hr_gate_pass_security" model="ir.actions.act_window">
+        <field name="name">Security Dashboard</field>
+        <field name="res_model">hr.gate.pass</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="hr_gate_pass_search"/>
+        <field name="domain">[('state','in',('approved','issued','checked_out'))]</field>
+    </record>
+
+    <record id="action_hr_gate_pass_logs" model="ir.actions.act_window">
+        <field name="name">Logs</field>
+        <field name="res_model">hr.gate.log</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

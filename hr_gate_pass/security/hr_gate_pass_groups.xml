@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Dedicated category for Gate Pass -->
+        <record id="module_category_gate_pass" model="ir.module.category">
+            <field name="name">Gate Pass</field>
+            <field name="description">Gate Pass management</field>
+            <field name="sequence" eval="35"/>
+        </record>
+
+        <!-- Gate Pass groups -->
+        <record id="group_gatepass_requester" model="res.groups">
+            <field name="name">GatePass / Requester</field>
+            <field name="category_id" ref="hr_gate_pass.module_category_gate_pass"/>
+        </record>
+        <record id="group_gatepass_security" model="res.groups">
+            <field name="name">GatePass / Security</field>
+            <field name="category_id" ref="hr_gate_pass.module_category_gate_pass"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]" />
+        </record>
+        <record id="group_gatepass_hr" model="res.groups">
+            <field name="name">GatePass / HR</field>
+            <field name="category_id" ref="hr_gate_pass.module_category_gate_pass"/>
+        </record>
+
+        <record id="group_gatepass_manager" model="res.groups">
+            <field name="name">GatePass / Manager</field>
+            <field name="category_id" ref="hr_gate_pass.module_category_gate_pass"/>
+            <field name="implied_ids" eval="[(4, ref('group_gatepass_requester'))]"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]" />
+        </record>
+        <record id="group_gatepass_admin" model="res.groups">
+            <field name="name">GatePass / Admin</field>
+            <field name="category_id" ref="hr_gate_pass.module_category_gate_pass"/>
+            <field name="implied_ids" eval="[(4, ref('group_gatepass_hr')), (4, ref('group_gatepass_security'))]"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]" />
+        </record>
+
+        <record id="group_gatepass_warehouse" model="res.groups">
+            <field name="name">GatePass / Warehouse</field>
+            <field name="category_id" ref="hr_gate_pass.module_category_gate_pass"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]" />
+        </record>
+
+    </data>
+</odoo>

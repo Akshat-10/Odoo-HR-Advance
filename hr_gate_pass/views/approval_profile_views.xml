@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_hr_gate_pass_approval_profile" model="ir.actions.act_window">
+        <field name="name">Approval Profiles</field>
+        <field name="res_model">hr.gate.pass.approval.profile</field>
+    <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="hr_gate_pass_approval_profile_tree" model="ir.ui.view">
+        <field name="name">hr.gate.pass.approval.profile.tree</field>
+        <field name="model">hr.gate.pass.approval.profile</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="pass_type"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hr_gate_pass_approval_profile_form" model="ir.ui.view">
+        <field name="name">hr.gate.pass.approval.profile.form</field>
+        <field name="model">hr.gate.pass.approval.profile</field>
+        <field name="arch" type="xml">
+            <form string="Approval Profile">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="pass_type"/>
+                        <field name="allow_override"/>
+                        <field name="notify_on_action"/>
+                    </group>
+                    <group string="Rules" invisible="1">
+                        <field name="conditional_rules" widget="json" invisible="1"/>
+                        <field name="auto_approve_conditions" widget="json" invisible="1"/>
+                    </group>
+                    <group>
+                        <field name="approver_user_ids" widget="many2many_tags"/>
+                        <field name="approver_group_ids" widget="many2many_tags"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

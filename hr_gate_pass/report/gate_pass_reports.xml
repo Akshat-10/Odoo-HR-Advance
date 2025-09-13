@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- QWeb template: align id with report_name -->
+    <template id="hr_gate_pass.report_gate_pass_full">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        <h2>Gate Pass <span t-esc="o.name"/></h2>
+                        <p><strong>Type:</strong> <span t-esc="o.pass_type"/></p>
+                        <p><strong>Requester:</strong> <span t-esc="o.requester_user_id.name"/></p>
+                        <p><strong>Host:</strong> <span t-esc="o.host_employee_id.name"/></p>
+                        <p><strong>Reason:</strong> <span t-esc="o.reason"/></p>
+                        <t t-if="o.qr_image">
+                            <img t-att-src="'data:image/png;base64,%s' % (o.qr_image.decode())" style="width:120px;height:120px"/>
+                        </t>
+                        <t t-if="o.pass_type == 'material'">
+                            <table class="table table-sm o_main_table">
+                                <thead>
+                                    <tr><th>Product</th><th>Description</th><th>Qty</th><th>UoM</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.line_ids" t-as="l">
+                                        <td><span t-esc="l.product_id.display_name"/></td>
+                                        <td><span t-esc="l.name"/></td>
+                                        <td class="text-end"><span t-esc="l.product_uom_qty"/></td>
+                                        <td><span t-esc="l.product_uom.name"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+                        <div class="oe_structure"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- Report action using explicit ir.actions.report record with binding -->
+    <record id="action_report_gate_pass_full" model="ir.actions.report">
+    <field name="name">Gate Pass</field>
+        <field name="model">hr.gate.pass</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_gate_pass.report_gate_pass_full</field>
+    <field name="report_file">gate_pass_full</field>
+    <field name="print_report_name">(object and ('Gate Pass - ' + (object.name or ''))) or 'Gate Pass'</field>
+        <field name="binding_model_id" ref="model_hr_gate_pass"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

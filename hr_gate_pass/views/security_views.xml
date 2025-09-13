@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Simple guard view: search/scan -->
+    <record id="hr_gate_pass_kanban_security" model="ir.ui.view">
+        <field name="name">hr.gate.pass.kanban.security</field>
+        <field name="model">hr.gate.pass</field>
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="pass_type"/>
+                <field name="state"/>
+                <field name="requester_user_id"/>
+                <field name="host_employee_id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <strong><t t-esc="record.name.value"/></strong>
+                            <div class="text-muted">
+                                <span t-attf-class="badge me-1 badge-{{record.state.raw_value}}">
+                                    <t t-esc="record.pass_type.value"/> - <t t-esc="record.state.value"/>
+                                </span>
+                            </div>
+                            <div>
+                                <t t-if="record.pass_type.raw_value == 'visitor'">
+                                    <span t-esc="record.host_employee_id.value"/>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>

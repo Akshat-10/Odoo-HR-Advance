@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_hr_gate_incident" model="ir.actions.act_window">
+        <field name="name">Incidents</field>
+        <field name="res_model">hr.gate.incident</field>
+    <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="hr_gate_incident_tree" model="ir.ui.view">
+        <field name="name">hr.gate.incident.tree</field>
+        <field name="model">hr.gate.incident</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="gate_pass_id"/>
+                <field name="severity"/>
+                <field name="status"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hr_gate_incident_form" model="ir.ui.view">
+        <field name="name">hr.gate.incident.form</field>
+        <field name="model">hr.gate.incident</field>
+        <field name="arch" type="xml">
+            <form string="Incident">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="gate_pass_id"/>
+                        <field name="description"/>
+                        <field name="severity"/>
+                        <field name="responsible_department_id"/>
+                        <field name="actions_taken"/>
+                        <field name="status"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

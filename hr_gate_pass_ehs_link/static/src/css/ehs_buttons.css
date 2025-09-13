@@ -1,0 +1,22 @@
+/* Custom styling for EHS-related buttons on Gate Pass form */
+.o_form_view .ehs-create-btn.btn {
+  background: linear-gradient(135deg,#2563eb,#1d4ed8);
+  color:#fff !important;
+  border:none;
+}
+.o_form_view .ehs-create-btn.btn:hover { filter:brightness(1.08); }
+.o_form_view .ehs-open-btn.oe_stat_button { background:#0f766e; color:#fff !important; }
+.o_form_view .ehs-open-btn.oe_stat_button:hover { background:#115e59; }
+.o_form_view .ehs-open-btn.oe_stat_button .fa { color:#fff !important; }
+
+/* Different colors per permit type (header create) */
+.o_form_view .ehs-create-btn.ehs-work-heights { background:#9333ea; }
+.o_form_view .ehs-create-btn.ehs-energized { background:#dc2626; }
+.o_form_view .ehs-create-btn.ehs-daily { background:#ea580c; }
+.o_form_view .ehs-create-btn.ehs-hot-work { background:#b45309; }
+
+.o_form_view .ehs-create-btn.ehs-work-heights:hover { background:#7e22ce; }
+.o_form_view .ehs-create-btn.ehs-energized:hover { background:#b91c1c; }
+.o_form_view .ehs-create-btn.ehs-daily:hover { background:#c2410c; }
+.o_form_view .ehs-create-btn.ehs-hot-work:hover { background:#92400e; }
+

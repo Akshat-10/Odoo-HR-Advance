@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_hr_gate_pass" model="ir.sequence">
+            <field name="name">Gate Pass</field>
+            <field name="code">hr.gate.pass</field>
+            <field name="prefix">GP/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_hr_gate_incident" model="ir.sequence">
+            <field name="name">Gate Incident</field>
+            <field name="code">hr.gate.incident</field>
+            <field name="prefix">GPI/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_gate_pass_root" name="Gate Pass" sequence="10"/>
+    <menuitem id="menu_gate_pass_requests" name="Requests" parent="menu_gate_pass_root" action="action_hr_gate_pass_my" sequence="10"/>
+    <menuitem id="menu_gate_pass_all" name="All Passes" parent="menu_gate_pass_root" action="action_hr_gate_pass_all" sequence="20" groups="hr_gate_pass.group_gatepass_hr,hr_gate_pass.group_gatepass_manager,hr_gate_pass.group_gatepass_admin"/>
+    <menuitem id="menu_gate_pass_approvals" name="Approvals" parent="menu_gate_pass_root" action="action_hr_gate_pass_approvals" sequence="30" groups="hr_gate_pass.group_gatepass_manager"/>
+    <menuitem id="menu_gate_pass_security" name="Security Dashboard" parent="menu_gate_pass_root" action="action_hr_gate_pass_security" sequence="40" groups="hr_gate_pass.group_gatepass_security,hr_gate_pass.group_gatepass_hr"/>
+    <menuitem id="menu_gate_pass_reports" name="Reports &amp; Logs" parent="menu_gate_pass_root" action="action_hr_gate_pass_logs" sequence="50" groups="hr_gate_pass.group_gatepass_hr,hr_gate_pass.group_gatepass_admin"/>
+
+    <menuitem id="menu_gate_pass_config" name="Configuration" parent="menu_gate_pass_root" sequence="90" groups="hr_gate_pass.group_gatepass_admin,hr_gate_pass.group_gatepass_hr"/>
+    <menuitem id="menu_gate" name="Gates" parent="menu_gate_pass_config" action="action_hr_gate" sequence="10"/>
+    <menuitem id="menu_approval_profile" name="Approval Profiles" parent="menu_gate_pass_config" action="action_hr_gate_pass_approval_profile" sequence="20"/>
+    <menuitem id="menu_incident" name="Incidents" parent="menu_gate_pass_config" action="action_hr_gate_incident" sequence="30"/>
+</odoo>

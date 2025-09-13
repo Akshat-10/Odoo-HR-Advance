@@ -1,0 +1,53 @@
+/* Custom styling for EHS-related buttons on Gate Pass form */
+/* .o_form_view .ehs-create-btn.btn {
+  background: linear-gradient(135deg,#2563eb,#1d4ed8);
+  color:#fff !important;
+  border:none;
+} */
+
+/* Gate Pass primary action buttons color variants */
+/* Use broader selector (not only header) because Odoo may wrap buttons in .o_form_statusbar */
+.o_form_view button.gp-btn-submit,
+.o_form_view .o_form_statusbar button.gp-btn-submit { background:#2563eb !important; color:#fff !important; border:1px solid #2563eb !important; background-image:none !important; }
+.o_form_view button.gp-btn-approve,
+.o_form_view .o_form_statusbar button.gp-btn-approve { background:#15803d !important; color:#fff !important; border:1px solid #15803d !important; background-image:none !important; }
+.o_form_view button.gp-btn-reject,
+.o_form_view .o_form_statusbar button.gp-btn-reject { background:#dc2626 !important; color:#fff !important; border:1px solid #dc2626 !important; background-image:none !important; }
+.o_form_view button.gp-btn-issue,
+.o_form_view .o_form_statusbar button.gp-btn-issue { background:#7c3aed !important; color:#fff !important; border:1px solid #7c3aed !important; background-image:none !important; }
+.o_form_view button.gp-btn-checkout,
+.o_form_view .o_form_statusbar button.gp-btn-checkout { background:#0d9488 !important; color:#fff !important; border:1px solid #0d9488 !important; background-image:none !important; }
+.o_form_view button.gp-btn-return,
+.o_form_view .o_form_statusbar button.gp-btn-return { background:#ea580c !important; color:#fff !important; border:1px solid #ea580c !important; background-image:none !important; }
+.o_form_view button.gp-btn-close,
+.o_form_view .o_form_statusbar button.gp-btn-close { background:#374151 !important; color:#fff !important; border:1px solid #374151 !important; background-image:none !important; }
+.o_form_view button.gp-btn-cancel,
+.o_form_view .o_form_statusbar button.gp-btn-cancel { background:#6b7280 !important; color:#fff !important; border:1px solid #6b7280 !important; background-image:none !important; }
+.o_form_view button.gp-btn-back,
+.o_form_view .o_form_statusbar button.gp-btn-back { background:#475569 !important; color:#fff !important; border:1px solid #475569 !important; background-image:none !important; }
+.o_form_view button.gp-btn-reset,
+.o_form_view .o_form_statusbar button.gp-btn-reset { background:#1e40af !important; color:#fff !important; border:1px solid #1e40af !important; background-image:none !important; }
+.o_form_view button.gp-btn-print,
+.o_form_view .o_form_statusbar button.gp-btn-print { background:#111827 !important; color:#fff !important; border:1px solid #111827 !important; background-image:none !important; }
+
+.o_form_view button.gp-btn-submit:hover { background:#1d4ed8 !important; }
+.o_form_view button.gp-btn-approve:hover { background:#166534 !important; }
+.o_form_view button.gp-btn-reject:hover { background:#b91c1c !important; }
+.o_form_view button.gp-btn-issue:hover { background:#6d28d9 !important; }
+.o_form_view button.gp-btn-checkout:hover { background:#0f766e !important; }
+.o_form_view button.gp-btn-return:hover { background:#c2410c !important; }
+.o_form_view button.gp-btn-close:hover { background:#1f2937 !important; }
+.o_form_view button.gp-btn-cancel:hover { background:#4b5563 !important; }
+.o_form_view button.gp-btn-back:hover { background:#334155 !important; }
+.o_form_view button.gp-btn-reset:hover { background:#1e3a8a !important; }
+.o_form_view button.gp-btn-print:hover { background:#000 !important; }
+
+
+/* Stat buttons styling */
+.o_form_view .gp-stat-qr.oe_stat_button { background:#1d4ed8 !important; color:#fff !important; }
+.o_form_view .gp-stat-logs.oe_stat_button { background:#6d28d9 !important; color:#fff !important; }
+.o_form_view .gp-stat-qr.oe_stat_button .fa,
+.o_form_view .gp-stat-logs.oe_stat_button .fa { color:#fff !important; }
+.o_form_view .gp-stat-qr.oe_stat_button:hover { background:#1e40af !important; }
+.o_form_view .gp-stat-logs.oe_stat_button:hover { background:#5b21b6 !important; }
+
