@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="mail_template_monitoring_non_compliance" model="mail.template">
+            <field name="name">Monitoring Non-Compliance Alert</field>
+            <field name="model_id" ref="model_permit_monitoring_line"/>
+            <field name="subject">[EHS] Non-Compliance on ${object.permit_model} (${object.name})</field>
+            <field name="email_from">${(object.user_id.email_formatted or user.email_formatted)}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+                <div style="margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#222;">
+                    <t t-set="base_url" t-value="env['ir.config_parameter'].sudo().get_param('web.base.url')"/>
+                    <p style="margin:0 0 12px 0;">Hello Admins,</p>
+                    <p style="margin:0 0 12px 0;">
+                        A monitoring line <strong><t t-out="object.name"/></strong> for permit
+                        <strong><t t-out="dict(object._fields['permit_model'].selection).get(object.permit_model) or object.permit_model"/></strong>
+                        (ID: <t t-out="object.permit_res_id"/>) was marked as
+                        <strong>Not Standard</strong> and a meeting was requested.
+                    </p>
+
+                    <h3 style="margin:16px 0 8px 0; font-size:16px;">Summary</h3>
+                    <ul style="margin:0 0 12px 18px; padding:0;">
+                        <li><strong>Permit:</strong>
+                            <t t-out="dict(object._fields['permit_model'].selection).get(object.permit_model) or object.permit_model"/>
+                            (#<t t-out="object.permit_res_id"/>)
+                        </li>
+                        <li><strong>Monitoring Area:</strong> <t t-out="(object.monitoring_area_id and object.monitoring_area_id.name) or '-'"/></li>
+                        <li><strong>User:</strong> <t t-out="object.user_id and object.user_id.name or '-'"/></li>
+                        <li><strong>Datetime:</strong> <t t-out="object.datetime"/></li>
+                        <li><strong>Compliance:</strong>
+                            <t t-out="dict(object._fields['compliance_status'].selection).get(object.compliance_status) or object.compliance_status"/>
+                        </li>
+                        <li><strong>Call Meeting:</strong> <t t-out="'Yes' if object.call_meeting else 'No'"/></li>
+                        <li t-if="object.expiry_datetime"><strong>Expires At:</strong> <t t-out="object.expiry_datetime"/></li>
+                        <li t-if="object.action_taken"><strong>Action Taken:</strong> <t t-out="object.action_taken"/></li>
+                        <li t-if="object.remarks"><strong>Remarks:</strong> <t t-out="object.remarks"/></li>
+                    </ul>
+
+                    <t t-if="object.attachment_ids">
+                        <h3 style="margin:16px 0 8px 0; font-size:16px;">Attachments</h3>
+                        <ul style="margin:0 0 12px 18px; padding:0;">
+                            <t t-foreach="object.attachment_ids" t-as="att">
+                                <li style="margin:0 0 6px 0;">
+                                    <a t-att-href="('%s/web/content/%s?download=true' % (base_url, att.id))" target="_blank">
+                                        <t t-out="att.name or ('Attachment %s' % att.id)"/>
+                                    </a>
+                                    <br/>
+                                    <img t-if="att.mimetype and att.mimetype.startswith('image/')" t-att-src="('%s/web/content/%s' % (base_url, att.id))" style="max-width:200px; border:1px solid #eee; border-radius:4px; margin-top:4px; display:block;"/>
+                                </li>
+                            </t>
+                        </ul>
+                    </t>
+
+                    <p style="margin:16px 0 6px 0;">
+                        <a t-att-href="('%s/web#id=%s&amp;model=permit.monitoring.line&amp;view_type=form' % (base_url, object.id))" style="background:#6c63ff;color:#ffffff;text-decoration:none;padding:8px 12px;border-radius:4px;display:inline-block;">Open Monitoring Line</a>
+                        <a t-att-href="('%s/web#id=%s&amp;model=%s&amp;view_type=form' % (base_url, object.permit_res_id, object.permit_model))" style="background:#4caf50;color:#ffffff;text-decoration:none;padding:8px 12px;border-radius:4px;display:inline-block;margin-left:8px;">Open Permit</a>
+                    </p>
+
+                    <p style="margin:16px 0 0 0; color:#555; font-size:12px;">This message was sent automatically from <t t-out="user.company_id and user.company_id.name or 'Odoo'"/>.</p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_monitoring_expiry_warning" model="mail.template">
+            <field name="name">Monitoring Line Near Expiry</field>
+            <field name="model_id" ref="model_permit_monitoring_line"/>
+            <field name="subject">[EHS] Monitoring Line Near Expiry (${object.name})</field>
+            <field name="email_from">${user.email_formatted}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+                <div style="margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#222;">
+                    <t t-set="base_url" t-value="env['ir.config_parameter'].sudo().get_param('web.base.url')"/>
+                    <p style="margin:0 0 12px 0;">Heads up,</p>
+                    <p style="margin:0 0 12px 0;">The following monitoring line will expire soon:</p>
+
+                    <h3 style="margin:16px 0 8px 0; font-size:16px;">Summary</h3>
+                    <ul style="margin:0 0 12px 18px; padding:0;">
+                        <li><strong>Permit:</strong>
+                            <t t-out="dict(object._fields['permit_model'].selection).get(object.permit_model) or object.permit_model"/>
+                            (#<t t-out="object.permit_res_id"/>)
+                        </li>
+                        <li><strong>Monitoring Area:</strong> <t t-out="(object.monitoring_area_id and object.monitoring_area_id.name) or '-'"/></li>
+                        <li><strong>Line Serial:</strong> <t t-out="object.name"/></li>
+                        <li t-if="object.expiry_datetime"><strong>Expires At:</strong> <t t-out="object.expiry_datetime"/></li>
+                    </ul>
+
+                    <p style="margin:16px 0 6px 0;">
+                        <a t-att-href="('%s/web#id=%s&amp;model=permit.monitoring.line&amp;view_type=form' % (base_url, object.id))" style="background:#6c63ff;color:#ffffff;text-decoration:none;padding:8px 12px;border-radius:4px;display:inline-block;">Open Monitoring Line</a>
+                        <a t-att-href="('%s/web#id=%s&amp;model=%s&amp;view_type=form' % (base_url, object.permit_res_id, object.permit_model))" style="background:#4caf50;color:#ffffff;text-decoration:none;padding:8px 12px;border-radius:4px;display:inline-block;margin-left:8px;">Open Permit</a>
+                    </p>
+
+                    <p style="margin:16px 0 0 0; color:#555; font-size:12px;">This message was sent automatically from <t t-out="user.company_id and user.company_id.name or 'Odoo'"/>.</p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_monitoring_expired" model="mail.template">
+            <field name="name">Monitoring Line Expired</field>
+            <field name="model_id" ref="model_permit_monitoring_line"/>
+            <field name="subject">[EHS] Monitoring Line Expired (${object.name})</field>
+            <field name="email_from">${user.email_formatted}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+                <div style="margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#222;">
+                    <t t-set="base_url" t-value="env['ir.config_parameter'].sudo().get_param('web.base.url')"/>
+                    <p style="margin:0 0 12px 0;">Hello,</p>
+                    <p style="margin:0 0 12px 0;">A monitoring line has <strong>expired</strong>:</p>
+
+                    <h3 style="margin:16px 0 8px 0; font-size:16px;">Summary</h3>
+                    <ul style="margin:0 0 12px 18px; padding:0;">
+                        <li><strong>Permit:</strong>
+                            <t t-out="dict(object._fields['permit_model'].selection).get(object.permit_model) or object.permit_model"/>
+                            (#<t t-out="object.permit_res_id"/>)
+                        </li>
+                        <li><strong>Monitoring Area:</strong> <t t-out="(object.monitoring_area_id and object.monitoring_area_id.name) or '-'"/></li>
+                        <li><strong>Line Serial:</strong> <t t-out="object.name"/></li>
+                        <li t-if="object.expiry_datetime"><strong>Expired At:</strong> <t t-out="object.expiry_datetime"/></li>
+                    </ul>
+
+                    <p style="margin:16px 0 6px 0;">
+                        <a t-att-href="('%s/web#id=%s&amp;model=permit.monitoring.line&amp;view_type=form' % (base_url, object.id))" style="background:#6c63ff;color:#ffffff;text-decoration:none;padding:8px 12px;border-radius:4px;display:inline-block;">Open Monitoring Line</a>
+                        <a t-att-href="('%s/web#id=%s&amp;model=%s&amp;view_type=form' % (base_url, object.permit_res_id, object.permit_model))" style="background:#4caf50;color:#ffffff;text-decoration:none;padding:8px 12px;border-radius:4px;display:inline-block;margin-left:8px;">Open Permit</a>
+                    </p>
+
+                    <p style="margin:16px 0 0 0; color:#555; font-size:12px;">This message was sent automatically from <t t-out="user.company_id and user.company_id.name or 'Odoo'"/>.</p>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

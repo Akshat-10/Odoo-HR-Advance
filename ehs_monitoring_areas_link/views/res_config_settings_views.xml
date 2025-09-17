@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_res_config_settings_ehs_monitoring" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.ehs.monitoring</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='contacts_settings']" position="after">
+                <div id="ehs_monitoring_settings">
+                    <block title="EHS Monitoring" name="ehs_monitoring_setting_container">
+                        <setting id="ehs_monitoring_time_limit_setting" help="Time window allowed for a monitoring entry before it expires.">
+                            <field name="ehs_monitoring_time_limit_minutes"/>
+                        </setting>
+                        <setting id="ehs_monitoring_admin_group_setting" help="Group to notify when non-compliance is reported.">
+                            <field name="ehs_monitoring_admin_group_id" options="{'no_create': True}"/>
+                        </setting>
+                        <setting id="ehs_monitoring_expiry_warning_setting" help="Minutes before expiry to warn admins about open monitoring lines.">
+                            <field name="ehs_monitoring_expiry_warning_minutes"/>
+                        </setting>
+                    </block>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

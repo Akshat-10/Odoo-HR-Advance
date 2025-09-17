@@ -170,6 +170,11 @@ class HrEmployee(models.Model):
         # Iterate over actual date objects, not the original string params
         current_date = start.date()
         end_date_date = stop.date()
+        # Do NOT count future days in transition metrics (esp. A|A)
+        # Use the employee/calendar timezone to determine "today"
+        today_local = datetime.datetime.now(tz).date()
+        if end_date_date > today_local:
+            end_date_date = today_local
         while current_date <= end_date_date:
             day_start = tz.localize(datetime.datetime.combine(current_date, datetime.time.min))
             day_end = tz.localize(datetime.datetime.combine(current_date, datetime.time.max))

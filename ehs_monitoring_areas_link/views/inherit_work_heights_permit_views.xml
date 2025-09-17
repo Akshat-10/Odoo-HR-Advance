@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="inherit_work_heights_permit_form_monitoring" model="ir.ui.view">
+        <field name="name">work.heights.permit.form.monitoring.inherit</field>
+        <field name="model">work.heights.permit</field>
+        <field name="inherit_id" ref="EHS.work_heights_permit_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/header/field[@name='state']" position="before">
+                <button name="action_open_monitoring_scan" string="Scan Monitoring QR" type="object" class="ehs-btn-scan" invisible="not monitoring_area_id or state != 'in_progress'" confirm="Open Monitoring Scan?"/>
+            </xpath>
+            <xpath expr="//form/sheet/notebook/page[last()]" position="after">
+                <page string="Work Permit Monitoring">
+                    <group>
+                        <group>
+                            <field name="monitoring_area_id" options="{'no_create': False}"/>
+                            <!-- <label for="monitoring_area_qr_image" string="QR Code"/> -->
+                            <field name="monitoring_area_qr_image" widget="image" class="oe_avatar"/>
+                            <!-- <label for="monitoring_scan_qr"  string="Scan QR"/> -->
+                            <!-- <field name="monitoring_scan_qr" widget="image" class="oe_avatar"/> -->
+                        </group>
+                        <group>
+                            <br/>
+                            <field name="monitoring_scan_qr" widget="image" class="oe_avatar"/>
+                        </group>
+                    </group>
+                    <field name="monitoring_line_ids" context="{'default_permit_model':'work.heights.permit','default_permit_res_id': id, 'search_default_open': 1}">
+                        <list editable="bottom" create="0" delete="0">
+                            <field name="name"/>
+                            <field name="datetime"/>
+                            <field name="user_id"/>
+                            <field name="compliance_status"/>
+                            <field name="state" widget="badge"/>
+                        </list>
+                    </field>
+                    <p class="text-muted">Scan the QR to create a new monitoring line. Only one open line is allowed at a time. Lines expire automatically per settings.</p>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

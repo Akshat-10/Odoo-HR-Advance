@@ -5,6 +5,9 @@
     Enhanced Gantt view for Attendance
     """,
     'version': '1.0',
+    'author': 'Akshat Gupta',
+    'license': 'LGPL-3',
+    'website': 'https://github.com/Akshat-10',
     'category': 'Human Resources',
     'depends': ['hr_attendance_gantt', 'hr_holidays', 'report_xlsx', 'hr_induction'],
     'data': [
@@ -14,6 +17,5 @@
     ],
     'installable': True,
     'application': True,
-    'license': 'LGPL-3',
     
 }

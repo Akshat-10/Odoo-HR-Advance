@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Sequences for monitoring reference -->
+    <data noupdate="1">
+        <record id="seq_monitoring_areas" model="ir.sequence">
+            <field name="name">Monitoring Areas</field>
+            <field name="code">monitoring.areas</field>
+            <field name="prefix">WPM/</field>
+            <field name="padding">4</field>
+            <!-- <field name="implementation">no_gap</field> -->
+        </record>
+    </data>
+</odoo>

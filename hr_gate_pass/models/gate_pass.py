@@ -57,7 +57,7 @@ class HrGatePass(models.Model):
     approval_profile_id = fields.Many2one(string='Approval Profile', comodel_name='hr.gate.pass.approval.profile')
     current_approver_ids = fields.Many2many(string='Current Approvers', comodel_name='res.users')
 
-    reason = fields.Char(string='Reason')
+    reason = fields.Char(string='Reason Description')
     start_datetime = fields.Datetime(string='Start', required=True, default=lambda self: fields.Datetime.now())
     end_datetime = fields.Datetime(string='End')
     request_datetime = fields.Datetime(string='Requested At', default=lambda self: fields.Datetime.now())
@@ -76,6 +76,8 @@ class HrGatePass(models.Model):
     # Vehicle/Visitor
     vehicle_no = fields.Char(string='Vehicle No')
     driver_name = fields.Char(string='Driver Name')
+    driver_mobile = fields.Char(string='Driver Mobile No.')
+    vehicle_reading = fields.Char(string='Vehicle Reading')
 
     visitor_name = fields.Char(string='Visitor Name')
     visitor_contact = fields.Char(string='Visitor Contact')
@@ -93,7 +95,8 @@ class HrGatePass(models.Model):
         ('interview', 'Interview'),
         ('other', 'Other'),
     ], string='Representing From')
-    representing_from_text = fields.Char(string='Representing From (Details)')
+    # Representing From (Details) -> Many2many to custom model
+    representing_from_text = fields.Many2many('hr.gate.representing', string='Representing From (Details)')
 
     # QR
     qr_token = fields.Char(string='QR Token', copy=False)
@@ -106,9 +109,25 @@ class HrGatePass(models.Model):
     printed_count = fields.Integer(string='Print Count', default=0)
 
     # New fields: Gate, Vehicle Image, Employees for employee_out
-    gate_id = fields.Many2one('hr.gate', string='Gate')
+    gate_id = fields.Many2one('hr.gate', string='Gate No.')
     vehicle_image = fields.Binary(string='Vehicle/Image', attachment=True)
     employee_ids = fields.Many2many('hr.employee', string='Employees')
+    # Employee Out specific
+    employee_out_reason = fields.Selection([
+        ('official', 'Official'),
+        ('personal', 'Personal'),
+    ], string='Reason')
+    official_vehicle_required = fields.Boolean(string='Vehicle Required')
+    travel_to = fields.Char(string='Travel To')
+
+    # Common for Visitor/Contractor/Vehicle
+    area_of_visit = fields.Selection([
+        ('office', 'Office'),
+        ('shop_floor', 'Shop Floor'),
+    ], string='Area of Visit')
+
+    # ID numbers (generic collector)
+    id_no_ids = fields.Many2many('hr.gate.idno', string='ID No.')
     # Contractor specific
     contractor_visit_type = fields.Selection([
         ('visit', 'Only Visit'),

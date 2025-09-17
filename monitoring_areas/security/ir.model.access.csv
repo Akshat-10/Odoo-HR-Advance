@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_work_permit_area_user,access.work.permit.area.user,model_work_permit_area,base.group_user,1,1,1,1
+access_monitoring_areas_user,access.monitoring.areas.user,model_monitoring_areas,base.group_user,1,1,1,1

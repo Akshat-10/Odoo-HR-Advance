@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_permit_monitoring_line_user,permit.monitoring.line user,model_permit_monitoring_line,ehs_monitoring_areas_link.group_ehs_monitoring_user,1,1,1,0
+access_permit_monitoring_line_admin,permit.monitoring.line admin,model_permit_monitoring_line,ehs_monitoring_areas_link.group_ehs_monitoring_admin,1,1,1,1
+access_permit_monitor_qr_user,permit.monitor.qr user,model_permit_monitor_qr,ehs_monitoring_areas_link.group_ehs_monitoring_user,1,0,0,0
+access_permit_monitor_qr_admin,permit.monitor.qr admin,model_permit_monitor_qr,ehs_monitoring_areas_link.group_ehs_monitoring_admin,1,1,1,1

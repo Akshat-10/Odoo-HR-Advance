@@ -95,49 +95,60 @@
                         <button type="object" class="oe_stat_button gp-stat-qr" name="action_generate_qr" icon="fa-qrcode" string="QR"/>
                         <button type="object" class="oe_stat_button gp-stat-logs" name="action_view_logs" icon="fa-history" string="Logs"/>
                     </div>
-                    <group>
+                    <group readonly="state != 'draft'">
                         <group>
                             <field name="name" readonly="1"/>
-                            <field name="company_id" groups="base.group_multi_company" invisible="1"/>
-                            <field name="gate_id"/>
-                            <field name="pass_type" required="1"/>
-                            <field name="requester_user_id"/>
-                            <field name="host_employee_id" invisible="pass_type != 'visitor'" required="pass_type == 'visitor'" />
-                            <field name="representing_from" invisible="pass_type != 'visitor'" required="pass_type == 'visitor'" />
-                            <field name="representing_from_text" invisible="pass_type != 'visitor'" required="pass_type == 'visitor'" />
-                            <field name="employee_ids" widget="many2many_tags" invisible="pass_type != 'employee_out'"/>
-                            <field name="contractor_visit_type" invisible="pass_type != 'contractor'"  required="pass_type == 'contractor'" />
-                            <field name="department_id"/>
-                            <field name="reason" required="1"/>
+                            <field name="company_id" groups="base.group_multi_company" invisible="1" readonly="state != 'draft'"/>
+                            <field name="requester_user_id" readonly="state != 'draft'" />
+                            <field name="gate_id" readonly="state != 'draft'" />
+                            <field name="pass_type" required="1" readonly="state != 'draft'"/>
+                            <!-- Employee Out specific fields -->
+                            <field name="employee_out_reason" invisible="pass_type != 'employee_out'" required="pass_type == 'employee_out'" readonly="state != 'draft'"/>
+                            <field name="official_vehicle_required" invisible="pass_type != 'employee_out' or employee_out_reason != 'official'" readonly="state != 'draft'"/>
+                            <label for="official_vehicle_required" string="Recommended - Please Book Vehicle 2 hours prior requirement." invisible="pass_type != 'employee_out' or not official_vehicle_required" readonly="state != 'draft'"/>
+                            <field name="travel_to" invisible="pass_type != 'employee_out' or not official_vehicle_required" readonly="state != 'draft'"/>
+                            
+                            <field name="host_employee_id" invisible="pass_type != 'visitor'" required="pass_type == 'visitor'"  readonly="state != 'draft'"/>
+                            <field name="department_id" readonly="state != 'draft'"/>
+                            <field name="representing_from" invisible="pass_type != 'visitor'" required="pass_type == 'visitor'" readonly="state != 'draft'" />
+                            <field name="representing_from_text" widget="many2many_tags" invisible="pass_type != 'visitor'" required="pass_type == 'visitor'" readonly="state != 'draft'" />
+                            <field name="employee_ids" widget="many2many_tags" invisible="pass_type != 'employee_out'" readonly="state != 'draft'"/>
+                            <field name="id_no_ids" widget="many2many_tags" readonly="state != 'draft'"/>
+                            <!-- Area of Visit for Visitor/Contractor/Vehicle -->
+                            <field name="area_of_visit" invisible="not (pass_type in ['visitor','contractor','vehicle'])" readonly="state != 'draft'"/>
+                            <field name="contractor_visit_type" invisible="pass_type != 'contractor'"  required="pass_type == 'contractor'"  readonly="state != 'draft'"/>
+                            <field name="reason" required="1" readonly="state != 'draft'"/>
                         </group>
                         <group>
-                            <field name="start_datetime"/>
+                            <field name="start_datetime" readonly="state != 'draft'"/>
                             <field name="end_datetime" readonly="1"/>
-                            <field name="is_returnable"/>
-                            <field name="expected_return_datetime" required="is_returnable" invisible="not is_returnable"/>
-                            <field name="qr_image" widget="image" class="oe_avatar"/>
-                            <field name="image" widget="image" class="float-end bg-view" />
+                            <field name="is_returnable" readonly="state != 'draft'"/>
+                            <field name="expected_return_datetime" required="is_returnable" invisible="not is_returnable" readonly="state != 'draft'"/>
+                            <field name="qr_image" widget="image" class="oe_avatar" readonly="1"/>
+                            <field name="image" widget="image" class="float-end bg-view"  readonly="state != 'draft'"/>
                         </group>
                     </group>
-                    <notebook>
+                    <notebook readonly="state != 'draft'">
                         <page string="Vehicle">
                             <group>
-                                <field name="vehicle_no"/>
-                                <field name="driver_name" />
-                                <field name="vehicle_image" widget="image" class="float-end bg-view"/>
+                                <field name="vehicle_no" readonly="state != 'draft'"/>
+                                <field name="driver_name"  readonly="state != 'draft'"/>
+                                <field name="driver_mobile" readonly="state != 'draft'"/>
+                                <field name="vehicle_reading" readonly="state != 'draft'"/>
+                                <field name="vehicle_image" widget="image" class="float-end bg-view" readonly="state != 'draft'"/>
                             </group>
                         </page>
-                        <page string="Visitor Details" invisible="pass_type != 'visitor'">
+                        <page string="Visitor Details" invisible="not (pass_type in ['visitor','contractor'])">
                             <group>
-                                <field name="visitor_name"/>
-                                <field name="visitor_contact"/>
-                                <field name="visitor_company"/>
-                                <field name="id_proof_type"/>
-                                <field name="id_proof_attachment_id" widget="many2many_binary"/>
+                                <field name="visitor_name" readonly="state != 'draft'"/>
+                                <field name="visitor_contact" readonly="state != 'draft'"/>
+                                <field name="visitor_company" readonly="state != 'draft'"/>
+                                <field name="id_proof_type" readonly="state != 'draft'"/>
+                                <field name="id_proof_attachment_id" widget="many2many_binary" readonly="state != 'draft'"/>
                             </group>
                         </page>
                         <page string="Items" invisible="pass_type != 'material'">
-                            <field name="line_ids">
+                            <field name="line_ids" readonly="state != 'draft'">
                                 <list editable="bottom">
                                     <field name="product_id"/>
                                     <field name="name"/>
@@ -148,12 +159,12 @@
                         </page>
                         <page string="Approvals">
                             <group>
-                                <field name="approval_profile_id" required="1"/>
-                                <field name="current_approver_ids" widget="many2many_tags" required="1"/>
+                                <field name="approval_profile_id" required="1" readonly="state != 'draft'"/>
+                                <field name="current_approver_ids" widget="many2many_tags" required="1" readonly="state != 'draft'"/>
                             </group>
                         </page>
                         <page string="Logs">
-                            <field name="log_ids">
+                            <field name="log_ids" readonly="state != 'draft'">
                                 <list create="0" >
                                     <field name="timestamp"/>
                                     <field name="action"/>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Area Views -->
+    <record id="view_work_permit_area_list" model="ir.ui.view">
+        <field name="name">work.permit.area.list</field>
+        <field name="model">work.permit.area</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_work_permit_area_form" model="ir.ui.view">
+        <field name="name">work.permit.area.form</field>
+        <field name="model">work.permit.area</field>
+        <field name="arch" type="xml">
+            <form string="Area">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_work_permit_area" model="ir.actions.act_window">
+        <field name="name">Areas</field>
+        <field name="res_model">work.permit.area</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Monitoring Views -->
+    <record id="view_monitoring_areas_list" model="ir.ui.view">
+        <field name="name">monitoring.areas.list</field>
+        <field name="model">monitoring.areas</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="area_id"/>
+                <field name="qr_value"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_monitoring_areas_form" model="ir.ui.view">
+        <field name="name">monitoring.areas.form</field>
+        <field name="model">monitoring.areas</field>
+        <field name="arch" type="xml">
+            <form string="Monitoring Area">
+                <sheet>
+                    <group>
+                        <field name="name" readonly="1"/>
+                        <field name="area_id"/>
+                    </group>
+                    <group string="QR Code">
+                        <field name="qr_value" readonly="1"/>
+                        <field name="qr_image" readonly="1" widget="image" class="oe_avatar"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_monitoring_areas" model="ir.actions.act_window">
+        <field name="name">Monitoring Areas</field>
+        <field name="res_model">monitoring.areas</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menus -->
+    <menuitem id="menu_work_permit_root" name="Monitoring Areas" sequence="10"/>
+    <menuitem id="menu_monitoring_areas" name="Monitoring Areas" parent="menu_work_permit_root" action="action_monitoring_areas" sequence="10"/>
+    <menuitem id="menu_work_permit_area" name="Areas" parent="menu_work_permit_root" action="action_work_permit_area" sequence="20"/>
+
+</odoo>

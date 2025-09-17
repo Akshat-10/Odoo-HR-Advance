@@ -1,0 +1,20 @@
+/* Colored buttons for EHS Monitoring module */
+/* Primary actions */
+.o_form_view button.ehs-btn-scan,
+.o_form_view .o_form_statusbar button.ehs-btn-scan { background:#2563eb !important; color:#fff !important; border:1px solid #2563eb !important; background-image:none !important; }
+
+.o_form_view button.ehs-btn-done,
+.o_form_view .o_form_statusbar button.ehs-btn-done { background:#15803d !important; color:#fff !important; border:1px solid #15803d !important; background-image:none !important; }
+
+.o_form_view button.ehs-btn-cancel,
+.o_form_view .o_form_statusbar button.ehs-btn-cancel { background:#6b7280 !important; color:#fff !important; border:1px solid #6b7280 !important; background-image:none !important; }
+
+/* Hovers */
+.o_form_view button.ehs-btn-scan:hover { background:#1d4ed8 !important; }
+.o_form_view button.ehs-btn-done:hover { background:#166534 !important; }
+.o_form_view button.ehs-btn-cancel:hover { background:#4b5563 !important; }
+
+/* Stat/oe_stat_button styles (if any) */
+.o_form_view .ehs-stat-qr.oe_stat_button { background:#1d4ed8 !important; color:#fff !important; }
+.o_form_view .ehs-stat-qr.oe_stat_button .fa { color:#fff !important; }
+.o_form_view .ehs-stat-qr.oe_stat_button:hover { background:#1e40af !important; }

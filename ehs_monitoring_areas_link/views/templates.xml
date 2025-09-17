@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="template_qr_error" name="QR Error">
+        <div>
+            <h3>QR Error</h3>
+            <p t-esc="message or 'An error occurred'"/>
+        </div>
+    </template>
+</odoo>

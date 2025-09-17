@@ -47,10 +47,10 @@ class HrGatePass(models.Model):
             permit = self.env['daily.permit.work'].create({
                 'german_po_number': self.name or _('GatePass'),
                 # 'facility': self.reason or _('N/A'),
-                'contractor_company_name': _('Contractor'),
+                # 'contractor_company_name': _('Contractor'),
                 # 'contractor_project_manager_name': self.requester_user_id.name if self.requester_user_id else _('N/A'),
                 # 'specific_work_location': self.reason or _('N/A'),
-                'description_of_work': self.reason or _('N/A'),
+                # 'description_of_work': self.reason or _('N/A'),
             })
             self.daily_permit_work_id = permit.id
         return self._open_record(self.daily_permit_work_id)
@@ -62,7 +62,7 @@ class HrGatePass(models.Model):
                 'permit_number': _('New'),
                 # 'facility': 'German green steel and power ltd.',
                 # 'work_location': self.reason or _('N/A'),
-                'work_description': self.reason or _('N/A'),
+                # 'work_description': self.reason or _('N/A'),
                 'date': fields.Date.context_today(self),
                 # 'start_time': fields.Datetime.now(),
                 # 'expiration_time': fields.Datetime.now(),
@@ -125,3 +125,46 @@ class HrGatePass(models.Model):
         for rec in self:
             if rec.contractor_visit_type == 'work_permit' and not rec.ehs_permit_type:
                 raise ValidationError(_('You must select an EHS Work Permit Type when Contractor Visit Type is Work Permit.'))
+
+    # -----------------------
+    # Transitions guards
+    # -----------------------
+    def _ensure_ehs_permit_finalized(self):
+        """
+        If any supported EHS permit is linked to the gate pass, ensure that at least one
+        of them is finalized before allowing state transitions like checkout/close.
+
+        Rules:
+        - Work at Heights Permit (work.heights.permit) must be in state 'completed'
+        - Daily Permit to Work (daily.permit.work) must be in state 'completed'
+        - Hot Work Permit (hot.work.permit) must be in state 'completed'
+        - Energized Work Permit (energized.work.permit) must be in state 'completed'
+        """
+        for rec in self:
+            # Only consider if any of the supported permits exists on the record
+            has_any_supported_permit = bool(
+                rec.work_heights_permit_id or rec.daily_permit_work_id or rec.hot_work_permit_id
+            )
+
+            if not has_any_supported_permit:
+                continue
+
+            is_finalized = (
+                (rec.work_heights_permit_id and rec.work_heights_permit_id.state == 'completed') or
+                (rec.daily_permit_work_id and rec.daily_permit_work_id.state == 'completed') or
+                (rec.hot_work_permit_id and rec.hot_work_permit_id.state == 'completed') or 
+                (rec.energized_work_permit_id and rec.energized_work_permit_id.state == 'completed')
+            )
+
+            if not is_finalized:
+                raise ValidationError(_('First complete/close your work permit before proceeding.'))
+
+    def action_checkout(self):
+        # Block checkout if linked EHS permit(s) are not finalized as per rules
+        self._ensure_ehs_permit_finalized()
+        return super().action_checkout()
+
+    def action_close(self):
+        # Block close if linked EHS permit(s) are not finalized as per rules
+        self._ensure_ehs_permit_finalized()
+        return super().action_close()
