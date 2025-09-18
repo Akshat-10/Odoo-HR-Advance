@@ -102,6 +102,7 @@
                             <field name="requester_user_id" readonly="state != 'draft'" />
                             <field name="gate_id" readonly="state != 'draft'" />
                             <field name="pass_type" required="1" readonly="state != 'draft'"/>
+                            <field name="contractor_visit_type" invisible="pass_type != 'contractor'"  required="pass_type == 'contractor'"  readonly="state != 'draft'"/>
                             <!-- Employee Out specific fields -->
                             <field name="employee_out_reason" invisible="pass_type != 'employee_out'" required="pass_type == 'employee_out'" readonly="state != 'draft'"/>
                             <field name="official_vehicle_required" invisible="pass_type != 'employee_out' or employee_out_reason != 'official'" readonly="state != 'draft'"/>
@@ -110,13 +111,13 @@
                             
                             <field name="host_employee_id" invisible="pass_type != 'visitor'" required="pass_type == 'visitor'"  readonly="state != 'draft'"/>
                             <field name="department_id" readonly="state != 'draft'"/>
+                            <field name="area_of_visit" invisible="not (pass_type in ['visitor','contractor','vehicle'])" readonly="state != 'draft'"/>
                             <field name="representing_from" invisible="pass_type != 'visitor'" required="pass_type == 'visitor'" readonly="state != 'draft'" />
                             <field name="representing_from_text" widget="many2many_tags" invisible="pass_type != 'visitor'" required="pass_type == 'visitor'" readonly="state != 'draft'" />
                             <field name="employee_ids" widget="many2many_tags" invisible="pass_type != 'employee_out'" readonly="state != 'draft'"/>
                             <field name="id_no_ids" widget="many2many_tags" readonly="state != 'draft'"/>
+
                             <!-- Area of Visit for Visitor/Contractor/Vehicle -->
-                            <field name="area_of_visit" invisible="not (pass_type in ['visitor','contractor','vehicle'])" readonly="state != 'draft'"/>
-                            <field name="contractor_visit_type" invisible="pass_type != 'contractor'"  required="pass_type == 'contractor'"  readonly="state != 'draft'"/>
                             <field name="reason" required="1" readonly="state != 'draft'"/>
                         </group>
                         <group>

@@ -36,6 +36,40 @@
                         <li t-if="object.remarks"><strong>Remarks:</strong> <t t-out="object.remarks"/></li>
                     </ul>
 
+                    <h3 style="margin:16px 0 8px 0; font-size:16px;">Details</h3>
+                    <table style="border-collapse:collapse;width:100%;margin:0 0 16px 0;">
+                        <tbody>
+                            <tr>
+                                <td style="padding:4px 8px;border:1px solid #eee;width:180px;"><strong>Monitoring Area</strong></td>
+                                <td style="padding:4px 8px;border:1px solid #eee;"><t t-out="object.monitoring_area_id.name or '-'"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:4px 8px;border:1px solid #eee;"><strong>User</strong></td>
+                                <td style="padding:4px 8px;border:1px solid #eee;"><t t-out="object.user_id.name or '-'"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:4px 8px;border:1px solid #eee;"><strong>Date &amp; Time</strong></td>
+                                <td style="padding:4px 8px;border:1px solid #eee;"><t t-out="object.datetime"/></td>
+                            </tr>
+                            <tr t-if="object.input_checked">
+                                <td style="padding:4px 8px;border:1px solid #eee;vertical-align:top;"><strong>What Checked</strong></td>
+                                <td style="padding:4px 8px;border:1px solid #eee;" t-out="object.input_checked"/>
+                            </tr>
+                            <tr>
+                                <td style="padding:4px 8px;border:1px solid #eee;"><strong>Compliance Status</strong></td>
+                                <td style="padding:4px 8px;border:1px solid #eee;"><t t-out="dict(object._fields['compliance_status'].selection).get(object.compliance_status) or object.compliance_status"/></td>
+                            </tr>
+                            <tr t-if="object.action_taken">
+                                <td style="padding:4px 8px;border:1px solid #eee;vertical-align:top;"><strong>Action Taken</strong></td>
+                                <td style="padding:4px 8px;border:1px solid #eee;" t-out="object.action_taken"/>
+                            </tr>
+                            <tr t-if="object.remarks">
+                                <td style="padding:4px 8px;border:1px solid #eee;vertical-align:top;"><strong>Remarks</strong></td>
+                                <td style="padding:4px 8px;border:1px solid #eee;" t-out="object.remarks"/>
+                            </tr>
+                        </tbody>
+                    </table>
+
                     <t t-if="object.attachment_ids">
                         <h3 style="margin:16px 0 8px 0; font-size:16px;">Attachments</h3>
                         <ul style="margin:0 0 12px 18px; padding:0;">
@@ -84,6 +118,40 @@
                         <li t-if="object.expiry_datetime"><strong>Expires At:</strong> <t t-out="object.expiry_datetime"/></li>
                     </ul>
 
+                    <h3 style="margin:16px 0 8px 0; font-size:16px;">Details</h3>
+                    <table style="border-collapse:collapse;width:100%;margin:0 0 16px 0;">
+                        <tbody>
+                            <tr>
+                                <td style="padding:4px 8px;border:1px solid #eee;width:180px;"><strong>Monitoring Area</strong></td>
+                                <td style="padding:4px 8px;border:1px solid #eee;"><t t-out="object.monitoring_area_id.name or '-'"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:4px 8px;border:1px solid #eee;"><strong>User</strong></td>
+                                <td style="padding:4px 8px;border:1px solid #eee;"><t t-out="object.user_id.name or '-'"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:4px 8px;border:1px solid #eee;"><strong>Date &amp; Time</strong></td>
+                                <td style="padding:4px 8px;border:1px solid #eee;"><t t-out="object.datetime"/></td>
+                            </tr>
+                            <tr t-if="object.input_checked">
+                                <td style="padding:4px 8px;border:1px solid #eee;vertical-align:top;"><strong>What Checked</strong></td>
+                                <td style="padding:4px 8px;border:1px solid #eee;" t-out="object.input_checked"/>
+                            </tr>
+                            <tr>
+                                <td style="padding:4px 8px;border:1px solid #eee;"><strong>Compliance Status</strong></td>
+                                <td style="padding:4px 8px;border:1px solid #eee;"><t t-out="dict(object._fields['compliance_status'].selection).get(object.compliance_status) or object.compliance_status"/></td>
+                            </tr>
+                            <tr t-if="object.action_taken">
+                                <td style="padding:4px 8px;border:1px solid #eee;vertical-align:top;"><strong>Action Taken</strong></td>
+                                <td style="padding:4px 8px;border:1px solid #eee;" t-out="object.action_taken"/>
+                            </tr>
+                            <tr t-if="object.remarks">
+                                <td style="padding:4px 8px;border:1px solid #eee;vertical-align:top;"><strong>Remarks</strong></td>
+                                <td style="padding:4px 8px;border:1px solid #eee;" t-out="object.remarks"/>
+                            </tr>
+                        </tbody>
+                    </table>
+
                     <p style="margin:16px 0 6px 0;">
                         <a t-att-href="('%s/web#id=%s&amp;model=permit.monitoring.line&amp;view_type=form' % (base_url, object.id))" style="background:#6c63ff;color:#ffffff;text-decoration:none;padding:8px 12px;border-radius:4px;display:inline-block;">Open Monitoring Line</a>
                         <a t-att-href="('%s/web#id=%s&amp;model=%s&amp;view_type=form' % (base_url, object.permit_res_id, object.permit_model))" style="background:#4caf50;color:#ffffff;text-decoration:none;padding:8px 12px;border-radius:4px;display:inline-block;margin-left:8px;">Open Permit</a>
@@ -116,6 +184,40 @@
                         <li><strong>Line Serial:</strong> <t t-out="object.name"/></li>
                         <li t-if="object.expiry_datetime"><strong>Expired At:</strong> <t t-out="object.expiry_datetime"/></li>
                     </ul>
+
+                    <h3 style="margin:16px 0 8px 0; font-size:16px;">Details</h3>
+                    <table style="border-collapse:collapse;width:100%;margin:0 0 16px 0;">
+                        <tbody>
+                            <tr>
+                                <td style="padding:4px 8px;border:1px solid #eee;width:180px;"><strong>Monitoring Area</strong></td>
+                                <td style="padding:4px 8px;border:1px solid #eee;"><t t-out="object.monitoring_area_id.name or '-'"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:4px 8px;border:1px solid #eee;"><strong>User</strong></td>
+                                <td style="padding:4px 8px;border:1px solid #eee;"><t t-out="object.user_id.name or '-'"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:4px 8px;border:1px solid #eee;"><strong>Date &amp; Time</strong></td>
+                                <td style="padding:4px 8px;border:1px solid #eee;"><t t-out="object.datetime"/></td>
+                            </tr>
+                            <tr t-if="object.input_checked">
+                                <td style="padding:4px 8px;border:1px solid #eee;vertical-align:top;"><strong>What Checked</strong></td>
+                                <td style="padding:4px 8px;border:1px solid #eee;" t-out="object.input_checked"/>
+                            </tr>
+                            <tr>
+                                <td style="padding:4px 8px;border:1px solid #eee;"><strong>Compliance Status</strong></td>
+                                <td style="padding:4px 8px;border:1px solid #eee;"><t t-out="dict(object._fields['compliance_status'].selection).get(object.compliance_status) or object.compliance_status"/></td>
+                            </tr>
+                            <tr t-if="object.action_taken">
+                                <td style="padding:4px 8px;border:1px solid #eee;vertical-align:top;"><strong>Action Taken</strong></td>
+                                <td style="padding:4px 8px;border:1px solid #eee;" t-out="object.action_taken"/>
+                            </tr>
+                            <tr t-if="object.remarks">
+                                <td style="padding:4px 8px;border:1px solid #eee;vertical-align:top;"><strong>Remarks</strong></td>
+                                <td style="padding:4px 8px;border:1px solid #eee;" t-out="object.remarks"/>
+                            </tr>
+                        </tbody>
+                    </table>
 
                     <p style="margin:16px 0 6px 0;">
                         <a t-att-href="('%s/web#id=%s&amp;model=permit.monitoring.line&amp;view_type=form' % (base_url, object.id))" style="background:#6c63ff;color:#ffffff;text-decoration:none;padding:8px 12px;border-radius:4px;display:inline-block;">Open Monitoring Line</a>

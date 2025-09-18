@@ -24,8 +24,11 @@ class HrGatePass(models.Model):
     def action_create_work_heights_permit(self):
         self.ensure_one()
         if not self.work_heights_permit_id:
+            # Fetch latest attendance address for current user
+            address = self.env['permit.location.mixin']._get_latest_attendance_address() if hasattr(self.env['permit.location.mixin'], '_get_latest_attendance_address') else False
             permit = self.env['work.heights.permit'].create({
                 'name': _('New'),
+                'location': address or False,
                 # 'location': self.reason or _('N/A'),
                 'permit_type': 'work_at_heights',
             })
@@ -35,8 +38,10 @@ class HrGatePass(models.Model):
     def action_create_energized_work_permit(self):
         self.ensure_one()
         if not self.energized_work_permit_id:
+            address = self.env['permit.location.mixin']._get_latest_attendance_address() if hasattr(self.env['permit.location.mixin'], '_get_latest_attendance_address') else False
             permit = self.env['energized.work.permit'].create({
                 'work_order_no': self.name or _('GatePass'),
+                'location': address or False,
             })
             self.energized_work_permit_id = permit.id
         return self._open_record(self.energized_work_permit_id)
@@ -44,8 +49,10 @@ class HrGatePass(models.Model):
     def action_create_daily_permit_work(self):
         self.ensure_one()
         if not self.daily_permit_work_id:
+            address = self.env['permit.location.mixin']._get_latest_attendance_address() if hasattr(self.env['permit.location.mixin'], '_get_latest_attendance_address') else False
             permit = self.env['daily.permit.work'].create({
                 'german_po_number': self.name or _('GatePass'),
+                'location': address or False,
                 # 'facility': self.reason or _('N/A'),
                 # 'contractor_company_name': _('Contractor'),
                 # 'contractor_project_manager_name': self.requester_user_id.name if self.requester_user_id else _('N/A'),
@@ -58,8 +65,10 @@ class HrGatePass(models.Model):
     def action_create_hot_work_permit(self):
         self.ensure_one()
         if not self.hot_work_permit_id:
+            address = self.env['permit.location.mixin']._get_latest_attendance_address() if hasattr(self.env['permit.location.mixin'], '_get_latest_attendance_address') else False
             permit = self.env['hot.work.permit'].create({
                 'permit_number': _('New'),
+                'location': address or False,
                 # 'facility': 'German green steel and power ltd.',
                 # 'work_location': self.reason or _('N/A'),
                 # 'work_description': self.reason or _('N/A'),

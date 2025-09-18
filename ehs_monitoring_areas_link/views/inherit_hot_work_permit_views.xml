@@ -5,6 +5,17 @@
         <field name="model">hot.work.permit</field>
         <field name="inherit_id" ref="EHS.view_hot_work_permit_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//form/sheet" position="inside">
+                <div class="oe_button_box" name="button_box">
+            <button type="object" class="oe_stat_button" name="action_open_monitoring_lines" groups="ehs_monitoring_areas_link.group_ehs_monitoring_admin"
+                context="{'search_default_permit_model':'hot.work.permit'}" invisible="monitoring_area_id == False">
+                        <div class="o_stat_info">
+                            <span class="fa fa-eye" role="img" aria-label="Monitoring"/>
+                            <span>Monitoring Lines</span>
+                        </div>
+                    </button>
+                </div>
+            </xpath>
             <xpath expr="//form/header/field[@name='state']" position="before">
                 <button name="action_open_monitoring_scan" string="Scan Monitoring QR" type="object" class="ehs-btn-scan" invisible="not monitoring_area_id or state != 'in_progress'" confirm="Open Monitoring Scan?"/>
             </xpath>

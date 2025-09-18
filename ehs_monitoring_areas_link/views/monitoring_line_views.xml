@@ -29,7 +29,7 @@
         <field name="arch" type="xml">
             <form string="Permit Monitoring Line">
                 <header>
-                    <button name="action_set_draft" string="Set Draft" type="object" class="ehs-btn-draft" groups="ehs_monitoring_areas_link.group_ehs_monitoring_admin" invisible="not (state in ['done','cancel'])" confirm="Reset this to Draft?"/>
+                    <button name="action_set_draft" string="Set Draft" type="object" class="ehs-btn-draft" groups="ehs_monitoring_areas_link.group_ehs_monitoring_admin" invisible="not (state in ['done', 'expired', 'cancel'])" confirm="Reset this to Draft?"/>
                     <button name="action_mark_done" string="Mark Done" type="object" class="oe_highlight ehs-btn-done" invisible="state != 'open'" confirm="Mark this monitoring line as Done?"/>
                     <button name="action_cancel" string="Cancel" type="object" class="ehs-btn-cancel" invisible="not (state in ['open','expired'])" confirm="Cancel this monitoring line?"/>
                     <field name="state" widget="statusbar" statusbar_visible="open,done,expired"/>
@@ -52,9 +52,9 @@
                             <field name="time_limit_minutes" readonly="1"/>
                         </group>
                         <group>
-                            <field name="compliance_status"/>
-                            <field name="call_meeting" invisible="compliance_status != 'not_standard'"/>
-                            <field name="action_taken" invisible="compliance_status != 'not_standard'" required="compliance_status == 'not_standard'"/>
+                            <field name="compliance_status" readonly="state in ['done', 'expired', 'cancel']"/>
+                            <field name="call_meeting" invisible="compliance_status != 'not_standard'" readonly="state in ['done', 'expired', 'cancel']"/>
+                            <field name="action_taken" invisible="compliance_status != 'not_standard'" required="compliance_status == 'not_standard'" readonly="state in ['done', 'expired', 'cancel']"/>
                             <field name="meeting_mail_sent" invisible="1"/>
                             <field name="expiry_warn_mail_sent" invisible="1"/>
                             <field name="expired_mail_sent" invisible="1"/>
@@ -62,13 +62,13 @@
                     </group>
                     <notebook>
                         <page string="Input / What Checked">
-                            <field name="input_checked"/>
+                            <field name="input_checked" readonly="state in ['done', 'expired', 'cancel']"/>
                         </page>
                         <page string="Attachments">
-                            <field name="attachment_ids" widget="many2many_binary"/>
+                            <field name="attachment_ids" widget="many2many_binary" readonly="state in ['done', 'expired', 'cancel']"/>
                         </page>
                         <page string="Remarks">
-                            <field name="remarks"/>
+                            <field name="remarks" readonly="state in ['done', 'expired', 'cancel']"/>
                         </page>
                     </notebook>
                 </sheet>

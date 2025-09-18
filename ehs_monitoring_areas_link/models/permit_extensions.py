@@ -75,6 +75,25 @@ class WorkHeightsPermit(models.Model):
             'target': 'new',
         }
 
+    def action_open_monitoring_lines(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Monitoring Lines',
+            'res_model': 'permit.monitoring.line',
+            'view_mode': 'list,form',
+            'domain': [
+                ('permit_model', '=', 'work.heights.permit'),
+                ('permit_res_id', '=', self.id),
+            ],
+            'context': {
+                'default_permit_model': 'work.heights.permit',
+                'default_permit_res_id': self.id,
+                'search_default_permit_model': 'work.heights.permit',
+            },
+            'target': 'current'
+        }
+
 
 class DailyPermitWork(models.Model):
     _inherit = 'daily.permit.work'
@@ -141,6 +160,25 @@ class DailyPermitWork(models.Model):
             'type': 'ir.actions.act_url',
             'url': self.monitoring_scan_url,
             'target': 'new',
+        }
+
+    def action_open_monitoring_lines(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Monitoring Lines',
+            'res_model': 'permit.monitoring.line',
+            'view_mode': 'list,form',
+            'domain': [
+                ('permit_model', '=', 'daily.permit.work'),
+                ('permit_res_id', '=', self.id),
+            ],
+            'context': {
+                'default_permit_model': 'daily.permit.work',
+                'default_permit_res_id': self.id,
+                'search_default_permit_model': 'daily.permit.work',
+            },
+            'target': 'current'
         }
 
 
@@ -211,6 +249,25 @@ class HotWorkPermit(models.Model):
             'target': 'new',
         }
 
+    def action_open_monitoring_lines(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Monitoring Lines',
+            'res_model': 'permit.monitoring.line',
+            'view_mode': 'list,form',
+            'domain': [
+                ('permit_model', '=', 'hot.work.permit'),
+                ('permit_res_id', '=', self.id),
+            ],
+            'context': {
+                'default_permit_model': 'hot.work.permit',
+                'default_permit_res_id': self.id,
+                'search_default_permit_model': 'hot.work.permit',
+            },
+            'target': 'current'
+        }
+
 
 class EnergizedWorkPermit(models.Model):
     _inherit = 'energized.work.permit'
@@ -277,4 +334,23 @@ class EnergizedWorkPermit(models.Model):
             'type': 'ir.actions.act_url',
             'url': self.monitoring_scan_url,
             'target': 'new',
+        }
+
+    def action_open_monitoring_lines(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Monitoring Lines',
+            'res_model': 'permit.monitoring.line',
+            'view_mode': 'list,form',
+            'domain': [
+                ('permit_model', '=', 'energized.work.permit'),
+                ('permit_res_id', '=', self.id),
+            ],
+            'context': {
+                'default_permit_model': 'energized.work.permit',
+                'default_permit_res_id': self.id,
+                'search_default_permit_model': 'energized.work.permit',
+            },
+            'target': 'current'
         }
