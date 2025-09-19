@@ -35,7 +35,7 @@
     </record>
 
     <!-- Rename "My Time" / "My Time Off" menu to "My Leaves" -->
-    <record id="hr_holidays.menu_hr_holidays_my_leaves" model="ir.ui.menu">
+    <record id="hr_holidays.hr_leave_menu_my" model="ir.ui.menu">
         <field name="name">My Leaves</field>
     </record>
 
