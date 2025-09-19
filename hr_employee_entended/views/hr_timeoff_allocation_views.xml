@@ -2,7 +2,7 @@
 <odoo>
     <!-- Action to open Odoo's built-in multi allocation wizard with sane defaults -->
     <record id="action_open_multi_timeoff_allocation" model="ir.actions.act_window">
-        <field name="name">Allocate Time Off (All Employees)</field>
+        <field name="name">Allocate Leaves (All Employees)</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">hr.leave.allocation.generate.multi.wizard</field>
         <field name="view_mode">form</field>
@@ -13,7 +13,7 @@
 
     <!-- Menu item under HR > Time Off > Management to access the wizard -->
     <menuitem id="menu_allocate_timeoff_all_employees"
-              name="Allocate Time Off (All Employees)"
+              name="Allocate Leaves (All Employees)"
               parent="hr_holidays.menu_hr_holidays_management"
               action="action_open_multi_timeoff_allocation"
               sequence="95"

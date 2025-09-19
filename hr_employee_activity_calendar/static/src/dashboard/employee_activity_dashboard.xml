@@ -50,15 +50,10 @@
         </div> -->
         <div class="container-fluid px-2 py-2">
             <div class="row row-cols-2 g-2 small">
+                <!-- Hidden per requirements: Total Days -->
                 <div class="col">
                     <div class="d-flex justify-content-between">
-                        <span class="text-muted">Total Days</span>
-                        <strong><t t-esc="state.metrics.total_days || 0"/></strong>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="d-flex justify-content-between">
-                        <span class="text-muted">Time Off days</span>
+                        <span class="text-muted">No. of Paid Leaves</span>
                         <strong><t t-esc="state.metrics.time_off_days || 0"/></strong>
                     </div>
                 </div>
@@ -88,7 +83,7 @@
                 </div>
                 <div class="col">
                     <div class="d-flex justify-content-between">
-                        <span class="text-muted">Expected Days</span>
+                        <span class="text-muted">Expected Working Days</span>
                         <strong><t t-esc="state.metrics.expected_work_days || 0"/></strong>
                     </div>
                 </div>
@@ -124,28 +119,22 @@
                 </div>
                 <div class="col">
                     <div class="d-flex justify-content-between">
-                        <span class="text-muted">Days P|P</span>
+                        <span class="text-muted">Full Day Present</span>
                         <strong><t t-esc="state.metrics.days_pp || 0"/></strong>
                     </div>
                 </div>
+                <!-- Merged Half Day Present = Days P|A + Days A|P -->
                 <div class="col">
                     <div class="d-flex justify-content-between">
-                        <span class="text-muted">Days P|A</span>
-                        <strong><t t-esc="state.metrics.days_pa || 0"/></strong>
+                        <span class="text-muted">Half Day Present</span>
+                        <strong>
+                            <t t-set="_pa" t-value="state.metrics.days_pa || 0"/>
+                            <t t-set="_ap" t-value="state.metrics.days_ap || 0"/>
+                            <t t-esc="(_pa + _ap)"/>
+                        </strong>
                     </div>
                 </div>
-                <div class="col">
-                    <div class="d-flex justify-content-between">
-                        <span class="text-muted">Days A|P</span>
-                        <strong><t t-esc="state.metrics.days_ap || 0"/></strong>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="d-flex justify-content-between">
-                        <span class="text-muted">Days A|A</span>
-                        <strong><t t-esc="state.metrics.days_aa || 0"/></strong>
-                    </div>
-                </div>
+                <!-- Hidden per requirements: Days P|A, Days A|P, Days A|A -->
             </div>
         </div>
     </div>

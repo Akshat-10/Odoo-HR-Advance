@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="hr_gate_pass.Dashboard" owl="1">
+        <div class="o_gate_pass_dashboard">
+            <!-- Header -->
+            <div class="o_gate_pass_header d-flex align-items-center justify-content-between">
+                <h1 class="dashboard-title">Gate Pass Dashboard</h1>
+                <div class="dashboard-time" t-esc="state.currentTime"/>
+            </div>
+
+            <!-- KPIs Section -->
+            <div class="o_gate_pass_kpis">
+                <div class="kpi kpi1" t-on-click="() => this.openGatePasses('all')">
+                    <div class="kpi-label">Total Gate Passes</div>
+                    <div class="kpi-value" t-esc="state.kpis.total_passes"/>
+                </div>
+                <div class="kpi kpi2" t-on-click="() => this.openGatePasses('today')">
+                    <div class="kpi-label">Today's Passes</div>
+                    <div class="kpi-value" t-esc="state.kpis.today_passes"/>
+                </div>
+                <div class="kpi kpi3" t-on-click="() => this.openGatePasses('active')">
+                    <div class="kpi-label">Active Passes</div>
+                    <div class="kpi-value" t-esc="state.kpis.active_passes"/>
+                </div>
+                <div class="kpi kpi4" t-on-click="() => this.openGatePasses('pending')">
+                    <div class="kpi-label">Pending Approvals</div>
+                    <div class="kpi-value" t-esc="state.kpis.pending_approvals"/>
+                </div>
+                <div class="kpi kpi5" t-on-click="() => this.openPermits()">
+                    <div class="kpi-label">Total Permits</div>
+                    <div class="kpi-value" t-esc="state.kpis.total_permits"/>
+                </div>
+                <div class="kpi kpi6" t-on-click="() => this.openGatePasses('overdue')">
+                    <div class="kpi-label">Overdue Returns</div>
+                    <div class="kpi-value" t-esc="state.kpis.overdue_returns"/>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="o_gate_pass_main_content">
+                <!-- Recent Activities Section -->
+                <div class="o_gate_pass_activities_section">
+                    <div class="activities-section-header">
+                        <h3>Recent Activities</h3>
+                        <p class="activities-section-subtitle">Latest gate pass actions</p>
+                    </div>
+
+                    <div class="activities-container">
+                        <t t-if="state.activities.length">
+                            <div t-foreach="state.activities" t-as="activity" t-key="activity.id" class="activity-item">
+                                <div class="activity-icon">
+                                    <i t-attf-class="fa fa-{{getActivityIcon(activity.action)}}"/>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-header">
+                                        <span class="activity-action" t-esc="activity.action"/>
+                                        <span class="activity-time" t-esc="formatTime(activity.timestamp)"/>
+                                    </div>
+                                    <div class="activity-details">
+                                        <span class="activity-pass" t-esc="activity.gate_pass"/>
+                                        <span class="activity-user">by <t t-esc="activity.user"/></span>
+                                    </div>
+                                    <div t-if="activity.remarks" class="activity-remarks" t-esc="activity.remarks"/>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <div class="no-activities">
+                                <i class="fa fa-clock-o"/>
+                                <p>No recent activities</p>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="o_gate_pass_charts">
+                    <!-- State Distribution Chart -->
+                    <div class="chart-container">
+                        <h4 class="chart-title">Gate Pass Status</h4>
+                        <div class="chart-wrapper">
+                            <canvas t-ref="stateChart"/>
+                        </div>
+                    </div>
+
+                    <!-- Pass Type Chart -->
+                    <div class="chart-container">
+                        <h4 class="chart-title">Pass Types</h4>
+                        <div class="chart-wrapper">
+                            <canvas t-ref="passTypeChart"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Secondary Charts Row -->
+            <div class="o_gate_pass_secondary_charts">
+                <div class="chart-group">
+                    <!-- Department Chart -->
+                    <div class="chart-container">
+                        <h4 class="chart-title">Top Departments</h4>
+                        <div class="chart-wrapper">
+                            <canvas t-ref="departmentChart"/>
+                        </div>
+                    </div>
+
+                    <!-- EHS Permit Chart -->
+                    <div class="chart-container">
+                        <h4 class="chart-title">EHS Permits</h4>
+                        <div class="chart-wrapper">
+                            <canvas t-ref="ehsPermitChart"/>
+                        </div>
+                    </div>
+
+                    <!-- Location Chart -->
+                    <div class="chart-container">
+                        <h4 class="chart-title">Gate Locations</h4>
+                        <div class="chart-wrapper">
+                            <canvas t-ref="locationChart"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Trend Chart -->
+            <div class="o_gate_pass_trend_section">
+                <div class="chart-container trend-chart">
+                    <h4 class="chart-title">30-Day Trend</h4>
+                    <div class="chart-wrapper">
+                        <canvas t-ref="dailyTrendChart"/>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alerts Section -->
+            <div t-if="state.alerts.length" class="o_gate_pass_alerts">
+                <h4>System Alerts</h4>
+                <div class="alerts-container">
+                    <div t-foreach="state.alerts" t-as="alert" t-key="alert_index"
+                         t-attf-class="alert alert-{{alert.type}}">
+                        <i t-attf-class="fa fa-{{getAlertIcon(alert.type)}}"/>
+                        <div class="alert-content">
+                            <strong t-esc="alert.title"/>
+                            <p t-esc="alert.message"/>
+                        </div>
+                        <span class="alert-count" t-esc="alert.count"/>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="o_gate_pass_summary">
+                <div class="summary-card">
+                    <h4>Today's Summary</h4>
+                    <div class="summary-metrics">
+                        <div class="metric">
+                            <strong t-esc="state.kpis.visitors_today"/>
+                            <small>Visitors</small>
+                        </div>
+                        <div class="metric">
+                            <strong t-esc="state.kpis.employees_out_today"/>
+                            <small>Employees Out</small>
+                        </div>
+                        <div class="metric">
+                            <strong t-esc="state.kpis.materials_today"/>
+                            <small>Materials</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <h4>This Week</h4>
+                    <div class="summary-metrics">
+                        <div class="metric">
+                            <strong t-esc="state.kpis.week_passes"/>
+                            <small>Total Passes</small>
+                        </div>
+                        <div class="metric">
+                            <strong t-esc="state.kpis.active_permits"/>
+                            <small>Active Permits</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <h4>This Month</h4>
+                    <div class="summary-metrics">
+                        <div class="metric">
+                            <strong t-esc="state.kpis.month_passes"/>
+                            <small>Total Passes</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading Overlay -->
+            <div t-if="state.loading" class="o_loader">
+                <i class="fa fa-spinner fa-spin"/>
+                Loading dashboard data...
+            </div>
+        </div>
+    </t>
+</templates>

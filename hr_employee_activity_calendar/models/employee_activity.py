@@ -47,15 +47,21 @@ class HrEmployeeActivity(models.Model):
     #                 label = f"{label}: {duration_txt}"
     #         rec.name = label
 
-    @api.depends('employee_id.name', 'leave_id')
+    @api.depends('base_name', 'activity_type', 'leave_id')
     def _compute_name(self):
-        for leave in self:
-            leave.name = leave.employee_id.name
-            if self.env.user.has_group('hr_holidays.group_hr_holidays_user'):
-                # Include the time off type name
-                leave.name += f" {leave.leave_id.holiday_status_id.name}"
-            # Include the time off duration.
-            leave.name += f": {leave.sudo().leave_id.duration_display}"
+        """Compute a clean display name for calendar items.
+        - Attendance: use the SQL-provided base_name (e.g., "Attendance: 2025-09-19 09:00 - 17:00").
+        - Time Off: use base_name (private_name or type label) and append duration if available.
+        Never include employee name and never render falsy values like "False: False".
+        """
+        for rec in self:
+            label = rec.base_name or ''
+            if rec.activity_type == 'time_off' and rec.leave_id:
+                # Append friendly duration only when available
+                duration_txt = rec.leave_id.sudo().duration_display or ''
+                if duration_txt:
+                    label = f"{label}: {duration_txt}"
+            rec.name = label
             
     @api.model
     def get_unusual_days(self, date_from, date_to=None):
