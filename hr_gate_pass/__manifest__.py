@@ -33,10 +33,17 @@
         'views/security_views.xml',
     'views/gate_log_views.xml',
         'views/menu.xml',
+        'views/gate_pass_dashboard_views.xml',
     ],
     'assets': {
         'web.assets_backend': [
+
             'hr_gate_pass/static/src/css/gate_pass_buttons.css',
+            'hr_gate_pass/static/src/css/gate_pass_dashboard.css',
+            'hr_gate_pass/static/src/js/gate_pass_dashboard.js',
+            'hr_gate_pass/static/src/xml/gate_pass_dashboard.xml',
+            ('include', 'web._assets_helpers'),
+            'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js',
         ],
     },
     # 'assets': {

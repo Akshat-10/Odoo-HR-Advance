@@ -1,0 +1,348 @@
+/* static/src/css/gate_pass_dashboard.css */
+
+.gate_pass_dashboard {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: auto; /* instead of 100vh */
+    max-height: 100%;
+    overflow-y: auto;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: relative;
+}
+
+/* Header Styles */
+.dashboard-header {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.dashboard-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dashboard-title h2 {
+    color: #ffffff;
+    margin: 0;
+    font-weight: 700;
+    font-size: 2.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.dashboard-refresh {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    color: white;
+    padding: 12px 24px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.dashboard-refresh:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+}
+
+/* Loading and Error States */
+.dashboard-loading, .dashboard-error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+}
+
+.loading-spinner {
+    text-align: center;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.loading-spinner p {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #ffffff;
+}
+
+.dashboard-error .alert {
+    max-width: 600px;
+    background: rgba(244, 67, 54, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(244, 67, 54, 0.3);
+    color: #ffffff;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+/* KPI Cards */
+.kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.kpi-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+    position: relative;
+    overflow: hidden;
+}
+
+.kpi-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 15px 35px rgba(31, 38, 135, 0.5);
+}
+
+.kpi-icon {
+    font-size: 40px;
+    margin-bottom: 15px;
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.kpi-content h3 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 10px 0 5px 0;
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.kpi-content p {
+    margin: 0;
+    color: #ffffff;
+    font-size: 0.9rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+/* Specific KPI Card Gradient Backgrounds */
+.total-passes {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+}
+
+.active-passes {
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+}
+
+.pending-passes {
+    background: linear-gradient(135deg, #FF9800, #F57C00);
+}
+
+.expired-passes {
+    background: linear-gradient(135deg, #F44336, #D32F2F);
+}
+
+.recent-passes {
+    background: linear-gradient(135deg, #9C27B0, #7B1FA2);
+}
+
+/* Charts Container */
+.charts-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.chart-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    height: 425px !important;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.chart-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(31, 38, 135, 0.5);
+}
+
+.chart-container.full-width {
+    grid-column: 1 / -1;
+}
+
+.chart-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 20px;
+}
+
+.chart-header h4 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.chart-content {
+    padding: 20px;
+    position: relative;
+    height: 350px;
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.chart-content canvas {
+    max-height: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .gate_pass_dashboard {
+        padding: 10px;
+    }
+
+    .dashboard-title {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .kpi-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .kpi-card {
+        padding: 20px;
+    }
+
+    .kpi-icon {
+        font-size: 30px;
+        width: 50px;
+        height: 50px;
+        margin-right: 15px;
+    }
+
+    .kpi-content h3 {
+        font-size: 24px;
+    }
+
+    .charts-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .chart-content {
+        height: 300px;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-title h2 {
+        font-size: 22px;
+    }
+
+    .kpi-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px;
+    }
+
+    .kpi-icon {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .chart-content {
+        height: 250px;
+        padding: 10px;
+    }
+}
+
+/* Animation Classes */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes gentlePulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.9;
+        transform: scale(1.02);
+    }
+}
+
+.dashboard-content {
+    animation: fadeIn 0.6s ease-out;
+}
+
+.kpi-card {
+    animation: fadeIn 0.6s ease-out;
+}
+
+.kpi-card.highlight {
+    animation: gentlePulse 2s ease-in-out infinite;
+}
+
+.chart-container {
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* Custom Scrollbar */
+.gate_pass_dashboard::-webkit-scrollbar {
+    width: 8px;
+}
+
+.gate_pass_dashboard::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.gate_pass_dashboard::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+.gate_pass_dashboard::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Print Styles */
+@media print {
+    .dashboard-refresh {
+        display: none;
+    }
+
+    .gate_pass_dashboard {
+        background: white;
+        padding: 0;
+    }
+
+    .kpi-card, .chart-container {
+        box-shadow: none;
+        border: 1px solid #ddd;
+        break-inside: avoid;
+    }
+}
