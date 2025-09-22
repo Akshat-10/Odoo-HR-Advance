@@ -5,10 +5,10 @@
     <field name="name">hr.employee.activity.calendar</field>
     <field name="model">hr.employee.activity</field>
     <field name="arch" type="xml">
-      <calendar string="Employee Activity"
-                date_start="start_datetime"
-                date_stop="end_datetime"
-                color="employee_id"
+  <calendar string="Employee Activity"
+        date_start="start_datetime"
+        date_stop="end_datetime"
+        color="activity_type"
                 mode="month"
                 js_class="time_off_calendar_dashboard"
                 event_open_popup="True"
