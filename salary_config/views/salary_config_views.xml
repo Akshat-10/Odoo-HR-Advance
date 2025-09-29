@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menu under Salary Package Configurator -->
+    <menuitem id="menu_salary_config_root" name="Salary Configuration" parent="hr_contract_salary.salary_package_menu" sequence="50"/>
+
+    
+    <record id="view_salary_config_structure_list" model="ir.ui.view">
+        <field name="name">salary.config.structure.list</field>
+        <field name="model">salary.config.structure</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_salary_config_structure_form" model="ir.ui.view">
+        <field name="name">salary.config.structure.form</field>
+        <field name="model">salary.config.structure</field>
+        <field name="arch" type="xml">
+            <form string="Salary Structure">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Help &amp; Examples">
+                            <field name="examples_html" nolabel="1"/>
+                        </page>
+                        <page string="Lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="code_id"/>
+                                    <field name="code" optional="hide"/>
+                                    <field name="impact"/>
+                                    <field name="compute_mode"/>
+                                    <field name="value"/>
+                                    <field name="python_code" invisible="compute_mode != 'formula'"/>
+                                    <field name="show_in_offer"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Structures -->
+    <record id="action_salary_config_structure" model="ir.actions.act_window">
+        <field name="name">Salary Structures</field>
+        <field name="res_model">salary.config.structure</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_salary_config_structure" parent="menu_salary_config_root" action="action_salary_config_structure" sequence="10"/>
+
+
+    <!-- Manage Salary Structure Types with link to Salary Config Structure -->
+    <record id="view_hr_payroll_structure_type_tree_salary_config" model="ir.ui.view">
+        <field name="name">hr.payroll.structure.type.tree.salary.config</field>
+        <field name="model">hr.payroll.structure.type</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="country_id"/>
+                <field name="country_code"/>
+                <field name="default_resource_calendar_id"/>
+                <field name="salary_config_structure_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hr_payroll_structure_type_form_salary_config" model="ir.ui.view">
+        <field name="name">hr.payroll.structure.type.form.salary.config</field>
+        <field name="model">hr.payroll.structure.type</field>
+        <field name="arch" type="xml">
+            <form string="Salary Structure Type">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="country_id"/>
+                            <field name="country_code"/>
+                        </group>
+                        <group>
+                            <field name="default_resource_calendar_id"/>
+                        </group>
+                        <group string="Salary Structure">
+                            <field name="salary_config_structure_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="salary_benefits" string="Salary Benefits">
+                            <field name="salary_benefits_ids"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hr_payroll_structure_type_salary_config" model="ir.actions.act_window">
+        <field name="name">Salary Structure Types</field>
+        <field name="res_model">hr.payroll.structure.type</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_hr_payroll_structure_type_tree_salary_config"/>
+    </record>
+
+    <menuitem id="menu_salary_config_structure_types" parent="menu_salary_config_root" action="action_hr_payroll_structure_type_salary_config" sequence="5" groups="hr_contract.group_hr_contract_manager"/>
+
+    <!-- Code Master -->
+    <record id="view_salary_config_code_tree" model="ir.ui.view">
+        <field name="name">salary.config.code.tree</field>
+        <field name="model">salary.config.code</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_salary_config_code_form" model="ir.ui.view">
+        <field name="name">salary.config.code.form</field>
+        <field name="model">salary.config.code</field>
+        <field name="arch" type="xml">
+            <form string="Salary Code">
+                <sheet>
+                    <group>
+                        <field name="code"/>
+                        <field name="name"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_salary_config_code" model="ir.actions.act_window">
+        <field name="name">Salary Codes</field>
+        <field name="res_model">salary.config.code</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_salary_config_codes" parent="menu_salary_config_root" action="action_salary_config_code" sequence="15"/>
+</odoo>

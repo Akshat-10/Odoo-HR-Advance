@@ -34,7 +34,7 @@
                             <field name="hours_last_month" readonly="0" invisible="0"/>
 
                             <field name="contracts_count" readonly="0" invisible="0"/>
-                            <field name="payslip_count" readonly="0" invisible="0"/>
+                            <!-- <field name="payslip_count" readonly="0" invisible="0"/> -->
                             <field name="related_partners_count" readonly="0" invisible="0"/>
                             <field name="child_all_count" readonly="0" invisible="0"/>
                             <field name="expense_manager_id" readonly="0" invisible="0"/>
@@ -107,7 +107,7 @@
                     <field name="hours_last_month" readonly="0" invisible="0" optional="hide"/>
 
                     <field name="contracts_count" readonly="0" invisible="0" optional="hide"/>
-                    <field name="payslip_count" readonly="0" invisible="0" optional="hide"/>
+                    <!-- <field name="payslip_count" readonly="0" invisible="0" optional="hide"/> -->
                     <field name="related_partners_count" readonly="0" invisible="0" optional="hide"/>
                     <field name="child_all_count" readonly="0" invisible="0" optional="hide"/>
                 <!-- to delete later maybe  above -->

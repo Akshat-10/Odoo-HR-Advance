@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <!-- Inherit the salary package resume sidebar to adjust the NET detection -->
+    <t t-name="salary_config.salary_package_resume_inherit"
+       t-inherit="hr_contract_salary.salary_package_resume"
+       t-inherit-mode="extension">
+        <xpath expr="//t[@t-set='is_net']" position="attributes">
+            <attribute name="t-value">resume_code === 'wage_with_holidays'</attribute>
+        </xpath>
+    </t>
+</templates>
