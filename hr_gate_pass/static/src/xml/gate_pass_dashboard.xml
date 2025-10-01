@@ -32,8 +32,8 @@
             <!-- Main Dashboard Content -->
             <div t-if="!state.loading and !state.error" class="dashboard-content">
 
-                <!-- KPI Cards Row -->
-                <div class="kpi-row">
+                <!-- KPI Cards Row 1 - Gate Passes -->
+                <div class="kpi-row passes-row">
                     <div class="kpi-card total-passes" t-on-click="() => this.onKpiClick('total')">
                         <div class="kpi-icon">
                             <i class="fa fa-id-card-o"/>
@@ -85,8 +85,63 @@
                     </div>
                 </div>
 
-                <!-- Charts Row 1 -->
-                <div class="charts-row">
+                <!-- KPI Cards Row 2 - Permits -->
+                <div class="kpi-row permits-row">
+                    <div class="kpi-card total-permits" t-on-click="() => this.onKpiClick('total_permits')">
+                        <div class="kpi-icon">
+                            <i class="fa fa-certificate"/>
+                        </div>
+                        <div class="kpi-content">
+                            <h3 t-esc="state.kpis.total_permits"/>
+                            <p>Total Permits</p>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card hot-work-permits" t-on-click="() => this.onKpiClick('hot_work')">
+                        <div class="kpi-icon">
+                            <i class="fa fa-fire"/>
+                        </div>
+                        <div class="kpi-content">
+                            <h3 t-esc="state.kpis.hot_work_permits"/>
+                            <p>Hot Work Permits</p>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card energized-work-permits" t-on-click="() => this.onKpiClick('energized_work')">
+                        <div class="kpi-icon">
+                            <i class="fa fa-bolt"/>
+                        </div>
+                        <div class="kpi-content">
+                            <h3 t-esc="state.kpis.energized_work_permits"/>
+                            <p>Energized Work</p>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card height-work-permits" t-on-click="() => this.onKpiClick('height_work')">
+                        <div class="kpi-icon">
+                            <i class="fa fa-arrow-up"/>
+                        </div>
+                        <div class="kpi-content">
+                            <h3 t-esc="state.kpis.height_work_permits"/>
+                            <p>Height Work</p>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card daily-work-permits" t-on-click="() => this.onKpiClick('daily_work')">
+                        <div class="kpi-icon">
+                            <i class="fa fa-calendar-check-o"/>
+                        </div>
+                        <div class="kpi-content">
+                            <h3 t-esc="state.kpis.daily_work_permits"/>
+                            <p>Daily Work</p>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- Charts Row 1 - Three Charts -->
+                <div class="charts-row three-chart-row">
                     <!-- State Distribution Chart -->
                     <div class="chart-container">
                         <div class="chart-header">
@@ -106,10 +161,7 @@
                             <canvas t-ref="passTypeChart"/>
                         </div>
                     </div>
-                </div>
 
-                <!-- Charts Row 2 -->
-                <div class="charts-row">
                     <!-- Department Chart -->
                     <div class="chart-container">
                         <div class="chart-header">
@@ -119,37 +171,41 @@
                             <canvas t-ref="deptChart"/>
                         </div>
                     </div>
+                </div>
 
-                    <!-- EHS Permit Chart -->
-                    <div class="chart-container">
+                <!-- Charts Row 2 - 2:1 Format -->
+                <div class="charts-row two-one-row">
+                    <!-- Monthly Trend Chart (2/3 width) -->
+                    <div class="chart-container trend-chart">
+                        <div class="chart-header">
+                            <h4>Monthly Trend (Last 6 Months)</h4>
+                        </div>
+                        <div class="chart-content">
+                            <canvas t-ref="trendChart"/>
+                        </div>
+                    </div>
+
+                    <!-- Permit Types Chart (1/3 width) -->
+                    <div class="chart-container permit-types-chart">
                         <div class="chart-header">
                             <h4>EHS Permits</h4>
                         </div>
                         <div class="chart-content">
-                            <canvas t-ref="ehsChart"/>
+                            <canvas t-ref="permitTypesChart"/>
                         </div>
                     </div>
                 </div>
 
-                <!-- Charts Row 3 -->
-                <div class="charts-row">
-                    <!-- Location Chart -->
-                    <div class="chart-container" t-if="state.charts.location and state.charts.location.labels.length">
+                <!-- Plant Layout Section -->
+                <div class="plant-layout-section">
+                    <div class=" plant-layout-container">
                         <div class="chart-header">
-                            <h4>Location Wise</h4>
+                            <h4>Plant Layout - Employee Distribution</h4>
                         </div>
-                        <div class="chart-content">
-                            <canvas t-ref="locationChart"/>
-                        </div>
-                    </div>
-
-                    <!-- Monthly Trend Chart -->
-                    <div class="chart-container full-width">
-                        <div class="chart-header">
-                            <h4>Monthly Trend</h4>
-                        </div>
-                        <div class="chart-content">
-                            <canvas t-ref="trendChart"/>
+                        <div class="chart-content plant-layout-content">
+                            <div class="plant-layout-map" t-ref="plantLayout">
+                                <!-- Plant layout will be rendered here -->
+                            </div>
                         </div>
                     </div>
                 </div>

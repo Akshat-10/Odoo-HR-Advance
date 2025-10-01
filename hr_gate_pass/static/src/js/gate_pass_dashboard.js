@@ -10,6 +10,7 @@ class GatePassDashboard extends Component {
         this.state = useState({
             kpis: {},
             charts: {},
+            plantLayout: [],
             loading: true,
             error: null
         });
@@ -24,6 +25,8 @@ class GatePassDashboard extends Component {
         this.deptChartRef = useRef("deptChart");
         this.locationChartRef = useRef("locationChart");
         this.trendChartRef = useRef("trendChart");
+        this.permitTypesChartRef = useRef("permitTypesChart");
+        this.plantLayoutRef = useRef("plantLayout");
 
         onWillStart(async () => {
             await this.loadDashboardData();
@@ -31,6 +34,7 @@ class GatePassDashboard extends Component {
 
         onMounted(() => {
             this.renderCharts();
+            this.renderPlantLayout();
         });
     }
 
@@ -42,6 +46,7 @@ class GatePassDashboard extends Component {
             if (result.success) {
                 this.state.kpis = result.kpis;
                 this.state.charts = result.charts;
+                this.state.plantLayout = result.plant_layout || [];
                 this.state.error = null;
             } else {
                 this.state.error = result.error || 'Failed to load dashboard data';
@@ -56,6 +61,139 @@ class GatePassDashboard extends Component {
     async refreshDashboard() {
         await this.loadDashboardData();
         this.renderCharts();
+        this.renderPlantLayout();
+    }
+
+    async showAllPermits() {
+        const permitModels = [
+            { name: 'Hot Work Permits', model: 'hot.work.permit' },
+            { name: 'Energized Work Permits', model: 'energized.work.permit' },
+            { name: 'Height Work Permits', model: 'work.heights.permit' },
+            { name: 'Daily Work Permits', model: 'daily.permit.work' }
+        ];
+
+        // For now, show hot work permits as default
+        await this.action.doAction({
+            type: 'ir.actions.act_window',
+            name: 'Hot Work Permits',
+            res_model: 'hot.work.permit',
+            view_mode: 'tree,form',
+            views: [[false, 'list'], [false, 'form']],
+            target: 'current',
+        });
+    }
+
+    renderPlantLayout() {
+        if (!this.plantLayoutRef.el || !this.state.plantLayout.length) {
+            return;
+        }
+
+        const container = this.plantLayoutRef.el;
+        container.innerHTML = '';
+
+        // Create plant layout with better styling
+        const plantContainer = document.createElement('div');
+        plantContainer.className = 'plant-container';
+        plantContainer.innerHTML = `
+            <div class="plant-background">
+                <div class="plant-grid">
+                    <!-- Grid lines for better visualization -->
+                </div>
+            </div>
+        `;
+
+        this.state.plantLayout.forEach(location => {
+            const locationDiv = document.createElement('div');
+            locationDiv.className = 'plant-location';
+            locationDiv.style.cssText = `
+                position: absolute;
+                left: ${location.x}%;
+                top: ${location.y}%;
+                transform: translate(-50%, -50%);
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: ${location.color};
+                border: 3px solid #fff;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 12px;
+                font-weight: bold;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+                transition: all 0.3s ease;
+                z-index: 10;
+            `;
+
+            locationDiv.textContent = location.employee_count;
+
+            // Create tooltip
+            const tooltip = document.createElement('div');
+            tooltip.className = 'location-tooltip';
+            tooltip.innerHTML = `
+                <strong>${location.name}</strong><br>
+                Employees: ${location.employee_count}
+            `;
+            tooltip.style.cssText = `
+                position: absolute;
+                bottom: 50px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(0,0,0,0.9);
+                color: white;
+                padding: 8px 12px;
+                border-radius: 6px;
+                font-size: 11px;
+                white-space: nowrap;
+                opacity: 0;
+                pointer-events: none;
+                transition: all 0.3s ease;
+                z-index: 20;
+            `;
+
+            locationDiv.appendChild(tooltip);
+
+            locationDiv.addEventListener('mouseenter', () => {
+                locationDiv.style.transform = 'translate(-50%, -50%) scale(1.3)';
+                locationDiv.style.zIndex = '15';
+                tooltip.style.opacity = '1';
+            });
+
+            locationDiv.addEventListener('mouseleave', () => {
+                locationDiv.style.transform = 'translate(-50%, -50%) scale(1)';
+                locationDiv.style.zIndex = '10';
+                tooltip.style.opacity = '0';
+            });
+
+            plantContainer.appendChild(locationDiv);
+        });
+
+        container.appendChild(plantContainer);
+
+        // Add legend
+        const legend = document.createElement('div');
+        legend.className = 'plant-legend';
+        legend.innerHTML = `
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #9E9E9E;"></span>
+                <span>No Employees</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #4CAF50;"></span>
+                <span>1-5 Employees</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #FF9800;"></span>
+                <span>6-15 Employees</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #F44336;"></span>
+                <span>15+ Employees</span>
+            </div>
+        `;
+        container.appendChild(legend);
     }
 
     renderCharts() {
@@ -81,6 +219,7 @@ class GatePassDashboard extends Component {
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             position: 'bottom'
@@ -110,6 +249,7 @@ class GatePassDashboard extends Component {
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             display: false
@@ -145,6 +285,7 @@ class GatePassDashboard extends Component {
                 options: {
                     indexAxis: 'y',
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             display: false
@@ -156,69 +297,6 @@ class GatePassDashboard extends Component {
                     },
                     scales: {
                         x: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
-
-        // EHS Permit Chart (Pie)
-        if (this.ehsChartRef.el && this.state.charts.ehs_permit_type) {
-            new Chart(this.ehsChartRef.el, {
-                type: 'pie',
-                data: {
-                    labels: this.state.charts.ehs_permit_type.labels,
-                    datasets: [{
-                        data: this.state.charts.ehs_permit_type.data,
-                        backgroundColor: [
-                            '#4CAF50', '#FF5722', '#9C27B0', '#00BCD4',
-                            '#FFEB3B', '#795548', '#607D8B'
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        },
-                        title: {
-                            display: true,
-                            text: 'EHS Permits by Type'
-                        }
-                    }
-                }
-            });
-        }
-
-        // Location Chart (Bar)
-        if (this.locationChartRef.el && this.state.charts.location) {
-            new Chart(this.locationChartRef.el, {
-                type: 'bar',
-                data: {
-                    labels: this.state.charts.location.labels,
-                    datasets: [{
-                        label: 'Count',
-                        data: this.state.charts.location.data,
-                        backgroundColor: '#9C27B0',
-                        borderColor: '#7B1FA2',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        title: {
-                            display: true,
-                            text: 'Passes by Location'
-                        }
-                    },
-                    scales: {
-                        y: {
                             beginAtZero: true
                         }
                     }
@@ -244,6 +322,7 @@ class GatePassDashboard extends Component {
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         title: {
                             display: true,
@@ -253,6 +332,36 @@ class GatePassDashboard extends Component {
                     scales: {
                         y: {
                             beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Permit Types Chart (Pie)
+        if (this.permitTypesChartRef.el && this.state.charts.ehs_permit_type) {
+            new Chart(this.permitTypesChartRef.el, {
+                type: 'pie',
+                data: {
+                    labels: this.state.charts.ehs_permit_type.labels,
+                    datasets: [{
+                        data: this.state.charts.ehs_permit_type.data,
+                        backgroundColor: [
+                            '#4CAF50', '#FF5722', '#9C27B0', '#00BCD4',
+                            '#FFEB3B', '#795548', '#607D8B'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        title: {
+                            display: true,
+                            text: 'EHS Permits by Type'
                         }
                     }
                 }
@@ -277,6 +386,50 @@ class GatePassDashboard extends Component {
                 domain = [['state', '=', 'expired']];
                 title = 'Expired Passes';
                 break;
+            case 'total_permits':
+                // For total permits, show all permit models
+                await this.showAllPermits();
+                return;
+            case 'hot_work':
+                await this.action.doAction({
+                    type: 'ir.actions.act_window',
+                    name: 'Hot Work Permits',
+                    res_model: 'hot.work.permit',
+                    view_mode: 'tree,form',
+                    views: [[false, 'list'], [false, 'form']],
+                    target: 'current',
+                });
+                return;
+            case 'energized_work':
+                await this.action.doAction({
+                    type: 'ir.actions.act_window',
+                    name: 'Energized Work Permits',
+                    res_model: 'energized.work.permit',
+                    view_mode: 'tree,form',
+                    views: [[false, 'list'], [false, 'form']],
+                    target: 'current',
+                });
+                return;
+            case 'height_work':
+                await this.action.doAction({
+                    type: 'ir.actions.act_window',
+                    name: 'Height Work Permits',
+                    res_model: 'work.heights.permit',
+                    view_mode: 'tree,form',
+                    views: [[false, 'list'], [false, 'form']],
+                    target: 'current',
+                });
+                return;
+            case 'daily_work':
+                await this.action.doAction({
+                    type: 'ir.actions.act_window',
+                    name: 'Daily Work Permits',
+                    res_model: 'daily.permit.work',
+                    view_mode: 'tree,form',
+                    views: [[false, 'list'], [false, 'form']],
+                    target: 'current',
+                });
+                return;
             default:
                 domain = [];
                 title = 'All Gate Passes';
