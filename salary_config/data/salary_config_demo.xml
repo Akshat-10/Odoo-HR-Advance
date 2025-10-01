@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Demo Salary Structure: Monthly breakdown derived from CTC (final_yearly_costs/12) -->
+        <record id="salary_structure_demo" model="salary.config.structure">
+            <field name="name">Demo Salary Structure</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Pay Heads coded so formulas can reference them: BASIC, HRA, UNIFORM, LTA, ADHOC, ESIC, PF1, KRA, PF2, CANT, TRANS, PT -->
+        
+        <!-- Basic = 50% of CTC monthly_budget -->
+        <record id="salary_structure_demo_basic" model="salary.config.structure.line">
+            <field name="structure_id" ref="salary_structure_demo"/>
+            <field name="sequence">10</field>
+            <field name="name">Basic</field>
+            <field name="code">BASIC</field>
+            <field name="impact">cost</field>
+            <field name="compute_mode">percent_yearly</field>
+            <field name="value">50.0</field>
+            <field name="show_in_offer">True</field>
+        </record>
+
+        <!-- HRA = 50% of Basic -->
+        <record id="salary_structure_demo_hra" model="salary.config.structure.line">
+            <field name="structure_id" ref="salary_structure_demo"/>
+            <field name="sequence">20</field>
+            <field name="name">HRA</field>
+            <field name="code">HRA</field>
+            <field name="impact">cost</field>
+            <field name="compute_mode">formula</field>
+            <field name="python_code">result = amount('BASIC') * 0.5</field>
+            <field name="show_in_offer">True</field>
+        </record>
+
+        <!-- Uniform = 5% of Basic -->
+        <record id="salary_structure_demo_uniform" model="salary.config.structure.line">
+            <field name="structure_id" ref="salary_structure_demo"/>
+            <field name="sequence">30</field>
+            <field name="name">Uniform</field>
+            <field name="code">UNIFORM</field>
+            <field name="impact">cost</field>
+            <field name="compute_mode">formula</field>
+            <field name="python_code">result = amount('BASIC') * 0.05</field>
+            <field name="show_in_offer">True</field>
+        </record>
+
+        <!-- LTA Reimburs. = 8.33% of Basic -->
+        <record id="salary_structure_demo_lta" model="salary.config.structure.line">
+            <field name="structure_id" ref="salary_structure_demo"/>
+            <field name="sequence">40</field>
+            <field name="name">LTA Reimburs.</field>
+            <field name="code">LTA</field>
+            <field name="impact">cost</field>
+            <field name="compute_mode">formula</field>
+            <field name="python_code">result = amount('BASIC') * 0.0833</field>
+            <field name="show_in_offer">True</field>
+        </record>
+
+        <!-- PF (12%) on Basic (employee PF deduction) -->
+        <record id="salary_structure_demo_pf_emp" model="salary.config.structure.line">
+            <field name="structure_id" ref="salary_structure_demo"/>
+            <field name="sequence">70</field>
+            <field name="name">PF</field>
+            <field name="code">PF_EMP</field>
+            <field name="impact">deduction</field>
+            <field name="compute_mode">formula</field>
+            <field name="python_code">result = amount('BASIC') * 0.12</field>
+            <field name="show_in_offer">True</field>
+        </record>
+
+        <!-- KRA = 3% of CTC (monthly_budget) -->
+        <record id="salary_structure_demo_kra" model="salary.config.structure.line">
+            <field name="structure_id" ref="salary_structure_demo"/>
+            <field name="sequence">80</field>
+            <field name="name">KRA</field>
+            <field name="code">KRA</field>
+            <field name="impact">deduction</field>
+            <field name="compute_mode">percent_yearly</field>
+            <field name="value">3.0</field>
+            <field name="show_in_offer">True</field>
+        </record>
+
+        <!-- Adhoc Pay = monthly_budget - ((Basic + HRA + Uniform + LTA) + PF + KRA) -->
+        <record id="salary_structure_demo_adhoc" model="salary.config.structure.line">
+            <field name="structure_id" ref="salary_structure_demo"/>
+            <field name="sequence">50</field>
+            <field name="name">Adhoc Pay</field>
+            <field name="code">ADHOC</field>
+            <field name="impact">cost</field>
+            <field name="compute_mode">formula</field>
+            <field name="python_code">result = monthly_budget - ((amount('BASIC') + amount('HRA') + amount('UNIFORM') + amount('LTA')) + amount('PF_EMP') + amount('KRA'))</field>
+            <field name="show_in_offer">True</field>
+        </record>
+
+        <!-- ESIC (3.25%) of Gross-like (Basic+HRA+Uniform+LTA+Adhoc), applicable below 21000 -->
+        <record id="salary_structure_demo_esic" model="salary.config.structure.line">
+            <field name="structure_id" ref="salary_structure_demo"/>
+            <field name="sequence">60</field>
+            <field name="name">ESIC</field>
+            <field name="code">ESIC</field>
+            <field name="impact">deduction</field>
+            <field name="compute_mode">formula</field>
+            <field name="python_code">result = ((amount('BASIC') + amount('HRA') + amount('UNIFORM') + amount('LTA') + amount('ADHOC')) &lt; 21000.0) and ((amount('BASIC') + amount('HRA') + amount('UNIFORM') + amount('LTA') + amount('ADHOC')) * 0.0325) or 0.0</field>
+            <field name="show_in_offer">True</field>
+        </record>
+
+        <!-- Gross Salary (marker) = Basic + HRA + Uniform + LTA + Adhoc -->
+        <record id="salary_structure_demo_gross" model="salary.config.structure.line">
+            <field name="structure_id" ref="salary_structure_demo"/>
+            <field name="sequence">90</field>
+            <field name="name">Gross Salary</field>
+            <field name="code">GROSS</field>
+            <field name="impact">benefit</field>
+            <field name="compute_mode">formula</field>
+            <field name="python_code">result = amount('BASIC') + amount('HRA') + amount('UNIFORM') + amount('LTA') + amount('ADHOC')</field>
+            <field name="show_in_offer">True</field>
+        </record>
+
+        <!-- Canteen (Fix) -->
+        <record id="salary_structure_demo_canteen" model="salary.config.structure.line">
+            <field name="structure_id" ref="salary_structure_demo"/>
+            <field name="sequence">100</field>
+            <field name="name">Canteen</field>
+            <field name="code">CANTEEN</field>
+            <field name="impact">deduction</field>
+            <field name="compute_mode">fixed_monthly</field>
+            <field name="value">845.0</field>
+            <field name="show_in_offer">True</field>
+        </record>
+
+        <!-- Transport (Fix) -->
+        <record id="salary_structure_demo_transport" model="salary.config.structure.line">
+            <field name="structure_id" ref="salary_structure_demo"/>
+            <field name="sequence">110</field>
+            <field name="name">Transport</field>
+            <field name="code">TRANS</field>
+            <field name="impact">deduction</field>
+            <field name="compute_mode">fixed_monthly</field>
+            <field name="value">500.0</field>
+            <field name="show_in_offer">True</field>
+        </record>
+
+        <!-- PT (Fix) -->
+        <record id="salary_structure_demo_pt" model="salary.config.structure.line">
+            <field name="structure_id" ref="salary_structure_demo"/>
+            <field name="sequence">120</field>
+            <field name="name">PT</field>
+            <field name="code">PT</field>
+            <field name="impact">deduction</field>
+            <field name="compute_mode">fixed_monthly</field>
+            <field name="value">200.0</field>
+            <field name="show_in_offer">True</field>
+        </record>
+
+        <!-- Total Deduction = sum of all deductions -->
+        <record id="salary_structure_demo_total_ded" model="salary.config.structure.line">
+            <field name="structure_id" ref="salary_structure_demo"/>
+            <field name="sequence">130</field>
+            <field name="name">Total Deduction</field>
+            <field name="code">TOT_DED</field>
+            <field name="impact">deduction</field>
+            <field name="compute_mode">formula</field>
+            <field name="python_code">result = amount('PF_EMP') + amount('CANTEEN') + amount('TRANS') + amount('PT')</field>
+            <field name="show_in_offer">True</field>
+        </record>
+
+        <!-- In Hand Salary = Gross - Total Deduction -->
+        <record id="salary_structure_demo_inhand" model="salary.config.structure.line">
+            <field name="structure_id" ref="salary_structure_demo"/>
+            <field name="sequence">140</field>
+            <field name="name">In Hand Salary</field>
+            <field name="code">INHAND</field>
+            <field name="impact">benefit</field>
+            <field name="compute_mode">formula</field>
+            <field name="python_code">result = amount('GROSS') - amount('TOT_DED')</field>
+            <field name="show_in_offer">True</field>
+        </record>
+
+    </data>
+</odoo>

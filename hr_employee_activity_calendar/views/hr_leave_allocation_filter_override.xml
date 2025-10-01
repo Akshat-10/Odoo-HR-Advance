@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <!--
-        This view inherits hr_payroll_holidays.view_hr_leave_allocation_inherit_filter
-        and replaces the injected field to remove the filter_domain.
-        We match the field by name and replace the node entirely with a plain field.
+        Remove any filter_domain set on employee_id in the allocation search/filter view.
+        We inherit from the base hr_holidays view so this works even if hr_payroll_holidays
+        isn't installed. Using a broad xpath ensures we replace any version that adds
+        a filter_domain attribute to employee_id.
     -->
     <record id="view_hr_leave_allocation_inherit_filter_rm_domain" model="ir.ui.view">
         <field name="name">hr_employee_activity_calendar.view.hr.leave.allocation.filter.remove.domain</field>
         <field name="model">hr.leave.allocation</field>
-        <field name="inherit_id" ref="hr_payroll_holidays.view_hr_leave_allocation_inherit_filter"/>
+        <field name="priority" eval="99"/>
+        <field name="inherit_id" ref="hr_holidays.view_hr_leave_allocation_filter"/>
         <field name="arch" type="xml">
-            <!-- Replace the specific employee_id field that introduced filter_domain in hr_payroll_holidays -->
-            <xpath expr="//field[@name='employee_id' and @filter_domain]" position="replace">
+            <!-- Replace any employee_id field (with or without filter_domain) by a plain one without filter -->
+            <xpath expr="//field[@name='employee_id']" position="replace">
                 <field name="employee_id" string="Employee"/>
             </xpath>
         </field>

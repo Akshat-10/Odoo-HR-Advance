@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Salary Code Master Seed -->
+        <record id="salary_config_code_BASIC" model="salary.config.code">
+            <field name="code">BASIC</field>
+            <field name="name">Basic Salary</field>
+        </record>
+        <record id="salary_config_code_HRA" model="salary.config.code">
+            <field name="code">HRA</field>
+            <field name="name">House Rent Allowance</field>
+        </record>
+        <record id="salary_config_code_UNIFORM" model="salary.config.code">
+            <field name="code">UNIFORM</field>
+            <field name="name">Uniform Allowance</field>
+        </record>
+        <record id="salary_config_code_LTA" model="salary.config.code">
+            <field name="code">LTA</field>
+            <field name="name">Leave Travel Allowance</field>
+        </record>
+        <record id="salary_config_code_PF_EMP" model="salary.config.code">
+            <field name="code">PF_EMP</field>
+            <field name="name">Provident Fund (Employee)</field>
+        </record>
+        <record id="salary_config_code_KRA" model="salary.config.code">
+            <field name="code">KRA</field>
+            <field name="name">KRA Deduction</field>
+        </record>
+        <record id="salary_config_code_ADHOC" model="salary.config.code">
+            <field name="code">ADHOC</field>
+            <field name="name">Adhoc Pay</field>
+        </record>
+        <record id="salary_config_code_ESIC" model="salary.config.code">
+            <field name="code">ESIC</field>
+            <field name="name">ESIC</field>
+        </record>
+        <record id="salary_config_code_GROSS" model="salary.config.code">
+            <field name="code">GROSS</field>
+            <field name="name">Gross Salary (Marker)</field>
+        </record>
+        <record id="salary_config_code_CANTEEN" model="salary.config.code">
+            <field name="code">CANTEEN</field>
+            <field name="name">Canteen Deduction</field>
+        </record>
+        <record id="salary_config_code_TRANS" model="salary.config.code">
+            <field name="code">TRANS</field>
+            <field name="name">Transport Deduction</field>
+        </record>
+        <record id="salary_config_code_PT" model="salary.config.code">
+            <field name="code">PT</field>
+            <field name="name">Professional Tax</field>
+        </record>
+        <record id="salary_config_code_TOT_DED" model="salary.config.code">
+            <field name="code">TOT_DED</field>
+            <field name="name">Total Deduction</field>
+        </record>
+        <record id="salary_config_code_INHAND" model="salary.config.code">
+            <field name="code">INHAND</field>
+            <field name="name">In Hand Salary</field>
+        </record>
+    </data>
+</odoo>
