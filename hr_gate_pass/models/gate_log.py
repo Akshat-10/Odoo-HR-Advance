@@ -22,6 +22,7 @@ class HrGateLog(models.Model):
         ('canceled','Canceled'),
         ('reverted','Reverted'),
         ('reset','Reset to Draft'),
+        ('back_to_draft','Back to Draft'),
         ('closed','Closed'),
     ], string='Action', required=True)
     by_user_id = fields.Many2one('res.users', string='By User')

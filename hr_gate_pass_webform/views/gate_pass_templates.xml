@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Form Template -->
+    <template id="template_gate_pass_form" name="Gate Pass Request Form">
+        <t t-call="website.layout">
+            <div class="container mt-4 gate-pass-form">
+                <h2 class="mb-3">Gate Pass Request</h2>
+                <t t-if="errors">
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            <li t-foreach="errors" t-as="e" t-esc="e"/>
+                        </ul>
+                    </div>
+                </t>
+                <form action="/gatepass/request/submit" method="post" class="oe_gatepass_form" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Pass No</label>
+                            <input type="text" name="name" class="form-control" t-att-value="values.get('name') or 'New'" readonly="readonly"/>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Pass Type<span class="text-danger">*</span></label>
+                            <select name="pass_type" class="form-select" required="1">
+                                <t t-foreach="pass_types" t-as="pt">
+                                    <option t-att-value="pt[0]" t-att-selected="'selected' if values.get('pass_type')==pt[0] else None"><t t-esc="pt[1]"/></option>
+                                </t>
+                            </select>
+                        </div>
+                        <!-- Reason field (shown for all pass types) -->
+                        <div class="col-md-8 field-reason">
+                            <label class="form-label">Reason Description<span class="text-danger">*</span></label>
+                            <input type="text" name="reason" class="form-control" t-att-value="values.get('reason')" required="1" placeholder="Enter reason"/>
+                        </div>
+                        <!-- Host Employee (Visitor only) -->
+                        <div class="col-md-4 field-host visitor-only">
+                            <label class="form-label">Host Employee <span class="text-danger host-required" style="display:none">*</span></label>
+                            <select name="host_employee_id" class="form-select">
+                                <option value="">-- Select --</option>
+                                <t t-foreach="employees" t-as="emp">
+                                    <option t-att-value="emp.id" t-att-selected="'selected' if values.get('host_employee_id') == str(emp.id) else None"><t t-esc="emp.name"/></option>
+                                </t>
+                            </select>
+                        </div>
+                        <!-- Gate (Employee Out only) -->
+                        <div class="col-md-4 field-gate employeeout-only">
+                            <label class="form-label">Gate</label>
+                            <select name="gate_id" class="form-select">
+                                <option value="">-- Select --</option>
+                                <t t-foreach="gates" t-as="g">
+                                    <option t-att-value="g.id" t-att-selected="'selected' if values.get('gate_id') == str(g.id) else None"><t t-esc="g.name"/></option>
+                                </t>
+                            </select>
+                        </div>
+                        <!-- Department -->
+                        <div class="col-md-4 field-department">
+                            <label class="form-label">Department</label>
+                            <select name="department_id" class="form-select">
+                                <option value="">-- Select --</option>
+                                <t t-foreach="departments" t-as="d">
+                                    <option t-att-value="d.id" t-att-selected="'selected' if values.get('department_id') == str(d.id) else None"><t t-esc="d.name"/></option>
+                                </t>
+                            </select>
+                        </div>
+                        <!-- Visitor details page (Visitor & Contractor) -->
+                        <div class="col-12 visitor-details-wrapper visitor-only contractor-only">
+                            <h5 class="mt-3">Visitor Details</h5>
+                            <div class="row g-3">
+                                <div class="col-md-4 visitor-only contractor-only">
+                                    <label class="form-label">Visitor Name</label>
+                                    <input type="text" name="visitor_name" class="form-control" t-att-value="values.get('visitor_name')" placeholder="(Optional)"/>
+                                </div>
+                                <div class="col-md-4 visitor-only contractor-only">
+                                    <label class="form-label">Visitor Contact (Email)</label>
+                                    <input type="email" name="visitor_contact" class="form-control" t-att-value="values.get('visitor_contact')" placeholder="(Optional)"/>
+                                </div>
+                                <div class="col-md-4 visitor-only contractor-only">
+                                    <label class="form-label">Visitor Company</label>
+                                    <input type="text" name="visitor_company" class="form-control" t-att-value="values.get('visitor_company')" placeholder="(Optional)"/>
+                                </div>
+                                <div class="col-md-3 visitor-only">
+                                    <label class="form-label">ID Proof Type</label>
+                                    <select name="id_proof_type" class="form-select">
+                                        <option value="">-- Select --</option>
+                                        <option value="id" t-att-selected="'selected' if values.get('id_proof_type')=='id' else None">ID</option>
+                                        <option value="passport" t-att-selected="'selected' if values.get('id_proof_type')=='passport' else None">Passport</option>
+                                        <option value="license" t-att-selected="'selected' if values.get('id_proof_type')=='license' else None">License</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5 visitor-only">
+                                    <label class="form-label">ID Proof Attachment</label>
+                                    <input type="file" name="id_proof_attachment" class="form-control"/>
+                                    <small class="text-muted">Upload image / PDF (single file)</small>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Representing (Visitor only) -->
+                        <div class="col-md-4 field-representing visitor-only">
+                            <label class="form-label">Representing From <span class="text-danger representing-required" style="display:none">*</span></label>
+                            <select name="representing_from" class="form-select">
+                                <option value="">-- Select --</option>
+                                <option value="company" t-att-selected="'selected' if values.get('representing_from')=='company' else None">Company</option>
+                                <option value="government" t-att-selected="'selected' if values.get('representing_from')=='government' else None">Government</option>
+                                <option value="institution" t-att-selected="'selected' if values.get('representing_from')=='institution' else None">Institution</option>
+                                <option value="personal" t-att-selected="'selected' if values.get('representing_from')=='personal' else None">Personal</option>
+                                <option value="health_checkup" t-att-selected="'selected' if values.get('representing_from')=='health_checkup' else None">Health Check up</option>
+                                <option value="interview" t-att-selected="'selected' if values.get('representing_from')=='interview' else None">Interview</option>
+                                <option value="other" t-att-selected="'selected' if values.get('representing_from')=='other' else None">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-8 field-representing-details visitor-only">
+                            <label class="form-label">
+                                <span>Representing From (Details) <span class="text-danger representing-text-required" style="display:none">*</span></span>
+                            </label>
+                            <textarea name="representing_from_text" class="form-control" rows="4" placeholder="Enter details"><t t-esc="values.get('representing_from_text')"/></textarea>
+                            <small class="text-muted">Enter representing details</small>
+                        </div>
+                        <!-- Contractor Visit Type -->
+                        <div class="col-md-4 field-contractor-type contractor-only">
+                            <label class="form-label">Visit Type <span class="text-danger contractor-required" style="display:none">*</span></label>
+                            <select name="contractor_visit_type" class="form-select">
+                                <option value="">-- Select --</option>
+                                <option value="visit" t-att-selected="'selected' if values.get('contractor_visit_type')=='visit' else None">Only Visit</option>
+                            </select>
+                        </div>
+                        <!-- Area of Visit -->
+                        <div class="col-md-4 field-area">
+                            <label class="form-label">Area of Visit</label>
+                            <select name="area_of_visit" class="form-select">
+                                <option value="">-- Select --</option>
+                                <option value="office" t-att-selected="'selected' if values.get('area_of_visit')=='office' else None">Office</option>
+                                <option value="shop_floor" t-att-selected="'selected' if values.get('area_of_visit')=='shop_floor' else None">Shop Floor</option>
+                            </select>
+                        </div>
+                        <!-- Employee Out specific fields -->
+                        <div class="col-md-4 field-employeeout-reason employeeout-only">
+                            <label class="form-label">Employee Out Reason <span class="text-danger employee-out-reason-required" style="display:none">*</span></label>
+                            <select name="employee_out_reason" class="form-select">
+                                <option value="">-- Select --</option>
+                                <option value="official" t-att-selected="'selected' if (values.get('employee_out_reason')=='official' or (not values.get('employee_out_reason') and values.get('pass_type')=='employee_out')) else None">Official</option>
+                                <option value="personal" t-att-selected="'selected' if values.get('employee_out_reason')=='personal' else None">Personal</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 employeeout-only official-vehicle-wrapper">
+                            <div class="form-check mt-4">
+                                <input class="form-check-input" type="checkbox" name="official_vehicle_required" id="official_vehicle_required" t-att-checked="'checked' if values.get('official_vehicle_required') else None"/>
+                                <label class="form-check-label" for="official_vehicle_required">Official Vehicle Required<br/><small class="text-muted">Recommended - Please Book Vehicle 2 hours prior requirement.</small></label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 employeeout-only travel-to-wrapper">
+                            <label class="form-label">Travel To <span class="text-danger travel-to-required" style="display:none">*</span></label>
+                            <input type="text" name="travel_to" class="form-control" t-att-value="values.get('travel_to')"/>
+                        </div>
+                        <div class="col-md-6 field-employeeout-employees employeeout-only">
+                            <label class="form-label">Employees</label>
+                            <select name="employee_ids" multiple="multiple" size="6" class="form-select">
+                                <t t-foreach="employees" t-as="emp2">
+                                    <option t-att-value="emp2.id" t-att-selected="'selected' if (values.get('employee_ids') and str(emp2.id) in values.get('employee_ids').split(',')) else None"><t t-esc="emp2.name"/></option>
+                                </t>
+                            </select>
+                        </div>
+                        <!-- ID Number removed per request -->
+                        <!-- Returnable -->
+                        <div class="w-100"></div>
+                        <div class="col-md-3 field-returnable">
+                            <div class="form-check mt-4">
+                                <input class="form-check-input" type="checkbox" name="is_returnable" id="is_returnable" t-att-checked="'checked' if values.get('is_returnable') else None"/>
+                                <label class="form-check-label" for="is_returnable">Returnable<br/><small class="text-muted">Check if items/visitor must return</small></label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 field-expected-return returnable-date">
+                            <label class="form-label">Expected Return Date/Time <span class="text-danger return-date-required" style="display:none">*</span></label>
+                            <input type="datetime-local" name="expected_return_date" class="form-control" t-att-value="values.get('expected_return_date')"/>
+                            <small class="text-muted">Specify local date &amp; time</small>
+                        </div>
+                        <!-- Vehicle section available to all -->
+                        <div class="col-12 vehicle-section">
+                            <h5 class="mt-3">Vehicle</h5>
+                            <div class="row g-3 p-3 section-box">
+                                <div class="col-md-3">
+                                    <label class="form-label">Vehicle No</label>
+                                    <input type="text" name="vehicle_no" class="form-control" t-att-value="values.get('vehicle_no')"/>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Driver Name</label>
+                                    <input type="text" name="driver_name" class="form-control" t-att-value="values.get('driver_name')"/>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Driver Mobile No.</label>
+                                    <input type="text" name="driver_mobile" class="form-control" t-att-value="values.get('driver_mobile')"/>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Vehicle Reading</label>
+                                    <input type="text" name="vehicle_reading" class="form-control" t-att-value="values.get('vehicle_reading')"/>
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <label class="form-label">Vehicle/Image</label>
+                                    <input type="file" name="image" class="form-control" accept="image/*"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Submit Request</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <!-- Success Template -->
+    <template id="template_gate_pass_success" name="Gate Pass Success">
+        <t t-call="website.layout">
+            <div class="container mt-5">
+                <div class="alert alert-success shadow-sm">
+                    <h4 class="alert-heading">Gate Pass Submitted!</h4>
+                    <p>Your request has been submitted successfully. Reference: <strong t-esc="record.name"/>.</p>
+                    <p>Status: <span class="badge bg-success" t-esc="state_label or state_labels.get(record.state, record.state)"/>. You may note the pass number for follow-up.</p>
+                    <a class="btn btn-secondary mt-2" href="/gatepass/request">Submit another</a>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

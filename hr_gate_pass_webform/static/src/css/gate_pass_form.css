@@ -1,0 +1,35 @@
+/* Basic styling for Gate Pass public form */
+.gate-pass-form h2 { font-weight:600; }
+/* Removed default display:none on .returnable-date so JS logic can properly toggle */
+/* Dynamic visibility classes handled via JS; no static styles needed */
+.gate-pass-form .badge { font-size:0.95rem; }
+.gate-pass-form .form-label { font-weight:500; }
+.gate-pass-form .alert-success { border-left:6px solid #28a745; }
+/* Light card look for grouped sections */
+.gate-pass-form .section-box { background:#fff; border:1px solid #e2e6ea; border-radius:6px; padding:1rem; }
+
+/* Visitor details grouping spacing */
+.gate-pass-form .visitor-details-wrapper { border:1px solid #e9ecef; padding:0.75rem 0.75rem 0.25rem; border-radius:6px; background:#fcfcfd; }
+.gate-pass-form .visitor-details-wrapper h5 { margin-top:0; }
+
+/* Vehicle section styled similar to Visitor Details */
+.gate-pass-form .vehicle-section { border:1px solid #e9ecef; padding:0.75rem 0.75rem 0.25rem; border-radius:6px; background:#fcfcfd; }
+.gate-pass-form .vehicle-section h5 { margin-top:0; }
+/* Remove inner duplicate box look */
+.gate-pass-form .vehicle-section .section-box { background:transparent; border:0; padding:0; }
+
+/* Expected return subtle highlight */
+.gate-pass-form .field-expected-return { transition:opacity .2s ease; /* always visible now */ }
+
+/* File input small tweaks */
+.gate-pass-form input[type=file] { padding:0.35rem 0.5rem; }
+
+/* Utility class (can be used in templates if needed) */
+.gate-pass-form .hidden { display:none !important; }
+
+/* Prevent multi-selects from expanding too tall */
+.gate-pass-form select[multiple] { min-height:120px; }
+
+/* Dynamic add input group tweaks */
+.gate-pass-form .input-group.input-group-sm input.form-control { font-size:0.8rem; }
+.gate-pass-form .input-group.input-group-sm .btn { font-size:0.75rem; line-height:1.1; }
