@@ -2,6 +2,8 @@
 from odoo import http
 from odoo.http import request
 import json
+import random
+from datetime import datetime, timedelta
 
 from odoo import models, fields
 
@@ -22,10 +24,14 @@ class GatePassDashboardController(http.Controller):
             expired_passes = gate_pass_obj.search_count([('state', '=', 'expired')])
 
             # New permit counts from separate models
-            hot_work_permits = request.env['hot.work.permit'].search_count([])
-            energized_work_permits = request.env['energized.work.permit'].search_count([])
-            height_work_permits = request.env['work.heights.permit'].search_count([])
-            daily_work_permits = request.env['daily.permit.work'].search_count([])
+            hot_work_permits = request.env['hot.work.permit'].search_count(
+                []) if 'hot.work.permit' in request.env else 0
+            energized_work_permits = request.env['energized.work.permit'].search_count(
+                []) if 'energized.work.permit' in request.env else 0
+            height_work_permits = request.env['work.heights.permit'].search_count(
+                []) if 'work.heights.permit' in request.env else 0
+            daily_work_permits = request.env['daily.permit.work'].search_count(
+                []) if 'daily.permit.work' in request.env else 0
 
             # Total permits is sum of all permit types
             total_permits = hot_work_permits + energized_work_permits + height_work_permits + daily_work_permits
@@ -83,72 +89,8 @@ class GatePassDashboardController(http.Controller):
             except:
                 pass
 
-            # Plant layout data with real locations and employee distribution
-            plant_layout_data = []
-
-            # Define plant areas with coordinates
-            plant_areas = [
-                {'name': 'Main Gate', 'x': 10, 'y': 90},
-                {'name': 'Production Unit A', 'x': 25, 'y': 60},
-                {'name': 'Production Unit B', 'x': 75, 'y': 60},
-                {'name': 'Warehouse', 'x': 50, 'y': 80},
-                {'name': 'Quality Lab', 'x': 40, 'y': 30},
-                {'name': 'Maintenance Shop', 'x': 20, 'y': 20},
-                {'name': 'Power Plant', 'x': 80, 'y': 30},
-                {'name': 'Washing Machine', 'x': 60, 'y': 15},
-                {'name': 'Canteen', 'x': 50, 'y': 45},
-                {'name': 'Security Office', 'x': 10, 'y': 70},
-                {'name': 'Fire Station', 'x': 90, 'y': 80},
-                {'name': 'Raw Material Store', 'x': 30, 'y': 85}
-            ]
-
-            for area in plant_areas:
-                # Try to get employee count using location_id if it exists
-                try:
-                    if hasattr(gate_pass_obj, 'location_id'):
-                        employee_count = gate_pass_obj.search_count([
-                            ('state', 'in', ['approved', 'in_progress']),
-                            ('location_id.name', 'ilike', area['name'])
-                        ])
-                    else:
-                        # Use department-based distribution if location field doesn't exist
-                        employee_count = gate_pass_obj.search_count([
-                            ('state', 'in', ['approved', 'in_progress'])
-                        ])
-                        # Distribute employees across areas based on area type
-                        if 'Production' in area['name']:
-                            employee_count = int(employee_count * 0.3)  # 30% in production
-                        elif 'Maintenance' in area['name']:
-                            employee_count = int(employee_count * 0.15)  # 15% in maintenance
-                        elif 'Admin' in area['name']:
-                            employee_count = int(employee_count * 0.1)  # 10% in admin
-                        else:
-                            employee_count = int(employee_count * 0.05)  # 5% in other areas
-
-                except Exception:
-                    # Fallback to random distribution for demo
-                    import random
-                    total_active = gate_pass_obj.search_count([
-                        ('state', 'in', ['approved', 'in_progress'])
-                    ])
-                    if total_active > 0:
-                        # Distribute total active passes across areas
-                        if 'Production' in area['name']:
-                            employee_count = random.randint(5, min(15, total_active))
-                        elif 'Gate' in area['name'] or 'Security' in area['name']:
-                            employee_count = random.randint(2, min(8, total_active))
-                        else:
-                            employee_count = random.randint(0, min(5, total_active))
-                    else:
-                        employee_count = random.randint(0, 12)
-
-                plant_layout_data.append({
-                    'name': area['name'],
-                    'employee_count': employee_count,
-                    'x': area['x'],
-                    'y': area['y'],
-                    'color': self._get_location_color(employee_count)
-                })
+            # Generate plant layout data
+            plant_layout_data = self._get_plant_layout_data(gate_pass_obj, active_passes)
 
             location_chart = {
                 'labels': [item['location_id'][1] if item['location_id'] else 'No Location' for item in location_data],
@@ -156,7 +98,6 @@ class GatePassDashboardController(http.Controller):
             }
 
             # Recent activity - last 7 days
-            from datetime import datetime, timedelta
             week_ago = datetime.now() - timedelta(days=7)
             recent_passes = gate_pass_obj.search_count([
                 ('create_date', '>=', week_ago.strftime('%Y-%m-%d'))
@@ -214,6 +155,98 @@ class GatePassDashboardController(http.Controller):
                 'success': False,
                 'error': str(e)
             }
+
+    def _get_plant_layout_data(self, gate_pass_obj, active_passes):
+        """Generate plant layout data with smart fallback to dummy data"""
+
+        # Define plant areas with coordinates
+        plant_areas = [
+            {'name': 'Main Gate', 'x': 10, 'y': 90, 'category': 'entry'},
+            {'name': 'Production Unit A', 'x': 25, 'y': 60, 'category': 'production'},
+            {'name': 'Production Unit B', 'x': 75, 'y': 60, 'category': 'production'},
+            {'name': 'Warehouse', 'x': 50, 'y': 80, 'category': 'storage'},
+            {'name': 'Quality Lab', 'x': 40, 'y': 30, 'category': 'quality'},
+            {'name': 'Maintenance Shop', 'x': 20, 'y': 20, 'category': 'maintenance'},
+            {'name': 'Power Plant', 'x': 80, 'y': 30, 'category': 'utility'},
+            {'name': 'Washing Machine', 'x': 60, 'y': 15, 'category': 'utility'},
+            {'name': 'Canteen', 'x': 50, 'y': 45, 'category': 'facility'},
+            {'name': 'Security Office', 'x': 10, 'y': 70, 'category': 'security'},
+            {'name': 'Fire Station', 'x': 90, 'y': 80, 'category': 'safety'},
+            {'name': 'Raw Material Store', 'x': 30, 'y': 85, 'category': 'storage'}
+        ]
+
+        plant_layout_data = []
+        has_real_data = False
+
+        for area in plant_areas:
+            employee_count = 0
+
+            # Try to get real data from location field
+            try:
+                if hasattr(gate_pass_obj, 'location_id'):
+                    employee_count = gate_pass_obj.search_count([
+                        ('state', 'in', ['approved', 'in_progress']),
+                        ('location_id.name', 'ilike', area['name'])
+                    ])
+                    if employee_count > 0:
+                        has_real_data = True
+            except:
+                pass
+
+            # If no real data found, generate dummy data
+            if not has_real_data:
+                employee_count = self._generate_dummy_employee_count(area['category'], active_passes)
+
+            plant_layout_data.append({
+                'name': area['name'],
+                'employee_count': employee_count,
+                'x': area['x'],
+                'y': area['y'],
+                'color': self._get_location_color(employee_count),
+                'category': area['category']
+            })
+
+        return plant_layout_data
+
+    def _generate_dummy_employee_count(self, category, total_active):
+        """Generate realistic dummy employee counts based on location category"""
+
+        # If no active passes at all, generate small random numbers
+        if total_active == 0:
+            base_ranges = {
+                'production': (8, 25),
+                'maintenance': (3, 12),
+                'storage': (2, 8),
+                'quality': (2, 6),
+                'utility': (1, 5),
+                'facility': (3, 10),
+                'security': (2, 6),
+                'safety': (1, 4),
+                'entry': (5, 15)
+            }
+        else:
+            # Distribute based on total active passes
+            if total_active < 10:
+                multiplier = 0.3
+            elif total_active < 50:
+                multiplier = 0.6
+            else:
+                multiplier = 1.0
+
+            base_ranges = {
+                'production': (int(10 * multiplier), int(30 * multiplier)),
+                'maintenance': (int(5 * multiplier), int(15 * multiplier)),
+                'storage': (int(3 * multiplier), int(10 * multiplier)),
+                'quality': (int(2 * multiplier), int(8 * multiplier)),
+                'utility': (int(2 * multiplier), int(6 * multiplier)),
+                'facility': (int(4 * multiplier), int(12 * multiplier)),
+                'security': (int(3 * multiplier), int(8 * multiplier)),
+                'safety': (int(1 * multiplier), int(5 * multiplier)),
+                'entry': (int(6 * multiplier), int(18 * multiplier))
+            }
+
+        min_count, max_count = base_ranges.get(category, (1, 10))
+        return random.randint(min_count, max_count)
 
     def _get_location_color(self, employee_count):
         """Return color based on employee count"""
