@@ -37,7 +37,7 @@
                             <!-- <field name="payslip_count" readonly="0" invisible="0"/> -->
                             <field name="related_partners_count" readonly="0" invisible="0"/>
                             <field name="child_all_count" readonly="0" invisible="0"/>
-                            <field name="expense_manager_id" readonly="0" invisible="0"/>
+                            <!-- <field name="expense_manager_id" readonly="0" invisible="0"/> -->
 
                             <field name="has_timesheet" readonly="0" invisible="0"/>
                             <field name="total_overtime" readonly="0" invisible="0"/>

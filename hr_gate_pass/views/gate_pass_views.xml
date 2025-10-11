@@ -78,6 +78,7 @@
             <form string="Gate Pass" create="1">
                 <header>
                     <button name="action_submit" type="object" string="Submit" class="btn-primary gp-btn-submit" confirm="Submit this gate pass for approval?" invisible="state != 'draft'"/>
+                    <button name="action_back_to_draft" type="object" string="Back to Draft" class="btn-secondary gp-btn-reset" confirm="Revert this gate pass to Draft?" invisible="state != 'to_approve'" />
                     <button name="action_approve" type="object" string="Approve" class="btn-primary gp-btn-approve" groups="hr_gate_pass.group_gatepass_manager,hr_gate_pass.group_gatepass_admin" confirm="Approve this gate pass?" invisible="state != 'to_approve'"/>
                     <button name="action_reject" type="object" string="Reject" class="gp-btn-reject" confirm="Reject this gate pass?" groups="hr_gate_pass.group_gatepass_manager,hr_gate_pass.group_gatepass_admin" invisible="state != 'to_approve'"/>
                     <button name="action_issue" type="object" string="Issue" class="gp-btn-issue" groups="hr_gate_pass.group_gatepass_security,hr_gate_pass.group_gatepass_hr" confirm="Issue this gate pass and generate QR if needed?" invisible="state != 'approved'"/>
@@ -113,9 +114,9 @@
                             <field name="department_id" readonly="state != 'draft'"/>
                             <field name="area_of_visit" invisible="not (pass_type in ['visitor','contractor','vehicle'])" readonly="state != 'draft'"/>
                             <field name="representing_from" invisible="pass_type != 'visitor'" required="pass_type == 'visitor'" readonly="state != 'draft'" />
-                            <field name="representing_from_text" widget="many2many_tags" invisible="pass_type != 'visitor'" required="pass_type == 'visitor'" readonly="state != 'draft'" />
-                            <field name="employee_ids" widget="many2many_tags" invisible="pass_type != 'employee_out'" readonly="state != 'draft'"/>
-                            <field name="id_no_ids" widget="many2many_tags" readonly="state != 'draft'"/>
+                            <field name="representing_from_text" placeholder="Enter representing details" invisible="pass_type != 'visitor'" required="pass_type == 'visitor'" readonly="state not in ['draft','to_approve']" />
+                            <field name="employee_ids" widget="many2many_tags" invisible="pass_type != 'employee_out'" readonly="state not in ['draft','to_approve']"/>
+                            <field name="id_no_id" readonly="state not in ['draft','to_approve']" />
 
                             <!-- Area of Visit for Visitor/Contractor/Vehicle -->
                             <field name="reason" required="1" readonly="state != 'draft'"/>

@@ -258,12 +258,3 @@ class GatePassDashboardController(http.Controller):
             return '#FF9800'  # Orange - Medium
         else:
             return '#F44336'  # Red - High
-
-
-class ResUsers(models.Model):
-    _inherit = 'res.users'
-
-    chatter_position = fields.Selection([
-        ('normal', 'Normal'),
-        ('sided', 'Sided')
-    ], string='Chatter Position', default='normal')

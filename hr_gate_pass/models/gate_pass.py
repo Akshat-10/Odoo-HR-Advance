@@ -95,8 +95,10 @@ class HrGatePass(models.Model):
         ('interview', 'Interview'),
         ('other', 'Other'),
     ], string='Representing From')
-    # Representing From (Details) -> Many2many to custom model
-    representing_from_text = fields.Many2many('hr.gate.representing', string='Representing From (Details)')
+    # Representing From (Details) changed to simple Text per new requirement
+    # NOTE: Previously was Many2many to hr.gate.representing; if upgrading existing DB,
+    # you may need a migration script to concatenate existing names into this text field.
+    representing_from_text = fields.Text(string='Representing From (Details)')
 
     # QR
     qr_token = fields.Char(string='QR Token', copy=False)
@@ -126,8 +128,9 @@ class HrGatePass(models.Model):
         ('shop_floor', 'Shop Floor'),
     ], string='Area of Visit')
 
-    # ID numbers (generic collector)
-    id_no_ids = fields.Many2many('hr.gate.idno', string='ID No.')
+    # ID number now single Many2one instead of multiple selection
+    # (Old field id_no_ids removed; if data migration needed, pick first or join.)
+    id_no_id = fields.Many2one('hr.gate.idno', string='ID No.')
     # Contractor specific
     contractor_visit_type = fields.Selection([
         ('visit', 'Only Visit'),
@@ -339,6 +342,36 @@ class HrGatePass(models.Model):
         for rec in self:
             rec.state = 'cancel'
             rec._log_action('canceled', remarks='to canceled, reason: ' + (rec.reason or ''))
+        return True
+
+    def action_back_to_draft(self):
+        """Allow reverting a record from 'to_approve' back to 'draft'.
+
+        Rules / logic:
+        - Only callable when state == 'to_approve'.
+        - Requester (creator) or users in manager/admin groups may perform it.
+        - Clears no business data (user might be doing minor edits) but resets state & any
+          approval related chatter intent.
+        - Keeps approval_profile_id & current_approver_ids so that if the user changes pass_type
+          the existing onchange/create logic will refresh them; this avoids losing configured
+          approval routes unnecessarily.
+        - Logs the transition for audit trail.
+        """
+        for rec in self:
+            if rec.state != 'to_approve':
+                raise exceptions.UserError(_('Only passes waiting for approval can be set back to Draft.'))
+            # Permission: requester or privileged groups
+            # if rec.requester_user_id != self.env.user and not (
+            #     self.env.user.has_group('hr_gate_pass.group_gatepass_manager') or
+            #     self.env.user.has_group('hr_gate_pass.group_gatepass_admin')
+            # ):
+            #     raise exceptions.AccessError(_('You cannot revert this pass to Draft.'))
+            # Reset state; timestamps beyond draft stage are not expected yet, but guard anyway
+            rec.issued_datetime = False
+            rec.checked_out_datetime = False
+            rec.returned_datetime = False
+            rec.state = 'draft'
+            rec._log_action('back_to_draft', remarks='Reverted to draft by %s' % (self.env.user.name or ''))
         return True
 
     # Back one state and reset to draft

@@ -14,7 +14,8 @@
     "depends": ["hr", "hr_recruitment",
                 'hr_attendance', 'hr_holidays', 'hr_contract','hr_org_chart', 
                 # 'hr_payroll', 
-                'hr_expense', 'hr_induction', 'hr_employee_updation', 'hr_timesheet'
+                # 'hr_expense',
+                'hr_induction', 'hr_employee_updation', 'hr_timesheet'
                 ],
     "data": [
         'views/hr_employee_views.xml',
