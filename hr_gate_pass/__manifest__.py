@@ -38,12 +38,15 @@
     'assets': {
         'web.assets_backend': [
 
+            ('include', 'web._assets_helpers'),
+            'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js',
+
             'hr_gate_pass/static/src/css/gate_pass_buttons.css',
             'hr_gate_pass/static/src/css/gate_pass_dashboard.css',
             'hr_gate_pass/static/src/js/gate_pass_dashboard.js',
+            'hr_gate_pass/static/src/js/plant_layout.js',
             'hr_gate_pass/static/src/xml/gate_pass_dashboard.xml',
-            ('include', 'web._assets_helpers'),
-            'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js',
+            'hr_gate_pass/static/src/xml/plant_layout_template.xml',
         ],
     },
     # 'assets': {

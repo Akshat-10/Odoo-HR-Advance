@@ -9,6 +9,13 @@
             <field name="target">current</field>
         </record>
 
+        <!-- Plant Layout Action -->
+        <record id="action_plant_layout" model="ir.actions.client">
+            <field name="name">Plant Layout</field>
+            <field name="tag">plant_layout_view</field>
+            <field name="target">current</field>
+        </record>
+
         <!-- Menu Item for Dashboard -->
         <menuitem
             id="menu_gate_pass_dashboard"
@@ -17,9 +24,13 @@
             action="action_gate_pass_dashboard"
             sequence="1"/>
 
-
-
-
+        <!-- Menu Item for Plant Layout -->
+        <menuitem
+            id="menu_plant_layout"
+            name="Plant Layout"
+            parent="menu_gate_pass_root"
+            action="action_plant_layout"
+            sequence="2"/>
 
     </data>
 </odoo>
