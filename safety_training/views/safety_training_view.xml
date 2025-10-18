@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Safety Training Video Views -->
+    <record id="view_safety_training_video_form" model="ir.ui.view">
+        <field name="name">safety.training.video.form</field>
+        <field name="model">safety.training.video</field>
+        <field name="arch" type="xml">
+            <form string="Safety Training Video">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="pass_type"/>
+                            <field name="duration"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="pass_percentage"/>
+                            <field name="total_questions_per_test"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                        <field name="video_url"/>
+                        <field name="video_file" filename="video_filename"/>
+                    </group>
+                    <notebook>
+                        <page string="Questions">
+                            <field name="question_ids">
+                                <list editable="bottom">
+                                    <field name="question"/>
+                                    <field name="category"/>
+                                    <field name="correct_answer"/>
+                                    <field name="active"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_safety_training_video_list" model="ir.ui.view">
+        <field name="name">safety.training.video.list</field>
+        <field name="model">safety.training.video</field>
+        <field name="arch" type="xml">
+            <list string="Safety Training Videos">
+                <field name="name"/>
+                <field name="pass_type"/>
+                <field name="duration"/>
+                <field name="pass_percentage"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Safety Training Question Views -->
+    <record id="view_safety_training_question_form" model="ir.ui.view">
+        <field name="name">safety.training.question.form</field>
+        <field name="model">safety.training.question</field>
+        <field name="arch" type="xml">
+            <form string="Safety Training Question">
+                <sheet>
+                    <group>
+                        <field name="video_id"/>
+                        <field name="category"/>
+                        <field name="active"/>
+                    </group>
+                    <group>
+                        <field name="question" placeholder="Enter question here..."/>
+                    </group>
+                    <group>
+                        <group string="Options">
+                            <field name="option_a"/>
+                            <field name="option_b"/>
+                            <field name="option_c"/>
+                            <field name="option_d"/>
+                        </group>
+                        <group string="Answer">
+                            <field name="correct_answer" widget="radio"/>
+                            <field name="explanation"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_safety_training_question_list" model="ir.ui.view">
+        <field name="name">safety.training.question.list</field>
+        <field name="model">safety.training.question</field>
+        <field name="arch" type="xml">
+            <list string="Safety Training Questions">
+                <field name="video_id"/>
+                <field name="question"/>
+                <field name="category"/>
+                <field name="correct_answer"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Safety Training Attempt Views -->
+    <record id="view_safety_training_attempt_form" model="ir.ui.view">
+        <field name="name">safety.training.attempt.form</field>
+        <field name="model">safety.training.attempt</field>
+        <field name="arch" type="xml">
+            <form string="Safety Training Attempt" create="false" delete="false">
+                <header>
+                    <button name="action_start_video" string="Start Video" type="object"
+                            invisible="state != 'video_pending'" class="oe_highlight"/>
+                    <button name="action_complete_video" string="Video Completed" type="object"
+                            invisible="state != 'video_watching'" class="oe_highlight"/>
+                    <button name="action_start_test" string="Start Test" type="object"
+                            invisible="state != 'test_pending'" class="oe_highlight"/>
+                    <button name="action_retry" string="Retry Training" type="object"
+                            invisible="passed == True" class="oe_highlight"/>
+                    <field name="state" widget="statusbar" statusbar_visible="video_pending,video_watching,test_pending,test_in_progress,completed"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_retry" icon="fa-refresh"
+                                invisible="state != 'failed'">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Retry</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="video_id" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="gate_pass_id" readonly="1"/>
+                            <field name="user_id" readonly="1"/>
+                            <field name="attempt_number" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="video_completed"/>
+                            <field name="passed" invisible="state in ['video_pending', 'video_watching', 'test_pending']"/>
+                            <field name="score" invisible="state in ['video_pending', 'video_watching', 'test_pending']"
+                                   widget="progressbar"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Video" invisible="state not in ['video_pending', 'video_watching']">
+                            <group>
+                                <field name="video_started_at" readonly="1"/>
+                                <field name="video_watch_duration" readonly="1"/>
+                                <field name="video_skip_attempts" readonly="1"/>
+                            </group>
+                            <div class="alert alert-info" role="alert" style="margin: 10px;">
+                                <p><strong>Important Instructions:</strong></p>
+                                <ul>
+                                    <li>You must watch the complete video without skipping</li>
+                                    <li>If you try to skip or forward, the video will restart from beginning</li>
+                                    <li>Only after completing the video, you can proceed to the assessment</li>
+                                </ul>
+                            </div>
+                        </page>
+
+                        <page string="Assessment" invisible="state in ['video_pending', 'video_watching']">
+                            <group>
+                                <group>
+                                    <field name="test_started_at" readonly="1"/>
+                                    <field name="test_completed_at" readonly="1"/>
+                                    <field name="total_questions" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="correct_answers" readonly="1"/>
+                                    <field name="score" readonly="1"/>
+                                    <field name="passed" readonly="1"/>
+                                </group>
+                            </group>
+
+                            <div invisible="state != 'test_pending'" class="alert alert-warning" role="alert" style="margin: 10px;">
+                                <p><strong>Assessment Instructions:</strong></p>
+                                <ul>
+                                    <li>You will be asked <field name="total_questions" readonly="1" class="o_inline_field"/> questions</li>
+                                    <li>You must score at least 80% to pass</li>
+                                    <li>Questions are randomly selected from the question bank</li>
+                                    <li>Read each question carefully before answering</li>
+                                </ul>
+                            </div>
+
+                            <field name="answer_ids" invisible="state not in ['completed', 'failed']">
+                                <list create="false" delete="false">
+                                    <field name="question_id"/>
+                                    <field name="selected_answer"/>
+                                    <field name="is_correct" widget="boolean_toggle"/>
+                                    <field name="answered_at"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Results" invisible="state not in ['completed', 'failed']">
+                            <div invisible="passed == False" class="alert alert-success" role="alert" style="margin: 10px; padding: 20px;">
+                                <h3 style="color: green;"><i class="fa fa-check-circle"/> Congratulations!</h3>
+                                <p style="font-size: 16px;">You have successfully completed the safety training.</p>
+                                <group>
+                                    <field name="score" readonly="1" widget="progressbar"/>
+                                    <field name="correct_answers" readonly="1"/>
+                                    <field name="total_questions" readonly="1"/>
+                                </group>
+                                <p>You can now proceed with your gate pass submission.</p>
+                            </div>
+
+                            <div invisible="passed == True" class="alert alert-danger" role="alert" style="margin: 10px; padding: 20px;">
+                                <h3 style="color: red;"><i class="fa fa-times-circle"/> Training Not Passed</h3>
+                                <p style="font-size: 16px;">Unfortunately, you did not achieve the required 80% pass mark.</p>
+                                <group>
+                                    <field name="score" readonly="1" widget="progressbar"/>
+                                    <field name="correct_answers" readonly="1"/>
+                                    <field name="total_questions" readonly="1"/>
+                                </group>
+                                <p><strong>You must:</strong></p>
+                                <ul>
+                                    <li>Watch the safety video again</li>
+                                    <li>Take the assessment again</li>
+                                    <li>Score at least 80% to proceed</li>
+                                </ul>
+                                <p>Click the "Retry Training" button to start again.</p>
+                            </div>
+
+                            <group string="Answer Review">
+                                <field name="answer_ids" nolabel="1">
+                                    <list create="false" delete="false">
+                                        <field name="question_id"/>
+                                        <field name="selected_answer"/>
+                                        <field name="is_correct" widget="badge" decoration-success="is_correct == True" decoration-danger="is_correct == False"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+
+               <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_safety_training_attempt_list" model="ir.ui.view">
+        <field name="name">safety.training.attempt.list</field>
+        <field name="model">safety.training.attempt</field>
+        <field name="arch" type="xml">
+            <list string="Safety Training Attempts">
+                <field name="gate_pass_id"/>
+                <field name="user_id"/>
+                <field name="video_id"/>
+                <field name="attempt_number"/>
+                <field name="score" widget="progressbar"/>
+                <field name="passed" widget="badge" decoration-success="passed == True" decoration-danger="passed == False"/>
+                <field name="state" widget="badge"
+                       decoration-info="state in ['video_pending', 'video_watching']"
+                       decoration-warning="state in ['test_pending', 'test_in_progress']"
+                       decoration-success="state == 'completed'"
+                       decoration-danger="state == 'failed'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Inherit Gate Pass Form to Add Training Button -->
+    <record id="view_hr_gate_pass_form_training" model="ir.ui.view">
+        <field name="name">hr.gate.pass.form.training</field>
+        <field name="model">hr.gate.pass</field>
+        <field name="inherit_id" ref="hr_gate_pass.hr_gate_pass_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Add button before submit -->
+            <xpath expr="//header/button[@name='action_submit']" position="before">
+                <button name="action_start_training"
+                        string="Start Safety Training"
+                        type="object"
+                        class="oe_highlight"
+                        invisible="training_required == False or training_passed == True"/>
+            </xpath>
+
+            <!-- Add alert message section at the top of the sheet -->
+            <xpath expr="//sheet" position="inside">
+                <div class="alert alert-warning" role="alert"
+                     invisible="training_required == False or training_passed == True"
+                     style="margin-bottom: 20px;">
+                    <h4><i class="fa fa-exclamation-triangle"/> Safety Training Required</h4>
+                    <p>You must complete the mandatory safety training before submitting this gate pass.</p>
+                    <button name="action_start_training"
+                            string="Start Training Now"
+                            type="object"
+                            class="btn btn-primary"/>
+                </div>
+
+                <div class="alert alert-success" role="alert"
+                     invisible="training_passed == False"
+                     style="margin-bottom: 20px;">
+                    <h4><i class="fa fa-check-circle"/> Safety Training Completed</h4>
+                    <p>You have successfully completed the mandatory safety training. You may now submit the gate pass.</p>
+                </div>
+            </xpath>
+
+            <!-- Add notebook tab -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Safety Training" invisible="training_required == False">
+                    <group>
+                        <field name="training_required" readonly="1"/>
+                        <field name="training_completed" readonly="1"/>
+                        <field name="training_passed" readonly="1"/>
+                    </group>
+                    <field name="training_attempt_ids">
+                        <list>
+                            <field name="attempt_number"/>
+                            <field name="video_id"/>
+                            <field name="score" widget="progressbar"/>
+                            <field name="passed" widget="badge"/>
+                            <field name="state"/>
+                            <field name="create_date"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+
+ <!-- Actions -->
+    <record id="action_safety_training_video" model="ir.actions.act_window">
+        <field name="name">Safety Training Videos</field>
+        <field name="res_model">safety.training.video</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_safety_training_question" model="ir.actions.act_window">
+        <field name="name">Safety Training Questions</field>
+        <field name="res_model">safety.training.question</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_safety_training_attempt" model="ir.actions.act_window">
+        <field name="name">Safety Training Attempts</field>
+        <field name="res_model">safety.training.attempt</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <!-- Menu Items -->
+    <menuitem id="menu_safety_training_root" name="Safety Training"
+              parent="hr_gate_pass.menu_gate_pass_root" sequence="60" groups="hr_gate_pass.group_gatepass_admin,hr_gate_pass.group_gatepass_hr"/>
+
+    <menuitem id="menu_safety_training_videos" name="Training Videos"
+              parent="menu_safety_training_root" sequence="10"
+              action="action_safety_training_video"/>
+
+    <menuitem id="menu_safety_training_questions" name="Questions Bank"
+              parent="menu_safety_training_root" sequence="20"
+              action="action_safety_training_question"/>
+
+    <menuitem id="menu_safety_training_attempts" name="Training Attempts"
+              parent="menu_safety_training_root" sequence="30"
+              action="action_safety_training_attempt"/>
+
+
+</odoo>

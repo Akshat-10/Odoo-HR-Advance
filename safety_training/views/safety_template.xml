@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Safety Training Video Player Template -->
+    <template id="safety_training_video_player" name="Safety Training Video Player">
+        <t t-call="web.frontend_layout">
+            <div class="wrap">
+                <div class="container">
+                    <div class="training-container">
+                        <h1 class="text-center mb-4">Safety Training Assessment</h1>
+
+                        <!-- Start Section -->
+                        <div id="startSection" class="text-center" style="padding: 60px 20px;">
+                            <h2 class="mb-4">Welcome to GGSPL Safety Training</h2>
+                            <p class="lead mb-4">This mandatory training will help ensure your safety during your visit.</p>
+                            <div class="alert alert-info" style="max-width: 600px; margin: 0 auto 30px;">
+                                <h4>Training Process:</h4>
+                                <ol style="text-align: left; margin: 20px auto; max-width: 600px;">
+                                    <li>Watch the safety video (cannot skip)</li>
+                                    <li>Complete the assessment quiz</li>
+                                    <li>Score 80% or higher to pass</li>
+                                    <li>If you don't pass, you must repeat the training</li>
+                                </ol>
+                            </div>
+                            <button id="startTraining" class="btn btn-success btn-lg">
+                                <i class="fa fa-play"></i> Start Training
+                            </button>
+                        </div>
+
+                        <!-- Video Section -->
+                        <div id="videoSection" class="video-section" style="display: none;">
+                            <h2 class="mb-3">Safety Training Video</h2>
+                            <div class="alert alert-info">
+                                <h4><i class="fa fa-info-circle"></i> Important Instructions</h4>
+                                <ul style="text-align: left;">
+                                    <li><strong>Watch the complete video</strong> without skipping or forwarding</li>
+                                    <li>If you try to skip, the video will <strong>restart from the beginning</strong></li>
+                                    <li>Pay attention to all safety information</li>
+                                    <li>Only after completing the video can you proceed to the assessment</li>
+                                </ul>
+                            </div>
+
+                            <div class="video-wrapper">
+                                <video id="safetyVideo" controls="controls" controlsList="nodownload" disablePictureInPicture="true">
+                                    <source t-att-src="video_url" type="video/mp4"/>
+                                    Your browser does not support the video tag.
+                                </video>
+                                <div id="videoOverlay" class="video-overlay">
+                                    <div>
+                                        <i class="fa fa-play-circle" style="font-size: 60px;"></i>
+                                        <p>Click to Start Video</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="progress-bar-wrapper">
+                                <label>Video Progress:</label>
+                                <div class="progress">
+                                    <div id="videoProgress" class="progress-bar progress-bar-striped progress-bar-animated"
+                                         role="progressbar" style="width: 0%">0%</div>
+                                </div>
+                            </div>
+
+                            <div id="skipWarning" class="skip-warning" style="display: none;">
+                                <i class="fa fa-exclamation-triangle" style="font-size: 50px; margin-bottom: 15px;"></i>
+                                <h3>Video Skipping Not Allowed!</h3>
+                                <p>The video will restart from the beginning.</p>
+                                <p>Skip attempts: <span id="skipCount">0</span></p>
+                            </div>
+                        </div>
+
+                        <!-- Quiz Section -->
+                        <div id="quizSection" class="quiz-section" style="display: none;">
+                            <h2 class="mb-4">Safety Assessment</h2>
+                            <div class="alert alert-warning">
+                                <h4><i class="fa fa-question-circle"></i> Assessment Instructions</h4>
+                                <ul style="text-align: left;">
+                                    <li>You will be asked <strong><span id="totalQuestions">5</span> questions</strong></li>
+                                    <li>You must score at least <strong>80%</strong> to pass</li>
+                                    <li>Read each question carefully before answering</li>
+                                    <li>All questions must be answered</li>
+                                </ul>
+                            </div>
+
+                            <form id="quizForm">
+                                <div id="questionsContainer"></div>
+                                <div class="text-center mt-4">
+                                    <button type="button" id="submitQuiz" class="btn btn-primary btn-lg">
+                                        <i class="fa fa-check"></i> Submit Assessment
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Result Section -->
+                        <div id="resultSection" class="result-section" style="display: none;">
+                            <div id="resultContent"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pass data to JavaScript -->
+            <input type="hidden" id="attemptId" t-att-value="attempt.id"/>
+            <input type="hidden" id="videoUrl" t-att-value="video_url"/>
+            <input type="hidden" id="videoDuration" t-att-value="video_duration"/>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,593 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Safety Training Video Player Template -->
+    <template id="safety_training_video_player" name="Safety Training Video Player">
+        <t t-call="web.frontend_layout">
+            <div class="training-container">
+                <style>
+                    .training-container {
+                        max-width: 1200px;
+                        margin: 20px auto;
+                        padding: 20px;
+                        background: #f8f9fa;
+                    }
+                    .video-section {
+                        background: white;
+                        padding: 20px;
+                        border-radius: 8px;
+                        margin-bottom: 20px;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    }
+                    .video-wrapper {
+                        position: relative;
+                        width: 100%;
+                        padding-bottom: 56.25%;
+                        background: #000;
+                        border-radius: 8px;
+                        overflow: hidden;
+                    }
+                    .video-wrapper video {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                    }
+                    .video-overlay {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0,0,0,0.8);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: white;
+                        font-size: 24px;
+                        z-index: 10;
+                        cursor: pointer;
+                    }
+                    .progress-bar-wrapper {
+                        margin-top: 15px;
+                    }
+                    .progress {
+                        height: 30px;
+                        font-size: 16px;
+                    }
+                    .quiz-section {
+                        background: white;
+                        padding: 30px;
+                        border-radius: 8px;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    }
+                    .question-card {
+                        background: #f8f9fa;
+                        padding: 25px;
+                        margin-bottom: 25px;
+                        border-radius: 8px;
+                        border-left: 4px solid #007bff;
+                    }
+                    .question-text {
+                        font-size: 18px;
+                        font-weight: 600;
+                        margin-bottom: 20px;
+                        color: #333;
+                    }
+                    .option-group {
+                        margin-top: 15px;
+                    }
+                    .option-label {
+                        display: block;
+                        padding: 15px;
+                        margin-bottom: 10px;
+                        background: white;
+                        border: 2px solid #dee2e6;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                    }
+                    .option-label:hover {
+                        border-color: #007bff;
+                        background: #f0f8ff;
+                    }
+                    .option-label input[type="radio"] {
+                        margin-right: 12px;
+                    }
+                    .option-label.correct {
+                        border-color: #28a745;
+                        background: #d4edda;
+                    }
+                    .option-label.incorrect {
+                        border-color: #dc3545;
+                        background: #f8d7da;
+                    }
+                    .option-label.selected {
+                        border-color: #007bff;
+                        background: #e7f3ff;
+                    }
+                    .result-section {
+                        background: white;
+                        padding: 40px;
+                        border-radius: 8px;
+                        text-align: center;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    }
+                    .result-passed {
+                        border-top: 5px solid #28a745;
+                    }
+                    .result-failed {
+                        border-top: 5px solid #dc3545;
+                    }
+                    .result-icon {
+                        font-size: 80px;
+                        margin-bottom: 20px;
+                    }
+                    .result-score {
+                        font-size: 48px;
+                        font-weight: bold;
+                        margin: 20px 0;
+                    }
+                    .btn-custom {
+                        padding: 12px 30px;
+                        font-size: 16px;
+                        border-radius: 6px;
+                        margin: 10px;
+                    }
+                    .alert-custom {
+                        padding: 20px;
+                        margin-bottom: 20px;
+                        border-radius: 6px;
+                    }
+                    .instruction-list {
+                        text-align: left;
+                        margin: 20px auto;
+                        max-width: 600px;
+                    }
+                    .instruction-list li {
+                        margin-bottom: 10px;
+                        font-size: 16px;
+                    }
+                    .skip-warning {
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        background: rgba(220, 53, 69, 0.95);
+                        color: white;
+                        padding: 30px;
+                        border-radius: 8px;
+                        z-index: 1000;
+                        text-align: center;
+                        min-width: 400px;
+                        display: none;
+                    }
+                    .explanation-box {
+                        background: #e7f3ff;
+                        padding: 15px;
+                        margin-top: 10px;
+                        border-radius: 6px;
+                        border-left: 4px solid #007bff;
+                    }
+                </style>
+
+                <h1 class="text-center mb-4">Safety Training Assessment</h1>
+
+                <!-- Video Section -->
+                <div id="videoSection" class="video-section" style="display: none;">
+                    <h2 class="mb-3">Safety Training Video</h2>
+                    <div class="alert alert-custom alert-info">
+                        <h4><i class="fa fa-info-circle"></i> Important Instructions</h4>
+                        <ul class="instruction-list">
+                            <li><strong>Watch the complete video</strong> without skipping or forwarding</li>
+                            <li>If you try to skip, the video will <strong>restart from the beginning</strong></li>
+                            <li>Pay attention to all safety information</li>
+                            <li>Only after completing the video can you proceed to the assessment</li>
+                        </ul>
+                    </div>
+
+                    <div class="video-wrapper">
+                        <video id="safetyVideo" controls="controls" controlsList="nodownload" disablePictureInPicture="true">
+                            <source t-att-src="video_url" type="video/mp4"/>
+                            Your browser does not support the video tag.
+                        </video>
+                        <div id="videoOverlay" class="video-overlay">
+                            <div>
+                                <i class="fa fa-play-circle" style="font-size: 60px;"></i>
+                                <p>Click to Start Video</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="progress-bar-wrapper">
+                        <label>Video Progress:</label>
+                        <div class="progress">
+                            <div id="videoProgress" class="progress-bar progress-bar-striped progress-bar-animated"
+                                 role="progressbar" style="width: 0%">0%</div>
+                        </div>
+                    </div>
+
+                    <div id="skipWarning" class="skip-warning">
+                        <i class="fa fa-exclamation-triangle" style="font-size: 50px; margin-bottom: 15px;"></i>
+                        <h3>Video Skipping Not Allowed!</h3>
+                        <p>The video will restart from the beginning.</p>
+                        <p>Skip attempts: <span id="skipCount">0</span></p>
+                    </div>
+                </div>
+
+                <!-- Quiz Section -->
+                <div id="quizSection" class="quiz-section" style="display: none;">
+                    <h2 class="mb-4">Safety Assessment</h2>
+                    <div class="alert alert-custom alert-warning">
+                        <h4><i class="fa fa-question-circle"></i> Assessment Instructions</h4>
+                        <ul class="instruction-list">
+                            <li>You will be asked <strong><span id="totalQuestions">5</span> questions</strong></li>
+                            <li>You must score at least <strong>80%</strong> to pass</li>
+                            <li>Read each question carefully before answering</li>
+                            <li>All questions must be answered</li>
+                        </ul>
+                    </div>
+
+                    <form id="quizForm">
+                        <div id="questionsContainer"></div>
+                        <div class="text-center mt-4">
+                            <button type="button" id="submitQuiz" class="btn btn-primary btn-lg btn-custom">
+                                <i class="fa fa-check"></i> Submit Assessment
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Result Section -->
+                <div id="resultSection" class="result-section" style="display: none;">
+                    <div id="resultContent"></div>
+                </div>
+
+                <!-- Start Button -->
+                <div id="startSection" class="text-center" style="padding: 60px 20px;">
+                    <h2 class="mb-4">Welcome to GGSPL Safety Training</h2>
+                    <p class="lead mb-4">This mandatory training will help ensure your safety during your visit.</p>
+                    <div class="alert alert-custom alert-info" style="max-width: 600px; margin: 0 auto 30px;">
+                        <h4>Training Process:</h4>
+                        <ol class="instruction-list">
+                            <li>Watch the safety video (cannot skip)</li>
+                            <li>Complete the assessment quiz</li>
+                            <li>Score 80% or higher to pass</li>
+                            <li>If you don't pass, you must repeat the training</li>
+                        </ol>
+                    </div>
+                    <button id="startTraining" class="btn btn-success btn-lg btn-custom">
+                        <i class="fa fa-play"></i> Start Training
+                    </button>
+                </div>
+            </div>
+
+            <script type="text/javascript">
+                (function() {
+                    'use strict';
+
+                    var attemptId = <t t-esc="attempt.id"/>;
+                    var videoUrl = '<t t-esc="video_url"/>';
+                    var videoDuration = <t t-esc="video_duration"/>;
+
+                    var video = null;
+                    var questions = [];
+                    var userAnswers = {};
+                    var skipAttempts = 0;
+                    var lastValidTime = 0;
+                    var videoCompleted = false;
+
+                    // Initialize
+                    document.addEventListener('DOMContentLoaded', function() {
+                        document.getElementById('startTraining').addEventListener('click', startTraining);
+                        document.getElementById('submitQuiz').addEventListener('click', submitQuiz);
+                    });
+
+                    function startTraining() {
+                        document.getElementById('startSection').style.display = 'none';
+                        document.getElementById('videoSection').style.display = 'block';
+                        initVideo();
+                    }
+
+                    function initVideo() {
+                        video = document.getElementById('safetyVideo');
+
+                        // Disable right-click
+                        video.addEventListener('contextmenu', function(e) {
+                            e.preventDefault();
+                        });
+
+                        // Prevent seeking forward
+                        video.addEventListener('seeking', function() {
+                            if (!videoCompleted && video.currentTime > lastValidTime + 1) {
+                                skipAttempts++;
+                                showSkipWarning();
+                                video.currentTime = 0;
+                                lastValidTime = 0;
+                                updateProgress(0);
+                            }
+                        });
+
+                        // Track progress
+                        video.addEventListener('timeupdate', function() {
+                            if (video.currentTime > lastValidTime) {
+                                lastValidTime = video.currentTime;
+                            }
+                            var progress = (video.currentTime / video.duration) * 100;
+                            updateProgress(progress);
+                        });
+
+                        // Video ended
+                        video.addEventListener('ended', function() {
+                            videoCompleted = true;
+                            onVideoComplete();
+                        });
+
+                        // Play video on overlay click
+                        document.getElementById('videoOverlay').addEventListener('click', function() {
+                            this.style.display = 'none';
+                            video.play();
+                            notifyVideoStarted();
+                        });
+                    }
+
+                    function updateProgress(percent) {
+                        var progressBar = document.getElementById('videoProgress');
+                        progressBar.style.width = percent + '%';
+                        progressBar.textContent = Math.round(percent) + '%';
+                    }
+
+                    function showSkipWarning() {
+                        document.getElementById('skipCount').textContent = skipAttempts;
+                        var warning = document.getElementById('skipWarning');
+                        warning.style.display = 'block';
+                        setTimeout(function() {
+                            warning.style.display = 'none';
+                        }, 3000);
+                        notifySkipAttempt();
+                    }
+
+                    function onVideoComplete() {
+                        fetch('/safety_training/video_complete', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                jsonrpc: "2.0",
+                                method: "call",
+                                params: {
+                                    attempt_id: attemptId
+                                }
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.result && data.result.success) {
+                                loadQuiz();
+                            }
+                        });
+                    }
+
+                    function loadQuiz() {
+                        document.getElementById('videoSection').style.display = 'none';
+                        document.getElementById('quizSection').style.display = 'block';
+
+                        fetch('/safety_training/get_questions', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                jsonrpc: "2.0",
+                                method: "call",
+                                params: {
+                                    attempt_id: attemptId
+                                }
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.result && data.result.success) {
+                                questions = data.result.questions;
+                                renderQuestions();
+                            }
+                        });
+                    }
+
+                    function renderQuestions() {
+                        var container = document.getElementById('questionsContainer');
+                        container.innerHTML = '';
+
+                        document.getElementById('totalQuestions').textContent = questions.length;
+
+                        questions.forEach(function(q, index) {
+                            var questionDiv = document.createElement('div');
+                            questionDiv.className = 'question-card';
+                            questionDiv.innerHTML = `
+                                <div class="question-text">
+                                    <strong>Question ${index + 1}:</strong> ${q.question}
+                                </div>
+                                <div class="option-group">
+                                    <label class="option-label">
+                                        <input type="radio" name="question_${q.id}" value="a" required/>
+                                        <strong>A)</strong> ${q.option_a}
+                                    </label>
+                                    <label class="option-label">
+                                        <input type="radio" name="question_${q.id}" value="b" required/>
+                                        <strong>B)</strong> ${q.option_b}
+                                    </label>
+                                    <label class="option-label">
+                                        <input type="radio" name="question_${q.id}" value="c" required/>
+                                        <strong>C)</strong> ${q.option_c}
+                                    </label>
+                                    <label class="option-label">
+                                        <input type="radio" name="question_${q.id}" value="d" required/>
+                                        <strong>D)</strong> ${q.option_d}
+                                    </label>
+                                </div>
+                            `;
+                            container.appendChild(questionDiv);
+                        });
+
+                        // Handle option selection
+                        var labels = document.querySelectorAll('.option-label');
+                        labels.forEach(function(label) {
+                            label.addEventListener('click', function() {
+                                var radio = this.querySelector('input[type="radio"]');
+                                radio.checked = true;
+                                var siblings = this.parentElement.querySelectorAll('.option-label');
+                                siblings.forEach(function(s) {
+                                    s.classList.remove('selected');
+                                });
+                                this.classList.add('selected');
+                            });
+                        });
+                    }
+
+                    function submitQuiz() {
+                        // Collect answers
+                        userAnswers = {};
+                        var allAnswered = true;
+
+                        questions.forEach(function(q) {
+                            var selected = document.querySelector('input[name="question_' + q.id + '"]:checked');
+                            if (selected) {
+                                userAnswers[q.id] = selected.value;
+                            } else {
+                                allAnswered = false;
+                            }
+                        });
+
+                        if (!allAnswered) {
+                            alert('Please answer all questions before submitting.');
+                            return;
+                        }
+
+                        // Submit answers
+                        fetch('/safety_training/submit_answers', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                jsonrpc: "2.0",
+                                method: "call",
+                                params: {
+                                    attempt_id: attemptId,
+                                    answers: userAnswers
+                                }
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.result && data.result.success) {
+                                showResults(data.result);
+                            }
+                        });
+                    }
+
+                    function showResults(result) {
+                        document.getElementById('quizSection').style.display = 'none';
+                        document.getElementById('resultSection').style.display = 'block';
+
+                        var passedClass = result.passed ? 'result-passed' : 'result-failed';
+                        var iconClass = result.passed ? 'fa-check-circle text-success' : 'fa-times-circle text-danger';
+                        var iconColor = result.passed ? '#28a745' : '#dc3545';
+
+                        var resultHtml = `
+                            <div class="${passedClass}">
+                                <div class="result-icon">
+                                    <i class="fa ${iconClass}" style="color: ${iconColor}"></i>
+                                </div>
+                                <h2>${result.passed ? 'Congratulations!' : 'Training Not Passed'}</h2>
+                                <div class="result-score" style="color: ${iconColor}">
+                                    ${result.score.toFixed(1)}%
+                                </div>
+                                <p class="lead">
+                                    You answered ${result.correct_answers} out of ${result.total_questions} questions correctly.
+                                </p>
+                        `;
+
+                        if (result.passed) {
+                            resultHtml += `
+                                <div class="alert alert-success mt-4">
+                                    <p><strong>You have successfully completed the safety training!</strong></p>
+                                    <p>You can now proceed with your gate pass submission.</p>
+                                </div>
+                                <button onclick="window.close()" class="btn btn-success btn-lg btn-custom">
+                                    <i class="fa fa-check"></i> Complete Training
+                                </button>
+                            `;
+                        } else {
+                            resultHtml += `
+                                <div class="alert alert-danger mt-4">
+                                    <p><strong>You need at least 80% to pass.</strong></p>
+                                    <p>You must watch the video and take the assessment again.</p>
+                                </div>
+                                <button onclick="location.reload()" class="btn btn-danger btn-lg btn-custom">
+                                    <i class="fa fa-refresh"></i> Retry Training
+                                </button>
+                            `;
+                        }
+
+                        // Show detailed answers
+                        resultHtml += '<div class="mt-5"><h3>Answer Review</h3>';
+                        result.answers.forEach(function(ans, index) {
+                            var isCorrect = ans.is_correct;
+                            var badgeClass = isCorrect ? 'badge-success' : 'badge-danger';
+                            resultHtml += `
+                                <div class="question-card">
+                                    <div class="question-text">
+                                        <strong>Question ${index + 1}:</strong> ${ans.question}
+                                        <span class="badge ${badgeClass}" style="float: right;">
+                                            ${isCorrect ? 'Correct' : 'Incorrect'}
+                                        </span>
+                                    </div>
+                                    <p><strong>Your answer:</strong> ${ans.selected_answer.toUpperCase()}</p>
+                                    <p><strong>Correct answer:</strong> ${ans.correct_answer.toUpperCase()}</p>
+                                    ${ans.explanation ? `<div class="explanation-box"><strong>Explanation:</strong> ${ans.explanation}</div>` : ''}
+                                </div>
+                            `;
+                        });
+                        resultHtml += '</div></div>';
+
+                        document.getElementById('resultContent').innerHTML = resultHtml;
+                    }
+
+                    function notifyVideoStarted() {
+                        fetch('/safety_training/video_started', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                jsonrpc: "2.0",
+                                method: "call",
+                                params: {
+                                    attempt_id: attemptId
+                                }
+                            })
+                        });
+                    }
+
+                    function notifySkipAttempt() {
+                        fetch('/safety_training/skip_attempt', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                jsonrpc: "2.0",
+                                method: "call",
+                                params: {
+                                    attempt_id: attemptId
+                                }
+                            })
+                        });
+                    }
+                })();
+            </script>
+        </t>
+    </template>
+</odoo>

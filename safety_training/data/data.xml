@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Safety Training Video for Visitors -->
+        <record id="safety_video_visitor" model="safety.training.video">
+            <field name="name">GGSPL Visitor Safety Training</field>
+            <field name="description">Mandatory safety training for all visitors at GGSPL workplace</field>
+            <field name="video_url">/safety_training/static/videos/visitor_safety.mp4</field>
+            <field name="duration">180</field>
+            <field name="pass_type">visitor</field>
+            <field name="pass_percentage">80.0</field>
+            <field name="total_questions_per_test">5</field>
+        </record>
+
+        <!-- PPE Questions -->
+        <record id="question_ppe_01" model="safety.training.question">
+            <field name="video_id" ref="safety_video_visitor"/>
+            <field name="question">What PPE must be worn during your entire visit and stay in the GGSPL plant?</field>
+            <field name="option_a">Safety Helmet</field>
+            <field name="option_b">Casual Cap</field>
+            <field name="option_c">Sun Hat</field>
+            <field name="option_d">No headgear required</field>
+            <field name="correct_answer">a</field>
+            <field name="category">ppe</field>
+            <field name="explanation">Safety Helmet must be worn at all times during visit and stay in Plant for head protection.</field>
+        </record>
+
+        <record id="question_ppe_02" model="safety.training.question">
+            <field name="video_id" ref="safety_video_visitor"/>
+            <field name="question">When should you wear ear plugs or ear muffs at GGSPL?</field>
+            <field name="option_a">Only if you feel noise is too loud</field>
+            <field name="option_b">In high noise areas that are declared</field>
+            <field name="option_c">Never required for visitors</field>
+            <field name="option_d">Only during machine operations</field>
+            <field name="correct_answer">b</field>
+            <field name="category">ppe</field>
+            <field name="explanation">Ear plugs/muffs must be worn where high noise areas are declared for hearing protection.</field>
+        </record>
+
+        <record id="question_ppe_03" model="safety.training.question">
+            <field name="video_id" ref="safety_video_visitor"/>
+            <field name="question">Which of these is mandatory PPE for visitors at GGSPL plant?</field>
+            <field name="option_a">Safety Goggles</field>
+            <field name="option_b">Sunglasses</field>
+            <field name="option_c">Reading glasses</field>
+            <field name="option_d">Face shield only</field>
+            <field name="correct_answer">a</field>
+            <field name="category">ppe</field>
+            <field name="explanation">Safety Goggles must be worn during visit and stay in Plant for eye protection.</field>
+        </record>
+
+        <record id="question_ppe_04" model="safety.training.question">
+            <field name="video_id" ref="safety_video_visitor"/>
+            <field name="question">What type of footwear is mandatory for visitors at GGSPL?</field>
+            <field name="option_a">Sport shoes</field>
+            <field name="option_b">Sandals</field>
+            <field name="option_c">Safety Shoes</field>
+            <field name="option_d">Any closed shoes</field>
+            <field name="correct_answer">c</field>
+            <field name="category">ppe</field>
+            <field name="explanation">Safety Shoes must be worn during visit and stay in Plant for foot protection.</field>
+        </record>
+
+        <record id="question_ppe_05" model="safety.training.question">
+            <field name="video_id" ref="safety_video_visitor"/>
+            <field name="question">What should visitors wear to identify themselves at GGSPL?</field>
+            <field name="option_a">Company uniform</field>
+            <field name="option_b">Visitor Jacket</field>
+            <field name="option_c">ID badge only</field>
+            <field name="option_d">Reflective vest</field>
+            <field name="correct_answer">b</field>
+            <field name="category">ppe</field>
+            <field name="explanation">Visitor Jacket must be worn during visit and stay in Plant for identification.</field>
+        </record>
+
+        <record id="question_ppe_06" model="safety.training.question">
+            <field name="video_id" ref="safety_video_visitor"/>
+            <field name="question">When is a dust mask required at GGSPL?</field>
+            <field name="option_a">Only in dusty weather</field>
+            <field name="option_b">During your visit and stay in Plant</field>
+            <field name="option_c">Only when requested</field>
+            <field name="option_d">Not required for short visits</field>
+            <field name="correct_answer">b</field>
+            <field name="category">ppe</field>
+            <field name="explanation">Dust Mask must be worn during visit and stay in Plant for respiratory protection.</field>
+        </record>
+
+        <!-- Emergency and Safety Instructions -->
+        <record id="question_safety_01" model="safety.training.question">
+            <field name="video_id" ref="safety_video_visitor"/>
+            <field name="question">What should you do if you witness an unsafe condition or accident at GGSPL?</field>
+            <field name="option_a">Ignore it if it doesn't affect you</field>
+            <field name="option_b">Call +91-9723555092 or +91-7861866302</field>
+            <field name="option_c">Wait for someone else to report</field>
+            <field name="option_d">Report only at the end of visit</field>
+            <field name="correct_answer">b</field>
+            <field name="category">emergency</field>
+            <field name="explanation">Report any unsafe act, condition, near miss or accident immediately by calling the provided emergency numbers.</field>
+        </record>
+
+        <record id="question_safety_02" model="safety.training.question">
+            <field name="video_id" ref="safety_video_visitor"/>
+            <field name="question">What is the speed limit for vehicles within GGSPL factory premises?</field>
+            <field name="option_a">20 km/h</field>
+            <field name="option_b">15 km/h</field>
+            <field name="option_c">10 km/h</field>
+            <field name="option_d">5 km/h</field>
+            <field name="correct_answer">c</field>
+            <field name="category">safety</field>
+            <field name="explanation">Speed restriction for vehicles within factory premises is 10 KM/h for safety reasons.</field>
+        </record>
+
+        <record id="question_safety_03" model="safety.training.question">
+            <field name="video_id" ref="safety_video_visitor"/>
+            <field name="question">In case of emergency like fire or earthquake, what should you do?</field>
+            <field name="option_a">Run to the nearest exit</field>
+            <field name="option_b">Stay where you are</field>
+            <field name="option_c">Follow evacuation plan to nearest Assembly Point or accompany GGSPL representative</field>
+            <field name="option_d">Call your family first</field>
+            <field name="correct_answer">c</field>
+            <field name="category">emergency</field>
+            <field name="explanation">Follow the evacuation plan to reach nearest Assembly Point or accompany GGSPL representative during emergencies.</field>
+        </record>
+
+        <record id="question_safety_04" model="safety.training.question">
+            <field name="video_id" ref="safety_video_visitor"/>
+            <field name="question">Can visitors explore the shop floor alone at GGSPL?</field>
+            <field name="option_a">Yes, if they have PPE</field>
+            <field name="option_b">No, must stay with GGSPL representative due to high risk areas</field>
+            <field name="option_c">Yes, after safety briefing</field>
+            <field name="option_d">Only during day shift</field>
+            <field name="correct_answer">b</field>
+            <field name="category">safety</field>
+            <field name="explanation">Never leave the group or visit alone as there are high risk areas where visitors are not allowed.</field>
+        </record>
+
+        <record id="question_safety_05" model="safety.training.question">
+            <field name="video_id" ref="safety_video_visitor"/>
+            <field name="question">Where can you find first aid at GGSPL?</field>
+            <field name="option_a">Only at main security gate</field>
+            <field name="option_b">First Aid boxes at various places on shop floor, main security gate, and OHC near club house</field>
+            <field name="option_c">Only at OHC</field>
+            <field name="option_d">No first aid available</field>
+            <field name="correct_answer">b</field>
+            <field name="category">emergency</field>
+            <field name="explanation">First Aid boxes are at various places on shop floor and main security gate, with OHC near club house.</field>
+        </record>
+
+        <!-- Prohibited Activities -->
+        <record id="question_prohibited_01" model="safety.training.question">
+            <field name="video_id" ref="safety_video_visitor"/>
+            <field name="question">Is mobile phone use allowed on the shop floor at GGSPL?</field>
+            <field name="option_a">Yes, for emergency calls only</field>
+            <field name="option_b">No, due to EOTs movement with molten metal and hot billets</field>
+            <field name="option_c">Yes, if on silent mode</field>
+            <field name="option_d">Yes, in designated areas only</field>
+            <field name="correct_answer">b</field>
+            <field name="category">prohibited</field>
+            <field name="explanation">Mobile phone use is prohibited on shop floor due to EOTs movement with molten metal. Exit shop floor for urgent calls.</field>
+        </record>
+
+        <record id="question_prohibited_02" model="safety.training.question">
+            <field name="video_id" ref="safety_video_visitor"/>
+            <field name="question">What is the policy on photography and video shooting at GGSPL workplace?</field>
+            <field name="option_a">Allowed with permission</field>
+            <field name="option_b">Allowed only outside buildings</field>
+            <field name="option_c">Strictly prohibited</field>
+            <field name="option_d">Allowed for visitors</field>
+            <field name="correct_answer">c</field>
+            <field name="category">prohibited</field>
+            <field name="explanation">Photography and/or video shooting is strictly prohibited at the workplace.</field>
+        </record>
+
+        <record id="question_prohibited_03" model="safety.training.question">
+            <field name="video_id" ref="safety_video_visitor"/>
+            <field name="question">What is the policy on tobacco use at GGSPL factory premises?</field>
+            <field name="option_a">Allowed in designated areas</field>
+            <field name="option_b">Allowed during breaks</field>
+            <field name="option_c">Strictly prohibited</field>
+            <field name="option_d">Allowed outside buildings</field>
+            <field name="correct_answer">c</field>
+            <field name="category">prohibited</field>
+            <field name="explanation">Tobacco is strictly prohibited in factory premises for a healthier and safer environment.</field>
+        </record>
+
+        <record id="question_prohibited_04" model="safety.training.question">
+            <field name="video_id" ref="safety_video_visitor"/>
+            <field name="question">Are smoking, alcohol and drugs allowed inside GGSPL factory premises?</field>
+            <field name="option_a">Smoking allowed in designated areas</field>
+            <field name="option_b">All are strictly prohibited</field>
+            <field name="option_c">Alcohol allowed after work hours</field>
+            <field name="option_d">Only smoking is prohibited</field>
+            <field name="correct_answer">b</field>
+            <field name="category">prohibited</field>
+            <field name="explanation">Smoking, alcohol and other drugs are strictly prohibited for a safer, healthier environment.</field>
+        </record>
+
+        <record id="question_prohibited_05" model="safety.training.question">
+            <field name="video_id" ref="safety_video_visitor"/>
+            <field name="question">Is spitting allowed in GGSPL factory premises?</field>
+            <field name="option_a">Yes, in designated areas</field>
+            <field name="option_b">Strictly prohibited to prevent spread of germs</field>
+            <field name="option_c">Allowed outside buildings</field>
+            <field name="option_d">Only in washrooms</field>
+            <field name="correct_answer">b</field>
+            <field name="category">prohibited</field>
+            <field name="explanation">Spitting is strictly prohibited to prevent the spread of germs and diseases.</field>
+        </record>
+
+        <!-- High Risk Areas -->
+        <record id="question_risk_01" model="safety.training.question">
+            <field name="video_id" ref="safety_video_visitor"/>
+            <field name="question">Can visitors go to the Furnace or Continuous Casting Machine operational area?</field>
+            <field name="option_a">Yes, with PPE</field>
+            <field name="option_b">Yes, with GGSPL representative</field>
+            <field name="option_c">No, these are high-risk areas</field>
+            <field name="option_d">Only during non-operational hours</field>
+            <field name="correct_answer">c</field>
+            <field name="category">safety</field>
+            <field name="explanation">Do not go to Furnace or Continuous Casting Machine areas as they are high-risk for health and safety.</field>
+        </record>
+
+        <record id="question_risk_02" model="safety.training.question">
+            <field name="video_id" ref="safety_video_visitor"/>
+            <field name="question">What should you do with waste at GGSPL?</field>
+            <field name="option_a">Leave it on the shop floor</field>
+            <field name="option_b">Use the provided waste bins across the plant</field>
+            <field name="option_c">Take it to the exit</field>
+            <field name="option_d">Give it to workers</field>
+            <field name="correct_answer">b</field>
+            <field name="category">general</field>
+            <field name="explanation">Do not scatter waste at open land. Use the waste bins provided across the plant.</field>
+        </record>
+
+        <!-- Additional Safety Questions -->
+        <record id="question_general_04" model="safety.training.question">
+            <field name="video_id" ref="safety_video_visitor"/>
+            <field name="question">Are first aiders available at GGSPL?</field>
+            <field name="option_a">Only during day shift</field>
+            <field name="option_b">Yes, qualified first aiders are available 24/7 during working hours</field>
+            <field name="option_c">Only on weekdays</field>
+            <field name="option_d">No, only medical staff</field>
+            <field name="correct_answer">b</field>
+            <field name="category">emergency</field>
+            <field name="explanation">Qualified first aiders are available 24/7 during working hours at GGSPL.</field>
+        </record>
+
+        <record id="question_general_05" model="safety.training.question">
+            <field name="video_id" ref="safety_video_visitor"/>
+            <field name="question">Why is the speed limit enforced at GGSPL factory premises?</field>
+            <field name="option_a">To save fuel</field>
+            <field name="option_b">For safety reasons</field>
+            <field name="option_c">To reduce noise</field>
+            <field name="option_d">Company policy only</field>
+            <field name="correct_answer">b</field>
+            <field name="category">safety</field>
+            <field name="explanation">Speed restriction signs indicate it is necessary to limit speed for safety reasons.</field>
+        </record>
+
+        <!-- Video for Contractor -->
+        <record id="safety_video_contractor" model="safety.training.video">
+            <field name="name">GGSPL Contractor Safety Training</field>
+            <field name="description">Mandatory safety training for all contractors at GGSPL workplace</field>
+            <field name="video_url">/safety_training/static/videos/visitor_safety.mp4</field>
+            <field name="duration">180</field>
+            <field name="pass_type">contractor</field>
+            <field name="pass_percentage">80.0</field>
+            <field name="total_questions_per_test">5</field>
+        </record>
+
+        <!-- Link same questions to contractor video -->
+        <record id="question_contractor_01" model="safety.training.question">
+            <field name="video_id" ref="safety_video_contractor"/>
+            <field name="question">What PPE must be worn during your entire work at GGSPL plant?</field>
+            <field name="option_a">Safety Helmet</field>
+            <field name="option_b">Casual Cap</field>
+            <field name="option_c">Sun Hat</field>
+            <field name="option_d">No headgear required</field>
+            <field name="correct_answer">a</field>
+            <field name="category">ppe</field>
+        </record>
+
+        <record id="question_contractor_02" model="safety.training.question">
+            <field name="video_id" ref="safety_video_contractor"/>
+            <field name="question">What is the speed limit for vehicles within GGSPL factory premises?</field>
+            <field name="option_a">20 km/h</field>
+            <field name="option_b">15 km/h</field>
+            <field name="option_c">10 km/h</field>
+            <field name="option_d">5 km/h</field>
+            <field name="correct_answer">c</field>
+            <field name="category">safety</field>
+        </record>
+
+        <record id="question_contractor_03" model="safety.training.question">
+            <field name="video_id" ref="safety_video_contractor"/>
+            <field name="question">Is mobile phone use allowed on the shop floor?</field>
+            <field name="option_a">Yes, for emergency only</field>
+            <field name="option_b">No, due to EOTs movement with molten metal</field>
+            <field name="option_c">Yes, if on silent</field>
+            <field name="option_d">Yes, in designated areas</field>
+            <field name="correct_answer">b</field>
+            <field name="category">prohibited</field>
+        </record>
+
+        <record id="question_contractor_04" model="safety.training.question">
+            <field name="video_id" ref="safety_video_contractor"/>
+            <field name="question">What type of footwear is mandatory at GGSPL?</field>
+            <field name="option_a">Sport shoes</field>
+            <field name="option_b">Sandals</field>
+            <field name="option_c">Safety Shoes</field>
+            <field name="option_d">Any closed shoes</field>
+            <field name="correct_answer">c</field>
+            <field name="category">ppe</field>
+        </record>
+
+        <record id="question_contractor_05" model="safety.training.question">
+            <field name="video_id" ref="safety_video_contractor"/>
+            <field name="question">Are smoking, alcohol and drugs allowed inside factory premises?</field>
+            <field name="option_a">Smoking allowed in designated areas</field>
+            <field name="option_b">All are strictly prohibited</field>
+            <field name="option_c">Alcohol allowed after work</field>
+            <field name="option_d">Only smoking prohibited</field>
+            <field name="correct_answer">b</field>
+            <field name="category">prohibited</field>
+        </record>
+
+        <record id="question_contractor_06" model="safety.training.question">
+            <field name="video_id" ref="safety_video_contractor"/>
+            <field name="question">In case of emergency, what should you do?</field>
+            <field name="option_a">Run to nearest exit</field>
+            <field name="option_b">Stay where you are</field>
+            <field name="option_c">Follow evacuation plan to nearest Assembly Point</field>
+            <field name="option_d">Call family first</field>
+            <field name="correct_answer">c</field>
+            <field name="category">emergency</field>
+        </record>
+
+        <!-- Video for Vehicle -->
+        <record id="safety_video_vehicle" model="safety.training.video">
+            <field name="name">GGSPL Vehicle Safety Training</field>
+            <field name="description">Mandatory safety training for vehicle drivers at GGSPL</field>
+            <field name="video_url">/safety_training/static/videos/visitor_safety.mp4</field>
+            <field name="duration">180</field>
+            <field name="pass_type">vehicle</field>
+            <field name="pass_percentage">80.0</field>
+            <field name="total_questions_per_test">5</field>
+        </record>
+
+        <record id="question_vehicle_01" model="safety.training.question">
+            <field name="video_id" ref="safety_video_vehicle"/>
+            <field name="question">What is the speed limit for vehicles within GGSPL factory premises?</field>
+            <field name="option_a">20 km/h</field>
+            <field name="option_b">15 km/h</field>
+            <field name="option_c">10 km/h</field>
+            <field name="option_d">5 km/h</field>
+            <field name="correct_answer">c</field>
+            <field name="category">safety</field>
+        </record>
+
+        <record id="question_vehicle_02" model="safety.training.question">
+            <field name="video_id" ref="safety_video_vehicle"/>
+            <field name="question">Can you use mobile phone while driving in the factory premises?</field>
+            <field name="option_a">Yes, if hands-free</field>
+            <field name="option_b">No, strictly prohibited in areas with vehicle movement</field>
+            <field name="option_c">Yes, at low speed</field>
+            <field name="option_d">Only for GPS</field>
+            <field name="correct_answer">b</field>
+            <field name="category">prohibited</field>
+        </record>
+
+        <record id="question_vehicle_03" model="safety.training.question">
+            <field name="video_id" ref="safety_video_vehicle"/>
+            <field name="question">What should drivers be careful of in TMT storage yard?</field>
+            <field name="option_a">Weather</field>
+            <field name="option_b">Factory traffic and pedestrians</field>
+            <field name="option_c">Dust only</field>
+            <field name="option_d">Time restrictions</field>
+            <field name="correct_answer">b</field>
+            <field name="category">safety</field>
+        </record>
+
+        <record id="question_vehicle_04" model="safety.training.question">
+            <field name="video_id" ref="safety_video_vehicle"/>
+            <field name="question">What PPE must vehicle drivers wear when entering plant areas?</field>
+            <field name="option_a">Only helmet</field>
+            <field name="option_b">Safety Helmet, Safety Shoes, and other required PPE</field>
+            <field name="option_c">No PPE required in vehicle</field>
+            <field name="option_d">Only reflective vest</field>
+            <field name="correct_answer">b</field>
+            <field name="category">ppe</field>
+        </record>
+
+        <record id="question_vehicle_05" model="safety.training.question">
+            <field name="video_id" ref="safety_video_vehicle"/>
+            <field name="question">Why are speed restriction signs displayed at GGSPL?</field>
+            <field name="option_a">To save fuel</field>
+            <field name="option_b">It is necessary to limit speed for safety reasons</field>
+            <field name="option_c">Company policy</field>
+            <field name="option_d">To reduce emissions</field>
+            <field name="correct_answer">b</field>
+            <field name="category">safety</field>
+        </record>
+
+        <record id="question_vehicle_06" model="safety.training.question">
+            <field name="video_id" ref="safety_video_vehicle"/>
+            <field name="question">What should you do if you witness an unsafe condition?</field>
+            <field name="option_a">Ignore if not affecting you</field>
+            <field name="option_b">Report by calling +91-9723555092 or +91-7861866302</field>
+            <field name="option_c">Report at end of day</field>
+            <field name="option_d">Tell other drivers only</field>
+            <field name="correct_answer">b</field>
+            <field name="category">emergency</field>
+        </record>
+
+    </data>
+</odoo>

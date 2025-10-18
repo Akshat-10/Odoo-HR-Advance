@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+safety_training.access_safety_training_video,access_safety_training_video,safety_training.model_safety_training_video,base.group_user,1,1,1,1
+safety_training.access_safety_training_question,access_safety_training_question,safety_training.model_safety_training_question,base.group_user,1,1,1,1
+safety_training.access_safety_training_attempt,access_safety_training_attempt,safety_training.model_safety_training_attempt,base.group_user,1,1,1,1
+safety_training.access_safety_training_answer,access_safety_training_answer,safety_training.model_safety_training_answer,base.group_user,1,1,1,1
