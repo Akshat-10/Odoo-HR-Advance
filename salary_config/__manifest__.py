@@ -5,6 +5,7 @@
     'summary': 'Reusable salary structures applied to Offers',
     'category': 'Human Resources',
     'license': 'LGPL-3',
+    "author": "Akshat Gupta",
     'sequence': 1,
     'depends': ['hr_contract_salary', 'hr_contract_reports', 'hr_recruitment'],
     'data': [

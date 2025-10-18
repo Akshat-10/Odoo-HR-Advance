@@ -27,7 +27,8 @@ class HrContractSalaryOfferModal(http.Controller):
         position = currency.position or 'after'
 
         # Read minimal fields from structure lines
-        for line in offer.structure_line_ids.sorted(key=lambda l: (l.sequence, l.id)):
+        # Do not sort by id to avoid comparing NewId in onchanges; use sequence + code/name
+        for line in offer.structure_line_ids.sorted(key=lambda l: (l.sequence or 0, (l.code or '').lower(), (l.name or '').lower())):
             sign = -1 if line.impact == 'deduction' else 1
             amount = abs(round(float(line.amount_monthly or 0.0), 2))
             datas.append((

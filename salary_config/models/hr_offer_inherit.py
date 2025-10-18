@@ -81,7 +81,10 @@ class HrContractSalaryOffer(models.Model):
     def _recompute_structure_line_amounts(self):
         for offer in self:
             # Stabilize values across dependent lines: iterate up to 4 passes or until no changes
-            sorted_lines = offer.structure_line_ids.sorted(key=lambda x: (x.sequence, x.id))
+            # Avoid using record.id in sorting because new (unsaved) lines have NewId which is not orderable
+            sorted_lines = offer.structure_line_ids.sorted(
+                key=lambda x: (x.sequence or 0, (x.code or '').lower(), (x.name or '').lower())
+            )
             for _ in range(4):
                 changed = False
                 for l in sorted_lines:
