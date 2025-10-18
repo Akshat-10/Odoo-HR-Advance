@@ -6,17 +6,22 @@ import json
 
 class SafetyTrainingController(http.Controller):
 
-    @http.route('/safety_training/start/<int:attempt_id>', type='http', auth='user', website=True)
+    @http.route('/safety_training/start/<int:attempt_id>', type='http', auth='public', website=True)
     def start_training(self, attempt_id, **kwargs):
         """Render the training video player page"""
+        token = kwargs.get('token')
         attempt = request.env['safety.training.attempt'].sudo().browse(attempt_id)
 
         if not attempt.exists():
             return request.not_found()
 
-        # Check if user is authorized
-        if attempt.user_id.id != request.env.user.id:
-            return request.not_found()
+        # Public access allowed only with valid token, or if logged in as owner
+        if not token:
+            if not request.env.user or (attempt.user_id.id != request.env.user.id):
+                return request.not_found()
+        else:
+            if attempt.access_token != token:
+                return request.not_found()
 
         # Start video if not started (and not in failed/retry state)
         if attempt.state == 'video_pending':
@@ -36,30 +41,37 @@ class SafetyTrainingController(http.Controller):
             'attempt': attempt,
             'video_url': video_url,
             'video_duration': attempt.video_id.duration,
+            'attempt_token': token or attempt.access_token,
         }
 
         return request.render('safety_training.safety_training_video_player', values)
 
-    @http.route('/safety_training/video_started', type='json', auth='user')
+    @http.route('/safety_training/video_started', type='json', auth='public')
     def video_started(self, attempt_id, **kwargs):
         """Log that video playback started"""
+        token = kwargs.get('token')
         attempt = request.env['safety.training.attempt'].sudo().browse(attempt_id)
 
-        if not attempt.exists() or attempt.user_id.id != request.env.user.id:
+        if not attempt.exists():
             return {'success': False, 'error': 'Invalid attempt'}
+        if attempt.access_token != token and (not request.env.user or request.env.user.id != attempt.user_id.id):
+            return {'success': False, 'error': 'Unauthorized'}
 
         if attempt.state == 'video_pending':
             attempt.action_start_video()
 
         return {'success': True}
 
-    @http.route('/safety_training/skip_attempt', type='json', auth='user')
+    @http.route('/safety_training/skip_attempt', type='json', auth='public')
     def skip_attempt(self, attempt_id, **kwargs):
         """Log video skip attempt"""
+        token = kwargs.get('token')
         attempt = request.env['safety.training.attempt'].sudo().browse(attempt_id)
 
-        if not attempt.exists() or attempt.user_id.id != request.env.user.id:
+        if not attempt.exists():
             return {'success': False, 'error': 'Invalid attempt'}
+        if attempt.access_token != token and (not request.env.user or request.env.user.id != attempt.user_id.id):
+            return {'success': False, 'error': 'Unauthorized'}
 
         attempt.action_video_skip_attempt()
 
@@ -68,13 +80,16 @@ class SafetyTrainingController(http.Controller):
             'skip_count': attempt.video_skip_attempts
         }
 
-    @http.route('/safety_training/video_complete', type='json', auth='user')
+    @http.route('/safety_training/video_complete', type='json', auth='public')
     def video_complete(self, attempt_id, **kwargs):
         """Mark video as completed and prepare quiz"""
+        token = kwargs.get('token')
         attempt = request.env['safety.training.attempt'].sudo().browse(attempt_id)
 
-        if not attempt.exists() or attempt.user_id.id != request.env.user.id:
+        if not attempt.exists():
             return {'success': False, 'error': 'Invalid attempt'}
+        if attempt.access_token != token and (not request.env.user or request.env.user.id != attempt.user_id.id):
+            return {'success': False, 'error': 'Unauthorized'}
 
         try:
             attempt.action_complete_video()
@@ -82,13 +97,16 @@ class SafetyTrainingController(http.Controller):
         except Exception as e:
             return {'success': False, 'error': str(e)}
 
-    @http.route('/safety_training/get_questions', type='json', auth='user')
+    @http.route('/safety_training/get_questions', type='json', auth='public')
     def get_questions(self, attempt_id, **kwargs):
         """Get quiz questions for the attempt"""
+        token = kwargs.get('token')
         attempt = request.env['safety.training.attempt'].sudo().browse(attempt_id)
 
-        if not attempt.exists() or attempt.user_id.id != request.env.user.id:
+        if not attempt.exists():
             return {'success': False, 'error': 'Invalid attempt'}
+        if attempt.access_token != token and (not request.env.user or request.env.user.id != attempt.user_id.id):
+            return {'success': False, 'error': 'Unauthorized'}
 
         # Allow getting questions if video is completed OR if it's a retry
         if not attempt.video_completed and attempt.state not in ['test_pending', 'failed']:
@@ -126,13 +144,16 @@ class SafetyTrainingController(http.Controller):
             'total': len(questions),
         }
 
-    @http.route('/safety_training/submit_answers', type='json', auth='user')
+    @http.route('/safety_training/submit_answers', type='json', auth='public')
     def submit_answers(self, attempt_id, answers, **kwargs):
         """Submit quiz answers and get results"""
+        token = kwargs.get('token')
         attempt = request.env['safety.training.attempt'].sudo().browse(attempt_id)
 
-        if not attempt.exists() or attempt.user_id.id != request.env.user.id:
+        if not attempt.exists():
             return {'success': False, 'error': 'Invalid attempt'}
+        if attempt.access_token != token and (not request.env.user or request.env.user.id != attempt.user_id.id):
+            return {'success': False, 'error': 'Unauthorized'}
 
         # Allow submission for test_in_progress, test_pending, or failed states
         if attempt.state not in ['test_in_progress', 'test_pending', 'failed']:

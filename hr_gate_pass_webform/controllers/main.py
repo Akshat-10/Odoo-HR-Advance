@@ -52,6 +52,11 @@ class GatePassWebformController(http.Controller):
         def _get(key):
             return (post.get(key) or '').strip()
 
+        # Determine mode: create_only means create/update and redirect to training instead of final submit
+        create_only = request.httprequest.args.get('create_only') in ('1', 'true', 'True')
+        record_id_raw = _get('record_id')
+        record_id = int(record_id_raw) if record_id_raw.isdigit() else False
+
         pass_type = _get('pass_type') or 'visitor'
         if pass_type not in ['visitor','vehicle','material','contractor','employee_out']:
             errors.append(_('Invalid pass type selected.'))
@@ -163,6 +168,9 @@ class GatePassWebformController(http.Controller):
                     errors.append(_('Invalid expected return date.'))
 
         if errors:
+            # keep record id in values so user can continue training later without duplication
+            if record_id:
+                post['record_id'] = str(record_id)
             return request.render('hr_gate_pass_webform.template_gate_pass_form', {
                 'errors': errors,
                 'values': post,
@@ -171,6 +179,7 @@ class GatePassWebformController(http.Controller):
                 'gates': env['hr.gate'].sudo().search([], limit=50),
                 'representing_options': env['hr.gate.representing'].sudo().search([], limit=50),
                 'idno_options': env['hr.gate.idno'].sudo().search([], limit=50),
+                'departments': env['hr.department'].sudo().search([], limit=100),
             })
 
         # Extra optional/advanced fields parsing
@@ -243,6 +252,8 @@ class GatePassWebformController(http.Controller):
 
         # Create record first so we can link attachment(s)
         if errors:
+            if record_id:
+                post['record_id'] = str(record_id)
             return request.render('hr_gate_pass_webform.template_gate_pass_form', {
                 'errors': errors,
                 'values': post,
@@ -251,9 +262,18 @@ class GatePassWebformController(http.Controller):
                 'gates': env['hr.gate'].sudo().search([], limit=50),
                 'representing_options': env['hr.gate.representing'].sudo().search([], limit=50),
                 'idno_options': env['hr.gate.idno'].sudo().search([], limit=50),
+                'departments': env['hr.department'].sudo().search([], limit=100),
             })
 
-        rec = env['hr.gate.pass'].sudo().create(vals)
+        # Create or update the record (stay in draft)
+        if record_id:
+            rec = env['hr.gate.pass'].sudo().browse(record_id)
+            if not rec.exists():
+                rec = env['hr.gate.pass'].sudo().create(vals)
+            else:
+                rec.sudo().write(vals)
+        else:
+            rec = env['hr.gate.pass'].sudo().create(vals)
 
         # ID Proof attachment (single)
         id_proof_file = post.get('id_proof_attachment')
@@ -275,16 +295,28 @@ class GatePassWebformController(http.Controller):
                 # Non-fatal; continue
                 pass
 
-        # NOTE: Auto submit removed so record stays in Draft allowing internal users to edit
-        # Many2many fields (Representing From Details, Employees, ID No.) before approval.
-        # If you want the previous behaviour (auto submit) toggle the code below.
-        # Auto-submit so the record moves from 'draft' to 'to_approve' immediately after creation
-        # (User requested status to be 'to_approve' instead of staying in draft.)
+        # If user clicked Start Safety Training, redirect to start training flow and do not submit
+        if create_only:
+            # Go straight to start training; training controller handles tokenized public access
+            target_url = f"/gatepass/{rec.id}/start_training"
+            return request.redirect(target_url)
+
+        # Otherwise, try to submit; training module will raise if needed
         try:
             rec.sudo().action_submit()
-        except Exception:
-            # Fail silently; record will remain in draft if transition fails
-            pass
+        except Exception as e:
+            # Show error (e.g., training not completed) and keep record id to continue
+            post['record_id'] = str(rec.id)
+            errors = [getattr(e, 'name', str(e)) or _('Please complete the safety training before submitting the gate pass.')]
+            return request.render('hr_gate_pass_webform.template_gate_pass_form', {
+                'errors': errors,
+                'values': post,
+                'pass_types': [('visitor','Visitor'),('vehicle','Vehicle'),('material','Material'),('contractor','Contractor'),('employee_out','Employee Out')],
+                'employees': env['hr.employee'].sudo().search([], limit=50),
+                'gates': env['hr.gate'].sudo().search([], limit=50),
+                'representing_options': env['hr.gate.representing'].sudo().search([], limit=50),
+                'idno_options': env['hr.gate.idno'].sudo().search([], limit=50),
+            })
 
         # Send acknowledgment email if visitor_name and maybe contact
         template = env.ref('hr_gate_pass_webform.mail_template_gate_pass_public_submit', raise_if_not_found=False)
@@ -307,4 +339,43 @@ class GatePassWebformController(http.Controller):
             'record': rec,
             'state_labels': state_labels,
             'state_label': state_labels.get(rec.state, rec.state),
+        })
+
+    @http.route(['/gatepass/<int:gp_id>/start_training'], type='http', auth='public', website=True)
+    def gatepass_start_training(self, gp_id, **kw):
+        """Create/continue a safety training attempt and redirect to the training URL."""
+        rec = request.env['hr.gate.pass'].sudo().browse(gp_id)
+        if not rec.exists():
+            return request.not_found()
+        try:
+            # Call backend action to get training URL
+            # For public flows, use sudo; training attempt uses tokened URL for access
+            action = rec.sudo().action_start_training()
+            url = action.get('url') if isinstance(action, dict) else False
+            if url:
+                return request.redirect(url)
+        except Exception as e:
+            # Render form with error and preserve record id
+            errors = [getattr(e, 'name', str(e))]
+            values = {'record_id': str(rec.id), 'pass_type': rec.pass_type}
+            return request.render('hr_gate_pass_webform.template_gate_pass_form', {
+                'errors': errors,
+                'values': values,
+                'pass_types': [('visitor','Visitor'),('vehicle','Vehicle'),('material','Material'),('contractor','Contractor'),('employee_out','Employee Out')],
+                'employees': request.env['hr.employee'].sudo().search([], limit=50),
+                'gates': request.env['hr.gate'].sudo().search([], limit=50),
+                'representing_options': request.env['hr.gate.representing'].sudo().search([], limit=50),
+                'idno_options': request.env['hr.gate.idno'].sudo().search([], limit=50),
+                'departments': request.env['hr.department'].sudo().search([], limit=100),
+            })
+        # Fallback: go back to form with default error
+        return request.render('hr_gate_pass_webform.template_gate_pass_form', {
+            'errors': [_('Unable to start training. Please contact administrator.')],
+            'values': {'record_id': str(rec.id), 'pass_type': rec.pass_type},
+            'pass_types': [('visitor','Visitor'),('vehicle','Vehicle'),('material','Material'),('contractor','Contractor'),('employee_out','Employee Out')],
+            'employees': request.env['hr.employee'].sudo().search([], limit=50),
+            'gates': request.env['hr.gate'].sudo().search([], limit=50),
+            'representing_options': request.env['hr.gate.representing'].sudo().search([], limit=50),
+            'idno_options': request.env['hr.gate.idno'].sudo().search([], limit=50),
+            'departments': request.env['hr.department'].sudo().search([], limit=100),
         })

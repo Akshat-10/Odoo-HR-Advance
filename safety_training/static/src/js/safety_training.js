@@ -7,8 +7,18 @@
 
     // Wait for DOM to load
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', maybeInit);
     } else {
+        maybeInit();
+    }
+
+    function maybeInit() {
+        // Only initialize on pages that contain the safety training markup
+        const attemptIdInput = document.getElementById('attemptId');
+        if (!attemptIdInput) {
+            // Not a safety training page; do nothing
+            return;
+        }
         init();
     }
 
@@ -17,22 +27,24 @@
 
         // Get data from hidden inputs
         const attemptIdInput = document.getElementById('attemptId');
-        const videoUrlInput = document.getElementById('videoUrl');
+    const videoUrlInput = document.getElementById('videoUrl');
         const videoDurationInput = document.getElementById('videoDuration');
+    const attemptTokenInput = document.getElementById('attemptToken');
 
         console.log('Attempt ID Input:', attemptIdInput);
         console.log('Video URL Input:', videoUrlInput);
         console.log('Video Duration Input:', videoDurationInput);
 
         const attemptId = attemptIdInput ? parseInt(attemptIdInput.value || 0) : 0;
-        const videoUrl = videoUrlInput ? videoUrlInput.value : '';
+    const videoUrl = videoUrlInput ? videoUrlInput.value : '';
         const videoDuration = videoDurationInput ? parseInt(videoDurationInput.value || 0) : 0;
+    const attemptToken = attemptTokenInput ? attemptTokenInput.value : '';
 
         console.log('Parsed - Attempt ID:', attemptId, 'Video URL:', videoUrl, 'Duration:', videoDuration);
 
         if (!attemptId) {
             console.error('Attempt ID not found or invalid');
-            alert('Error: Invalid attempt ID');
+            // Don't alert globally; page might be transitioning. Let backend show proper error.
             return;
         }
 
@@ -296,7 +308,8 @@
         function onVideoComplete() {
             console.log('Processing video completion...');
             callJsonRpc('/safety_training/video_complete', {
-                attempt_id: attemptId
+                attempt_id: attemptId,
+                token: attemptToken
             }).then(data => {
                 console.log('Video complete response:', data);
                 if (data && data.success) {
@@ -317,7 +330,8 @@
             if (quizSection) quizSection.style.display = 'block';
 
             callJsonRpc('/safety_training/get_questions', {
-                attempt_id: attemptId
+                attempt_id: attemptId,
+                token: attemptToken
             }).then(data => {
                 console.log('Questions received:', data);
                 if (data && data.success) {
@@ -409,7 +423,8 @@
 
             callJsonRpc('/safety_training/submit_answers', {
                 attempt_id: attemptId,
-                answers: userAnswers
+                answers: userAnswers,
+                token: attemptToken
             }).then(data => {
                 console.log('Submit response:', data);
                 if (data && data.success) {
@@ -496,7 +511,8 @@
 
         function notifyVideoStarted() {
             callJsonRpc('/safety_training/video_started', {
-                attempt_id: attemptId
+                attempt_id: attemptId,
+                token: attemptToken
             }).then(data => {
                 console.log('Video started notification sent:', data);
             }).catch(error => {
@@ -506,7 +522,8 @@
 
         function notifySkipAttempt() {
             callJsonRpc('/safety_training/skip_attempt', {
-                attempt_id: attemptId
+                attempt_id: attemptId,
+                token: attemptToken
             }).catch(error => {
                 console.error('Error notifying skip:', error);
             });

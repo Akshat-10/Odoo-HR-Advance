@@ -10,7 +10,7 @@ Creates hr.gate.pass records in Draft and auto-submits for approval.
     'website': '',
     'category': 'Human Resources',
     'license': 'LGPL-3',
-    'depends': ['website', 'hr_gate_pass'],
+    'depends': ['website', 'hr_gate_pass', 'safety_training'],
     'data': [
         'data/mail_template.xml',
         # 'security/ir.model.access.csv',

@@ -117,6 +117,21 @@ odoo.define('hr_gate_pass_webform.gate_pass_form', function (require) {
     toggleFields();
     const passTypeField = form.querySelector('[name=pass_type]');
     passTypeField && passTypeField.addEventListener('change', toggleFields);
+
+    // Soft UX: indicate training requirement on submit button tooltip
+    const submitBtn = form.querySelector('button.btn.btn-primary[type=submit]');
+    const trainingBtn = form.querySelector('button[formaction*="create_only=1"]');
+    const updateSubmitHint = () => {
+        if (!submitBtn) return;
+        const pt = (passTypeField && passTypeField.value) || '';
+        if ([ 'visitor','contractor','vehicle' ].includes(pt)) {
+            submitBtn.title = 'Please click \"Start Safety Training\" and complete it before submitting.';
+        } else {
+            submitBtn.removeAttribute('title');
+        }
+    };
+    passTypeField && passTypeField.addEventListener('change', updateSubmitHint);
+    updateSubmitHint();
     };
 
     if (document.readyState !== 'loading') {

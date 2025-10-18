@@ -101,6 +101,7 @@
 
             <!-- Pass data to JavaScript -->
             <input type="hidden" id="attemptId" t-att-value="attempt.id"/>
+            <input type="hidden" id="attemptToken" t-att-value="attempt_token"/>
             <input type="hidden" id="videoUrl" t-att-value="video_url"/>
             <input type="hidden" id="videoDuration" t-att-value="video_duration"/>
         </t>

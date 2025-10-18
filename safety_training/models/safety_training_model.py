@@ -3,6 +3,7 @@ from odoo import models, fields, api, exceptions, _
 from odoo.exceptions import UserError, ValidationError
 import random
 import json
+import uuid
 
 
 class SafetyTrainingVideo(models.Model):
@@ -93,6 +94,7 @@ class SafetyTrainingAttempt(models.Model):
 
     attempt_number = fields.Integer(string='Attempt Number', default=1)
     selected_question_ids = fields.Many2many('safety.training.question', string='Selected Questions')
+    access_token = fields.Char(string='Access Token', copy=False, index=True)
 
     @api.depends('answer_ids', 'answer_ids.is_correct', 'total_questions')
     def _compute_score(self):
@@ -106,6 +108,17 @@ class SafetyTrainingAttempt(models.Model):
                 rec.correct_answers = 0
                 rec.score = 0.0
                 rec.passed = False
+
+    @api.model
+    def create(self, vals_list):
+        # Support both single dict and list of dicts
+        if isinstance(vals_list, dict):
+            vals_list = [vals_list]
+        for vals in vals_list:
+            if not vals.get('access_token'):
+                vals['access_token'] = uuid.uuid4().hex
+        records = super().create(vals_list)
+        return records
 
     def action_start_video(self):
         """Start video watching"""
@@ -324,10 +337,11 @@ class HrGatePass(models.Model):
                     'attempt_number': len(self.training_attempt_ids) + 1,
                 })
 
-        # Return action to open in new window/tab
+        # Return action to open in new window/tab, include token for public access
+        url = '/safety_training/start/%s?token=%s' % (attempt.id, attempt.access_token or '')
         return {
             'type': 'ir.actions.act_url',
-            'url': '/safety_training/start/%s' % attempt.id,
+            'url': url,
             'target': 'new',
         }
 
