@@ -27,6 +27,7 @@
         'data/data.xml',
         'views/safety_training_view.xml',
         'views/safety_template.xml',
+        'views/login_fix.xml',
     ],
     'assets': {
         'web.assets_frontend': [

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!-- Ensure /web/login credentials form is visible for all users -->
+  <template id="safety_training_login_visibility_fix" inherit_id="web.login">
+    <!-- Inject a small CSS snippet directly into the login page without relying on brittle XPaths -->
+    <xpath expr="." position="inside">
+      <style type="text/css">
+        /* Minimal, safe overrides to ensure the login form is visible */
+        .o_web_login, .oe_login_form, form[action*="/web/login"] {
+          display: block !important;
+          visibility: visible !important;
+          opacity: 1 !important;
+        }
+        .o_web_login .form-group, .oe_login_form .form-group, form[action*="/web/login"] .form-group {
+          display: block !important;
+        }
+        .o_web_login, .oe_login_form { position: relative; z-index: 2; }
+      </style>
+    </xpath>
+  </template>
+</odoo>

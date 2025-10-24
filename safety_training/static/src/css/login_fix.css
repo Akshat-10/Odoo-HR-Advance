@@ -1,0 +1,18 @@
+/* Minimal, safe overrides to ensure the login form is visible */
+/* Only applies on the /web/login page selectors */
+.o_web_login, .oe_login_form, form[action="/web/login"] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Ensure input groups are not hidden */
+.o_web_login .form-group, .oe_login_form .form-group, form[action="/web/login"] .form-group {
+  display: block !important;
+}
+
+/* In case any overlay accidentally covers the login form */
+.o_web_login, .oe_login_form {
+  position: relative;
+  z-index: 2;
+}
