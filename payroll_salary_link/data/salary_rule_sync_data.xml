@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Update existing payroll rules where names/codes match -->
+        <record id="hr_payroll_community.hr_rule_basic" model="hr.salary.rule">
+            <field name="sequence">10</field>
+            <field name="quantity">1.0</field>
+            <field name="active">True</field>
+            <field name="condition_select">none</field>
+            <field name="condition_range">contract.wage</field>
+            <field name="condition_python">result = True</field>
+            <field name="condition_range_min">0.0</field>
+            <field name="condition_range_max">0.0</field>
+            <field name="amount_select">percentage</field>
+            <field name="amount_fix">0.0</field>
+            <field name="amount_percentage">50.0</field>
+            <field name="amount_percentage_base">contract.wage</field>
+            <field name="amount_python_compute"/>
+            <field name="note">Synced from salary_config demo structure.</field>
+        </record>
+
+        <record id="hr_payroll_community.hr_rule_hra" model="hr.salary.rule">
+            <field name="sequence">20</field>
+            <field name="quantity">1.0</field>
+            <field name="active">True</field>
+            <field name="condition_select">none</field>
+            <field name="condition_range">contract.wage</field>
+            <field name="condition_python">result = True</field>
+            <field name="condition_range_min">0.0</field>
+            <field name="condition_range_max">0.0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_fix">0.0</field>
+            <field name="amount_percentage">0.0</field>
+            <field name="amount_percentage_base"/>
+            <field name="amount_python_compute">result = BASIC * 0.5</field>
+            <field name="note">Synced from salary_config demo structure.</field>
+        </record>
+
+        <record id="hr_payroll_community.hr_rule_taxable" model="hr.salary.rule">
+            <field name="sequence">90</field>
+            <field name="quantity">1.0</field>
+            <field name="active">True</field>
+            <field name="condition_select">none</field>
+            <field name="condition_range">contract.wage</field>
+            <field name="condition_python">result = True</field>
+            <field name="condition_range_min">0.0</field>
+            <field name="condition_range_max">0.0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_fix">0.0</field>
+            <field name="amount_percentage">0.0</field>
+            <field name="amount_percentage_base"/>
+            <field name="amount_python_compute">result = BASIC + HRA + UNIFORM + LTA + ADHOC</field>
+            <field name="note">Synced from salary_config demo structure.</field>
+        </record>
+
+        <!-- New salary rules for components missing from hr_payroll_community -->
+        <record id="salary_rule_uniform" model="hr.salary.rule">
+            <field name="name">Uniform</field>
+            <field name="code">UNIFORM</field>
+            <field name="sequence">30</field>
+            <field name="quantity">1.0</field>
+            <field name="active">True</field>
+            <field name="category_id" ref="salary_config.salary_config_category_UNIFORM"/>
+            <field name="condition_select">none</field>
+            <field name="condition_range">contract.wage</field>
+            <field name="condition_python">result = True</field>
+            <field name="condition_range_min">0.0</field>
+            <field name="condition_range_max">0.0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_fix">0.0</field>
+            <field name="amount_percentage">0.0</field>
+            <field name="amount_percentage_base"/>
+            <field name="amount_python_compute">result = BASIC * 0.05</field>
+            <field name="note">Synced from salary_config demo structure.</field>
+        </record>
+
+        <record id="salary_rule_lta" model="hr.salary.rule">
+            <field name="name">LTA Reimburs.</field>
+            <field name="code">LTA</field>
+            <field name="sequence">40</field>
+            <field name="quantity">1.0</field>
+            <field name="active">True</field>
+            <field name="category_id" ref="salary_config.salary_config_category_LTA"/>
+            <field name="condition_select">none</field>
+            <field name="condition_range">contract.wage</field>
+            <field name="condition_python">result = True</field>
+            <field name="condition_range_min">0.0</field>
+            <field name="condition_range_max">0.0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_fix">0.0</field>
+            <field name="amount_percentage">0.0</field>
+            <field name="amount_percentage_base"/>
+            <field name="amount_python_compute">result = BASIC * 0.0833</field>
+            <field name="note">Synced from salary_config demo structure.</field>
+        </record>
+
+        <record id="salary_rule_pf_emp" model="hr.salary.rule">
+            <field name="name">PF</field>
+            <field name="code">PF_EMP</field>
+            <field name="sequence">50</field>
+            <field name="quantity">1.0</field>
+            <field name="active">True</field>
+            <field name="category_id" ref="salary_config.salary_config_category_PF_EMP"/>
+            <field name="condition_select">none</field>
+            <field name="condition_range">contract.wage</field>
+            <field name="condition_python">result = True</field>
+            <field name="condition_range_min">0.0</field>
+            <field name="condition_range_max">0.0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_fix">0.0</field>
+            <field name="amount_percentage">0.0</field>
+            <field name="amount_percentage_base"/>
+            <field name="amount_python_compute">result = BASIC * 0.12</field>
+            <field name="note">Synced from salary_config demo structure.</field>
+        </record>
+
+        <record id="salary_rule_kra" model="hr.salary.rule">
+            <field name="name">KRA</field>
+            <field name="code">KRA</field>
+            <field name="sequence">60</field>
+            <field name="quantity">1.0</field>
+            <field name="active">True</field>
+            <field name="category_id" ref="salary_config.salary_config_category_KRA"/>
+            <field name="condition_select">none</field>
+            <field name="condition_range">contract.wage</field>
+            <field name="condition_python">result = True</field>
+            <field name="condition_range_min">0.0</field>
+            <field name="condition_range_max">0.0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_fix">0.0</field>
+            <field name="amount_percentage">0.0</field>
+            <field name="amount_percentage_base"/>
+            <field name="amount_python_compute">result = contract.wage * 0.03</field>
+            <field name="note">Synced from salary_config demo structure.</field>
+        </record>
+
+        <record id="salary_rule_adhoc" model="hr.salary.rule">
+            <field name="name">Adhoc Pay</field>
+            <field name="code">ADHOC</field>
+            <field name="sequence">70</field>
+            <field name="quantity">1.0</field>
+            <field name="active">True</field>
+            <field name="category_id" ref="salary_config.salary_config_category_ADHOC"/>
+            <field name="condition_select">none</field>
+            <field name="condition_range">contract.wage</field>
+            <field name="condition_python">result = True</field>
+            <field name="condition_range_min">0.0</field>
+            <field name="condition_range_max">0.0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_fix">0.0</field>
+            <field name="amount_percentage">0.0</field>
+            <field name="amount_percentage_base"/>
+            <field name="amount_python_compute">result = contract.wage - (BASIC + HRA + UNIFORM + LTA + PF_EMP + KRA)</field>
+            <field name="note">Synced from salary_config demo structure.</field>
+        </record>
+
+        <record id="salary_rule_esic" model="hr.salary.rule">
+            <field name="name">ESIC</field>
+            <field name="code">ESIC</field>
+            <field name="sequence">80</field>
+            <field name="quantity">1.0</field>
+            <field name="active">True</field>
+            <field name="category_id" ref="salary_config.salary_config_category_ESIC"/>
+            <field name="condition_select">python</field>
+            <field name="condition_range">contract.wage</field>
+            <field name="condition_python">result = (BASIC + HRA + UNIFORM + LTA + ADHOC) &lt; 21000.0</field>
+            <field name="condition_range_min">0.0</field>
+            <field name="condition_range_max">0.0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_fix">0.0</field>
+            <field name="amount_percentage">0.0</field>
+            <field name="amount_percentage_base"/>
+            <field name="amount_python_compute">result = (BASIC + HRA + UNIFORM + LTA + ADHOC) * 0.0325</field>
+            <field name="note">Synced from salary_config demo structure.</field>
+        </record>
+
+        <record id="salary_rule_canteen" model="hr.salary.rule">
+            <field name="name">Canteen</field>
+            <field name="code">CANTEEN</field>
+            <field name="sequence">100</field>
+            <field name="quantity">1.0</field>
+            <field name="active">True</field>
+            <field name="category_id" ref="salary_config.salary_config_category_CANTEEN"/>
+            <field name="condition_select">none</field>
+            <field name="condition_range">contract.wage</field>
+            <field name="condition_python">result = True</field>
+            <field name="condition_range_min">0.0</field>
+            <field name="condition_range_max">0.0</field>
+            <field name="amount_select">fix</field>
+            <field name="amount_fix">845.0</field>
+            <field name="amount_percentage">0.0</field>
+            <field name="amount_percentage_base"/>
+            <field name="amount_python_compute"/>
+            <field name="note">Synced from salary_config demo structure.</field>
+        </record>
+
+        <record id="salary_rule_trans" model="hr.salary.rule">
+            <field name="name">Transport</field>
+            <field name="code">TRANS</field>
+            <field name="sequence">110</field>
+            <field name="quantity">1.0</field>
+            <field name="active">True</field>
+            <field name="category_id" ref="salary_config.salary_config_category_TRANS"/>
+            <field name="condition_select">none</field>
+            <field name="condition_range">contract.wage</field>
+            <field name="condition_python">result = True</field>
+            <field name="condition_range_min">0.0</field>
+            <field name="condition_range_max">0.0</field>
+            <field name="amount_select">fix</field>
+            <field name="amount_fix">500.0</field>
+            <field name="amount_percentage">0.0</field>
+            <field name="amount_percentage_base"/>
+            <field name="amount_python_compute"/>
+            <field name="note">Synced from salary_config demo structure.</field>
+        </record>
+
+        <record id="salary_rule_pt" model="hr.salary.rule">
+            <field name="name">Professional Tax</field>
+            <field name="code">PT</field>
+            <field name="sequence">120</field>
+            <field name="quantity">1.0</field>
+            <field name="active">True</field>
+            <field name="category_id" ref="salary_config.salary_config_category_PT"/>
+            <field name="condition_select">none</field>
+            <field name="condition_range">contract.wage</field>
+            <field name="condition_python">result = True</field>
+            <field name="condition_range_min">0.0</field>
+            <field name="condition_range_max">0.0</field>
+            <field name="amount_select">fix</field>
+            <field name="amount_fix">200.0</field>
+            <field name="amount_percentage">0.0</field>
+            <field name="amount_percentage_base"/>
+            <field name="amount_python_compute"/>
+            <field name="note">Synced from salary_config demo structure.</field>
+        </record>
+
+        <record id="salary_rule_total_ded" model="hr.salary.rule">
+            <field name="name">Total Deduction</field>
+            <field name="code">TOT_DED</field>
+            <field name="sequence">130</field>
+            <field name="quantity">1.0</field>
+            <field name="active">True</field>
+            <field name="category_id" ref="salary_config.salary_config_category_TOT_DED"/>
+            <field name="condition_select">none</field>
+            <field name="condition_range">contract.wage</field>
+            <field name="condition_python">result = True</field>
+            <field name="condition_range_min">0.0</field>
+            <field name="condition_range_max">0.0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_fix">0.0</field>
+            <field name="amount_percentage">0.0</field>
+            <field name="amount_percentage_base"/>
+            <field name="amount_python_compute">result = PF_EMP + CANTEEN + TRANS + PT</field>
+            <field name="note">Synced from salary_config demo structure.</field>
+        </record>
+
+        <record id="salary_rule_inhand" model="hr.salary.rule">
+            <field name="name">In Hand Salary</field>
+            <field name="code">INHAND</field>
+            <field name="sequence">140</field>
+            <field name="quantity">1.0</field>
+            <field name="active">True</field>
+            <field name="category_id" ref="salary_config.salary_config_category_INHAND"/>
+            <field name="condition_select">none</field>
+            <field name="condition_range">contract.wage</field>
+            <field name="condition_python">result = True</field>
+            <field name="condition_range_min">0.0</field>
+            <field name="condition_range_max">0.0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_fix">0.0</field>
+            <field name="amount_percentage">0.0</field>
+            <field name="amount_percentage_base"/>
+            <field name="amount_python_compute">result = GROSS - TOT_DED</field>
+            <field name="note">Synced from salary_config demo structure.</field>
+        </record>
+    </data>
+</odoo>

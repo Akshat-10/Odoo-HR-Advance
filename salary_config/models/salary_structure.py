@@ -67,7 +67,11 @@ class SalaryConfigStructureLine(models.Model):
     structure_id = fields.Many2one('salary.config.structure', required=True, ondelete='cascade')
     sequence = fields.Integer(default=10)
     name = fields.Char(required=True)
-    code_id = fields.Many2one('salary.config.code', string='Code', help='Select a predefined technical code.')
+    code_id = fields.Many2one(
+        'hr.salary.rule.category',
+        string='Salary Rule Category',
+        help='Select the payroll salary rule category used by this line.',
+    )
     code = fields.Char(help='Technical code for the component')  # kept for backward compatibility & formula reference
     # computation type: percentage of yearly budget or fixed monthly amount
     compute_mode = fields.Selection([
@@ -88,34 +92,53 @@ class SalaryConfigStructureLine(models.Model):
     @api.onchange('code_id')
     def _onchange_code_id(self):
         for rec in self:
-            if rec.code_id:
-                rec.code = rec.code_id.code
+            rec.code = rec.code_id.code if rec.code_id else False
 
     @api.onchange('code')
     def _onchange_code(self):
         for rec in self:
             if rec.code and not rec.code_id:
-                match = self.env['salary.config.code'].search([('code', '=', rec.code)], limit=1)
-                if match:
-                    rec.code_id = match
+                category = self.env['hr.salary.rule.category'].search([('code', '=', rec.code)], limit=1)
+                if category:
+                    rec.code_id = category
 
     @api.model_create_multi
     def create(self, vals_list):
+        Category = self.env['hr.salary.rule.category']
+        prepared_vals = []
         for vals in vals_list:
-            if vals.get('code') and not vals.get('code_id'):
-                match = self.env['salary.config.code'].search([('code', '=', vals['code'])], limit=1)
-                if match:
-                    vals['code_id'] = match.id
-        return super().create(vals_list)
+            vals = dict(vals)
+            code = (vals.get('code') or '').strip()
+            code_id = vals.get('code_id')
+            category = False
+            if code_id:
+                category = Category.browse(code_id)
+            elif code:
+                category = Category.search([('code', '=', code)], limit=1)
+            if category:
+                vals['code_id'] = category.id
+                if not code:
+                    vals['code'] = category.code
+            prepared_vals.append(vals)
+        return super().create(prepared_vals)
 
     def write(self, vals):
-        res = super().write(vals)
-        if 'code' in vals and not vals.get('code_id'):
+        Category = self.env['hr.salary.rule.category']
+        vals_to_write = dict(vals)
+        if 'code_id' in vals_to_write and 'code' not in vals_to_write:
+            code_id = vals_to_write['code_id']
+            if code_id:
+                category = Category.browse(code_id)
+                vals_to_write['code'] = category.code if category else False
+            else:
+                vals_to_write['code'] = False
+        res = super().write(vals_to_write)
+        if 'code' in vals_to_write and not vals_to_write.get('code_id'):
             for rec in self:
                 if rec.code and not rec.code_id:
-                    match = self.env['salary.config.code'].search([('code', '=', rec.code)], limit=1)
-                    if match:
-                        rec.code_id = match
+                    category = Category.search([('code', '=', rec.code)], limit=1)
+                    if category:
+                        rec.code_id = category
         return res
 
     @api.model
