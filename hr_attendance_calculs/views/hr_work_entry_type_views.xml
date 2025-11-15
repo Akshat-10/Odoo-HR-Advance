@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_work_entry_type_form_inherit_include_lunch" model="ir.ui.view">
+        <field name="name">hr.work.entry.type.form.inherit.include.lunch</field>
+        <field name="model">hr.work.entry.type</field>
+        <field name="inherit_id" ref="hr_work_entry.hr_work_entry_type_view_form"/>
+        <field name="arch" type="xml">
+            <!-- Add include_lunch_in_overtime field to time_off group -->
+            <group name="time_off" position="inside">
+                <field name="include_lunch_in_overtime"/>
+            </group>
+            
+            <!-- Add overtime calculation parameters after the 'other' group -->
+            <group name="other" position="after">
+                <group name="overtime_calculation_group" string="Overtime Calculation">
+                    <group string="Overtime Calculation Parameters" class="o_form_fw_labels">
+                        <field name="ot_calculation_days_per_month"/>
+                        <field name="ot_calculation_hours_per_day"/>
+                    </group>
+                    <group>
+                        <div class="text-muted">
+                            <p>
+                                These values are used to calculate overtime hourly rate in employee contracts.
+                            </p>
+                            <p>
+                                <strong>Formula:</strong> OT Hourly Rate = (Basic/Gross) ÷ (Days per month × Hours per day)
+                            </p>
+                        </div>
+                    </group>
+                </group>
+            </group>
+        </field>
+    </record>
+
+    <!-- <record id="view_hr_work_entry_type_tree_inherit_include_lunch" model="ir.ui.view">
+        <field name="name">hr.work.entry.type.tree.inherit.include.lunch</field>
+        <field name="model">hr.work.entry.type</field>
+        <field name="inherit_id" ref="hr_work_entry.hr_work_entry_type_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="color" position="after">
+                <field name="include_lunch_in_overtime" widget="boolean_toggle"/>
+            </field>
+        </field>
+    </record> -->
+</odoo>

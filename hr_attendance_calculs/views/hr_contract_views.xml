@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_contract_form_inherit_overtime" model="ir.ui.view">
+        <field name="name">hr.contract.form.inherit.overtime</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Overtime Calculation" name="overtime_calculation">
+                    <group>
+                        <group string="Salary Components">
+                            <field name="ot_basic_salary" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <field name="ot_calculation_base" widget="radio"/>
+                        </group>
+                        <group string="Calculated Rate">
+                            <field name="ot_hourly_rate" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <p class="text-muted">
+                            <strong>Basic Salary:</strong> Calculated as 50% of wage (can be manually adjusted).<br/>
+                            <strong>OT Calculation Base:</strong> Choose to calculate overtime using Basic or Gross salary.<br/>
+                            <strong>Overtime Hourly Rate:</strong> Automatically calculated based on selected base and parameters from Overtime work entry type.
+                        </p>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+</odoo>

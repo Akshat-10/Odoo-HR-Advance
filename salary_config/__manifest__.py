@@ -11,7 +11,7 @@
         'hr_contract_salary',
         'hr_contract_reports',
         'hr_recruitment',
-        'hr_payroll_community',
+        'hr_payroll',
     ],
     'data': [
         'security/ir.model.access.csv',

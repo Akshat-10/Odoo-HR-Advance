@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="report_payslip_custom_workdays" inherit_id="hr_payroll.report_payslip">
+        <!-- Customization: replace default worked days table with compact summary -->
+        <xpath expr="//div[@id='worked_days_table']" position="replace">
+            <!-- Base collection: exclude OUT entries -->
+            <t t-set="worked_days_lines" t-value="o.worked_days_line_ids.filtered(lambda wd: wd.code != 'OUT')"/>
+            <!-- Identify overtime lines explicitly via work entry type code -->
+            <t t-set="overtime_lines" t-value="worked_days_lines.filtered(lambda wd: (wd.work_entry_type_id.code or '').upper() == 'OVERTIME')"/>
+            <!-- Remaining lines counted as regular worked days (exclude overtime from day count) -->
+            <t t-set="regular_worked_days_lines" t-value="worked_days_lines.filtered(lambda wd: (wd.work_entry_type_id.code or '').upper() != 'OVERTIME')"/>
+            <!-- Total days excludes overtime, but total amount includes all lines -->
+            <t t-set="worked_days_total_days" t-value="round(sum(regular_worked_days_lines.mapped('number_of_days')), 2)"/>
+            <!-- Total amount must reflect every worked day line (matches paid_amount) -->
+            <t t-set="worked_days_total_amount" t-value="sum(worked_days_lines.mapped('amount'))"/>
+            <!-- YTD includes regular + overtime as well -->
+            <t t-set="worked_days_total_ytd" t-value="sum(worked_days_lines.mapped('ytd'))"/>
+
+            <div id="worked_days_summary" class="mt-3">
+                <!-- Customization Note: Showing only aggregated worked days info as per client request -->
+                <table class="table table-sm table-borderless">
+                    <thead class="o_black_border">
+                        <tr>
+                            <th colspan="2">Worked Days Summary</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Total Worked Days</strong></td>
+                            <td class="text-end">
+                                <span id="worked_days_total_days" t-out="worked_days_total_days"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total Worked Days Amount</strong></td>
+                            <td class="text-end">
+                                <span id="worked_days_total_amount" t-out="worked_days_total_amount"
+                                    digits="[42, 2]"
+                                    t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                            </td>
+                        </tr>
+                        <tr t-if="o.ytd_computation">
+                            <td><strong>Total Worked Days Amount (YTD)</strong></td>
+                            <td class="text-end">
+                                <span id="worked_days_total_ytd" t-out="worked_days_total_ytd"
+                                    digits="[42, 2]"
+                                    t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Customization: dedicated overtime breakdown for better visibility (filtered by OVERTIME code) -->
+            <div id="worked_days_overtime" class="mt-3" t-if="overtime_lines">
+                <!-- Customization Note: display only overtime hours in simple inline format -->
+                <strong class="me-1">Overtime Hours:</strong>
+                <!-- <span t-out="round(sum(overtime_lines.mapped('number_of_days')), 2)"/> Days, -->
+                <span t-out="round(sum(overtime_lines.mapped('number_of_hours')), 2)"/> Hours
+            </div>
+        </xpath>
+
+        <!-- Customization: Remove Amount, Quantity, and Rate columns from payslip lines table -->
+        <xpath expr="//div[@id='payslip_lines_table']//th[@id='line_header_amount']" position="replace"/>
+        <xpath expr="//div[@id='payslip_lines_table']//th[@id='line_header_quantity']" position="replace"/>
+        <xpath expr="//div[@id='payslip_lines_table']//th[@id='line_header_rate']" position="replace"/>
+        
+        <xpath expr="//div[@id='payslip_lines_table']//td[@id='payslip_line_amount']" position="replace"/>
+        <xpath expr="//div[@id='payslip_lines_table']//td[@id='payslip_line_quantity']" position="replace"/>
+        <xpath expr="//div[@id='payslip_lines_table']//td[@id='payslip_line_rate']" position="replace"/>
+    </template>
+</odoo>

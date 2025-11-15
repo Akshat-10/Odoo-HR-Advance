@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_hr_attendance_calculs" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.hr.attendance.calculs</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="hr_attendance.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='hr_attendance']/block[@name='overtime_settings']" position="after">
+                <block title="Attendance Penalties" name="attendance_penalties_settings">
+                    <setting string="Penalty Time Off Type" help="Time off type used when automated infractions create penalties.">
+                        <field name="attendance_penalty_leave_type_id" options="{'no_create': True}" domain="[('request_unit', '=', 'half_day')]"/>
+                    </setting>
+                    <setting string="Late Check-In Tolerance" help="Minutes tolerated after the planned start of a shift before a penalty is created.">
+                        <span class="me-2">Tolerance</span>
+                        <field name="attendance_late_grace_minutes" class="text-center" style="width: 6ch;"/>
+                        <span class="ms-2">Minutes</span>
+                    </setting>
+                    <setting string="Early Check-Out Tolerance" help="Minutes tolerated before the end of a shift (excluding lunch breaks) before a penalty is created.">
+                        <span class="me-2">Tolerance</span>
+                        <field name="attendance_early_checkout_grace_minutes" class="text-center" style="width: 6ch;"/>
+                        <span class="ms-2">Minutes</span>
+                    </setting>
+                    <setting string="Post-Shift Overtime Threshold" help="Minimum number of minutes worked after the afternoon period before overtime is recorded.">
+                        <span class="me-2">Minimum</span>
+                        <field name="attendance_overtime_post_min_minutes" class="text-center" style="width: 6ch;"/>
+                        <span class="ms-2">Minutes</span>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

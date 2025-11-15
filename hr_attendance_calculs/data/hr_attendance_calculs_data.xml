@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="0">
+    <record id="work_entry_type_attendance_penalty" model="hr.work.entry.type">
+        <field name="name">Attendance Penalty (Auto)</field>
+        <field name="code">LEAVE_PENALTY</field>
+        <field name="color" eval="5"/>
+        <field name="sequence" eval="120"/>
+        <field name="is_leave" eval="True"/>
+        <field name="round_days">HALF</field>
+        <field name="round_days_type">DOWN</field>
+    </record>
+
+    <record id="leave_type_attendance_penalty" model="hr.leave.type">
+        <field name="name">Attendance Penalty (Auto)</field>
+        <field name="sequence" eval="10"/>
+        <field name="requires_allocation">no</field>
+        <field name="employee_requests">no</field>
+        <field name="leave_validation_type">no_validation</field>
+        <field name="create_calendar_meeting" eval="False"/>
+        <field name="show_on_dashboard" eval="False"/>
+        <field name="time_type">leave</field>
+        <field name="request_unit">half_day</field>
+        <field name="unpaid" eval="True"/>
+        <field name="work_entry_type_id" ref="hr_attendance_calculs.work_entry_type_attendance_penalty"/>
+    </record>
+
+    <!-- Set default overtime calculation parameters -->
+    <record id="hr_work_entry.overtime_work_entry_type" model="hr.work.entry.type">
+        <field name="ot_calculation_days_per_month">26</field>
+        <field name="ot_calculation_hours_per_day">8</field>
+    </record>
+</odoo>

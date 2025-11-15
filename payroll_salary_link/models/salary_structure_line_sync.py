@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
+import logging
 import re
 
 from odoo import api, fields, models
+
+_logger = logging.getLogger(__name__)
 
 _RULE_SYNC_FIELDS = [
     'sequence',
     'quantity',
     'active',
-    'parent_rule_id',
     'condition_select',
     'condition_range',
     'condition_python',
@@ -75,10 +77,18 @@ class SalaryConfigStructureLine(models.Model):
                 rule.write(sync_vals)
             else:
                 create_vals = dict(sync_vals)
+                structure = line._get_target_hr_salary_rule_structure()
+                if not structure:
+                    _logger.warning(
+                        "Skipping salary rule sync for line %s: no payroll structure found.",
+                        line.display_name,
+                    )
+                    continue
                 create_vals.update({
                     'name': line.name or (line.code_id.name or line.code or 'Line'),
                     'code': line._generate_salary_rule_code(),
                     'category_id': line.code_id.id,
+                    'struct_id': structure.id,
                 })
                 rule = HrSalaryRule.create(create_vals)
             if rule != line.hr_salary_rule_id:
@@ -92,7 +102,6 @@ class SalaryConfigStructureLine(models.Model):
             'sequence': self.sequence or 0,
             'quantity': vals.get('quantity') or '1.0',
             'active': bool(self.show_in_offer),
-            'parent_rule_id': False,
             'condition_select': 'none',
             'condition_range': vals.get('condition_range') or 'contract.wage',
             'condition_range_min': 0.0,
@@ -117,7 +126,7 @@ class SalaryConfigStructureLine(models.Model):
                 'amount_percentage_base': False,
             })
         else:
-            code_expr = self.python_code or 'result = 0.0'
+            code_expr = self._adapt_python_code_for_payroll_rule()
             vals.update({
                 'amount_select': 'code',
                 'amount_fix': 0.0,
@@ -146,3 +155,33 @@ class SalaryConfigStructureLine(models.Model):
             candidate = '%s_%d' % (code, index)
             index += 1
         return candidate
+
+    def _get_target_hr_salary_rule_structure(self):
+        """Return the payroll structure used when creating synced salary rules."""
+        structure = self.env.ref('hr_payroll.default_structure', raise_if_not_found=False)
+        if not structure:
+            structure = self.env['hr.payroll.structure'].search([], limit=1)
+        return structure
+
+    def _adapt_python_code_for_payroll_rule(self):
+        """Inject helper utilities so salary rule code interoperates with payroll context."""
+        code = (self.python_code or '').strip()
+        code = (self.python_code or '').strip()
+        if not code:
+            return 'result = 0.0'
+
+        # Unescape XML entities that may remain from data files
+        code = code.replace('&lt;', '<').replace('&gt;', '>').replace('&amp;', '&')
+
+        def _replace_amount(match):
+            return "categories.get('%s', 0.0)" % match.group(2)
+
+        # Replace helper lookups from salary_config context with payroll equivalents
+        code = re.sub(r"\b(amount|get)\(\s*['\"]([A-Za-z0-9_]+)['\"]\s*\)", _replace_amount, code)
+        code = re.sub(r"\bmonthly_budget\b", '(contract.wage or 0.0)', code)
+        code = re.sub(r"\bfinal_yearly_costs\b", '(contract.wage or 0.0) * 12.0', code)
+
+        code = code.strip()
+        if not code:
+            return 'result = 0.0'
+        return code

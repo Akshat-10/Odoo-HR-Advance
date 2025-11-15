@@ -2,7 +2,7 @@
 <odoo>
     <data noupdate="1">
         <!-- Update existing payroll rules where names/codes match -->
-        <record id="hr_payroll_community.hr_rule_basic" model="hr.salary.rule">
+        <record id="hr_payroll.default_basic_salary_rule" model="hr.salary.rule">
             <field name="sequence">10</field>
             <field name="quantity">1.0</field>
             <field name="active">True</field>
@@ -19,7 +19,7 @@
             <field name="note">Synced from salary_config demo structure.</field>
         </record>
 
-        <record id="hr_payroll_community.hr_rule_hra" model="hr.salary.rule">
+        <!-- <record id="hr_payroll.hr_rule_hra" model="hr.salary.rule">
             <field name="sequence">20</field>
             <field name="quantity">1.0</field>
             <field name="active">True</field>
@@ -36,7 +36,7 @@
             <field name="note">Synced from salary_config demo structure.</field>
         </record>
 
-        <record id="hr_payroll_community.hr_rule_taxable" model="hr.salary.rule">
+        <record id="hr_payroll.hr_rule_taxable" model="hr.salary.rule">
             <field name="sequence">90</field>
             <field name="quantity">1.0</field>
             <field name="active">True</field>
@@ -51,9 +51,33 @@
             <field name="amount_percentage_base"/>
             <field name="amount_python_compute">result = BASIC + HRA + UNIFORM + LTA + ADHOC</field>
             <field name="note">Synced from salary_config demo structure.</field>
+        </record> -->
+
+        <!-- New salary rules for components missing from hr_payroll -->
+
+        <record id="hr_rule_hra" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll.ALW"/>
+            <field name="name">House Rent Allowance</field>
+            <field name="sequence">20</field>
+            <field name="code">HRA</field>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = categories.get('BASIC', 0.0) * 0.5</field>
+            <field name="struct_id" ref="hr_payroll.default_structure"/>
         </record>
 
-        <!-- New salary rules for components missing from hr_payroll_community -->
+        <record id="hr_rule_taxable" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll.GROSS"/>
+            <field name="name">Taxable Salary</field>
+            <field name="sequence">90</field>
+            <field name="code">GROSS</field>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+result = categories.get('BASIC', 0.0) + categories.get('HRA', 0.0) + categories.get('UNIFORM', 0.0) + categories.get('ADHOC', 0.0)            </field>
+            <field name="struct_id" ref="hr_payroll.default_structure"/>
+        </record>
+        
         <record id="salary_rule_uniform" model="hr.salary.rule">
             <field name="name">Uniform</field>
             <field name="code">UNIFORM</field>
@@ -70,8 +94,9 @@
             <field name="amount_fix">0.0</field>
             <field name="amount_percentage">0.0</field>
             <field name="amount_percentage_base"/>
-            <field name="amount_python_compute">result = BASIC * 0.05</field>
+            <field name="amount_python_compute">result = categories.get('BASIC', 0.0) * 0.05</field>
             <field name="note">Synced from salary_config demo structure.</field>
+            <field name="struct_id" ref="hr_payroll.default_structure"/>
         </record>
 
         <record id="salary_rule_lta" model="hr.salary.rule">
@@ -90,8 +115,9 @@
             <field name="amount_fix">0.0</field>
             <field name="amount_percentage">0.0</field>
             <field name="amount_percentage_base"/>
-            <field name="amount_python_compute">result = BASIC * 0.0833</field>
+            <field name="amount_python_compute">result = categories.get('BASIC', 0.0) * 0.0833</field>
             <field name="note">Synced from salary_config demo structure.</field>
+            <field name="struct_id" ref="hr_payroll.default_structure"/>
         </record>
 
         <record id="salary_rule_pf_emp" model="hr.salary.rule">
@@ -110,8 +136,9 @@
             <field name="amount_fix">0.0</field>
             <field name="amount_percentage">0.0</field>
             <field name="amount_percentage_base"/>
-            <field name="amount_python_compute">result = BASIC * 0.12</field>
+            <field name="amount_python_compute">result = categories.get('BASIC', 0.0) * 0.12</field>
             <field name="note">Synced from salary_config demo structure.</field>
+            <field name="struct_id" ref="hr_payroll.default_structure"/>
         </record>
 
         <record id="salary_rule_kra" model="hr.salary.rule">
@@ -130,8 +157,9 @@
             <field name="amount_fix">0.0</field>
             <field name="amount_percentage">0.0</field>
             <field name="amount_percentage_base"/>
-            <field name="amount_python_compute">result = contract.wage * 0.03</field>
+            <field name="amount_python_compute">result = (contract.wage or 0.0) * 0.03</field>
             <field name="note">Synced from salary_config demo structure.</field>
+            <field name="struct_id" ref="hr_payroll.default_structure"/>
         </record>
 
         <record id="salary_rule_adhoc" model="hr.salary.rule">
@@ -150,8 +178,9 @@
             <field name="amount_fix">0.0</field>
             <field name="amount_percentage">0.0</field>
             <field name="amount_percentage_base"/>
-            <field name="amount_python_compute">result = contract.wage - (BASIC + HRA + UNIFORM + LTA + PF_EMP + KRA)</field>
+            <field name="amount_python_compute">result = (contract.wage or 0.0) - ((categories.get('BASIC', 0.0) + categories.get('HRA', 0.0) + categories.get('UNIFORM', 0.0) + categories.get('LTA', 0.0)) + categories.get('PF_EMP', 0.0) + categories.get('KRA', 0.0))</field>
             <field name="note">Synced from salary_config demo structure.</field>
+            <field name="struct_id" ref="hr_payroll.default_structure"/>
         </record>
 
         <record id="salary_rule_esic" model="hr.salary.rule">
@@ -163,15 +192,16 @@
             <field name="category_id" ref="salary_config.salary_config_category_ESIC"/>
             <field name="condition_select">python</field>
             <field name="condition_range">contract.wage</field>
-            <field name="condition_python">result = (BASIC + HRA + UNIFORM + LTA + ADHOC) &lt; 21000.0</field>
+            <field name="condition_python">result = (categories.get('BASIC', 0.0) + categories.get('HRA', 0.0) + categories.get('UNIFORM', 0.0) + categories.get('LTA', 0.0) + categories.get('ADHOC', 0.0)) &lt; 21000.0</field>
             <field name="condition_range_min">0.0</field>
             <field name="condition_range_max">0.0</field>
             <field name="amount_select">code</field>
             <field name="amount_fix">0.0</field>
             <field name="amount_percentage">0.0</field>
             <field name="amount_percentage_base"/>
-            <field name="amount_python_compute">result = (BASIC + HRA + UNIFORM + LTA + ADHOC) * 0.0325</field>
+            <field name="amount_python_compute">result = (categories.get('BASIC', 0.0) + categories.get('HRA', 0.0) + categories.get('UNIFORM', 0.0) + categories.get('LTA', 0.0) + categories.get('ADHOC', 0.0)) * 0.0325</field>
             <field name="note">Synced from salary_config demo structure.</field>
+            <field name="struct_id" ref="hr_payroll.default_structure"/>
         </record>
 
         <record id="salary_rule_canteen" model="hr.salary.rule">
@@ -192,6 +222,7 @@
             <field name="amount_percentage_base"/>
             <field name="amount_python_compute"/>
             <field name="note">Synced from salary_config demo structure.</field>
+            <field name="struct_id" ref="hr_payroll.default_structure"/>
         </record>
 
         <record id="salary_rule_trans" model="hr.salary.rule">
@@ -212,6 +243,7 @@
             <field name="amount_percentage_base"/>
             <field name="amount_python_compute"/>
             <field name="note">Synced from salary_config demo structure.</field>
+            <field name="struct_id" ref="hr_payroll.default_structure"/>
         </record>
 
         <record id="salary_rule_pt" model="hr.salary.rule">
@@ -232,6 +264,7 @@
             <field name="amount_percentage_base"/>
             <field name="amount_python_compute"/>
             <field name="note">Synced from salary_config demo structure.</field>
+            <field name="struct_id" ref="hr_payroll.default_structure"/>
         </record>
 
         <record id="salary_rule_total_ded" model="hr.salary.rule">
@@ -250,8 +283,9 @@
             <field name="amount_fix">0.0</field>
             <field name="amount_percentage">0.0</field>
             <field name="amount_percentage_base"/>
-            <field name="amount_python_compute">result = PF_EMP + CANTEEN + TRANS + PT</field>
+            <field name="amount_python_compute">result = categories.get('PF_EMP', 0.0) + categories.get('CANTEEN', 0.0) + categories.get('TRANS', 0.0) + categories.get('PT', 0.0)</field>
             <field name="note">Synced from salary_config demo structure.</field>
+            <field name="struct_id" ref="hr_payroll.default_structure"/>
         </record>
 
         <record id="salary_rule_inhand" model="hr.salary.rule">
@@ -270,8 +304,9 @@
             <field name="amount_fix">0.0</field>
             <field name="amount_percentage">0.0</field>
             <field name="amount_percentage_base"/>
-            <field name="amount_python_compute">result = GROSS - TOT_DED</field>
+            <field name="amount_python_compute">result = categories.get('GROSS', 0.0) - categories.get('TOT_DED', 0.0)</field>
             <field name="note">Synced from salary_config demo structure.</field>
+            <field name="struct_id" ref="hr_payroll.default_structure"/>
         </record>
     </data>
 </odoo>
