@@ -29,7 +29,7 @@ In base Odoo (`hr_payroll`):
 3. This calculated value is **directly written** to the `total` field when creating/updating payslip lines
 
 ```python
-# PAYroll-modules-ent/hr_payroll/models/hr_payslip.py line 837
+# Odoo-hr-payroll/hr_payroll/models/hr_payslip.py line 837
 def _get_payslip_line_total(self, amount, quantity, rate, rule):
     self.ensure_one()
     return amount * quantity * rate / 100.0  # ← This value is used directly
