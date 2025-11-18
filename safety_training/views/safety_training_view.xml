@@ -16,6 +16,7 @@
                             <field name="active"/>
                         </group>
                         <group>
+                            <field name="company_id"/>
                             <field name="pass_percentage"/>
                             <field name="total_questions_per_test"/>
                         </group>

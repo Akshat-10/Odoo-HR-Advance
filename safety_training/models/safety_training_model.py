@@ -27,6 +27,11 @@ class SafetyTrainingVideo(models.Model):
     question_ids = fields.One2many('safety.training.question', 'video_id', string='Questions')
     pass_percentage = fields.Float(string='Pass Percentage', default=80.0, help='Minimum percentage to pass')
     total_questions_per_test = fields.Integer(string='Questions Per Test', default=5)
+    company_id = fields.Many2one(
+        'res.company',
+        string='Company',
+        default=lambda self: self.env.company
+    )
 
 
 class SafetyTrainingQuestion(models.Model):
@@ -109,7 +114,7 @@ class SafetyTrainingAttempt(models.Model):
                 rec.score = 0.0
                 rec.passed = False
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals_list):
         # Support both single dict and list of dicts
         if isinstance(vals_list, dict):
