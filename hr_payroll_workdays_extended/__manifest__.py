@@ -3,8 +3,11 @@
     'name': 'Payroll Workdays Extended',
     'version': '1.4.9',
     'category': 'Human Resources',
-    'summary': 'Dynamic hourly wage including week-off hours and week-off days calculation',
+    'description': 'Dynamic hourly wage including week-off hours and week-off days calculation',
     'license': 'LGPL-3',
+    'author': 'Akshat Gupta',
+    'category': 'Human Resources',
+    'sequence': -1,
     'depends': [
         'hr_payroll',
         'payroll_salary_link',
