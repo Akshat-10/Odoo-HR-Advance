@@ -60,6 +60,11 @@ class SafetyTrainingQuestion(models.Model):
         ('prohibited', 'Prohibited Activities'),
         ('general', 'General Safety')
     ], string='Category', default='general')
+    company_id = fields.Many2one(
+        'res.company',
+        string='Company',
+        default=lambda self: self.env.company
+    )
 
 
 class SafetyTrainingAttempt(models.Model):
@@ -100,6 +105,11 @@ class SafetyTrainingAttempt(models.Model):
     attempt_number = fields.Integer(string='Attempt Number', default=1)
     selected_question_ids = fields.Many2many('safety.training.question', string='Selected Questions')
     access_token = fields.Char(string='Access Token', copy=False, index=True)
+    company_id = fields.Many2one(
+        'res.company',
+        string='Company',
+        default=lambda self: self.env.company
+    )
 
     @api.depends('answer_ids', 'answer_ids.is_correct', 'total_questions')
     def _compute_score(self):
@@ -269,6 +279,11 @@ class SafetyTrainingAnswer(models.Model):
     ], string='Selected Answer', required=True)
     is_correct = fields.Boolean(string='Correct', default=False)
     answered_at = fields.Datetime(string='Answered At', default=fields.Datetime.now)
+    company_id = fields.Many2one(
+        'res.company',
+        string='Company',
+        default=lambda self: self.env.company
+    )
 
 
 class HrGatePass(models.Model):
