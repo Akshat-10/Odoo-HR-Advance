@@ -1,13 +1,15 @@
-from odoo import models, fields, api
-from odoo.exceptions import UserError
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
 
 class KPIIndexing(models.Model):
     _name = 'kpi.indexing'
     _description = 'KPI Indexing'
+    _check_company_auto = True
 
-    kpi_id = fields.Many2one('kpi.kpi', string='KPI', required=True, ondelete='cascade', tracking=True)
-    category_id = fields.Many2one('kpi.category', string='Category', required=True, tracking=True)
-    sub_category_id = fields.Many2one('kpi.sub.category', string='Sub Category', required=True, tracking=True)
+    kpi_id = fields.Many2one('kpi.kpi', string='KPI', required=True, ondelete='cascade', tracking=True, check_company=True)
+    company_id = fields.Many2one('res.company', string='Company', related='kpi_id.company_id', store=True, readonly=True)
+    category_id = fields.Many2one('kpi.category', string='Category', required=True, tracking=True, check_company=True)
+    sub_category_id = fields.Many2one('kpi.sub.category', string='Sub Category', required=True, tracking=True, check_company=True)
     description = fields.Text(string='Description', tracking=True)
     weightage = fields.Float(string='Weightage (%)', tracking=True)
     start_date = fields.Date(string='Start Date', default=fields.Date.today, tracking=True)
@@ -24,8 +26,9 @@ class KPITrainingPlan(models.Model):
     _name = 'kpi.training.plan'
     _description = 'KPI Training Plan'
 
-    kpi_id = fields.Many2one('kpi.kpi', string='KPI', required=True, ondelete='cascade', tracking=True)
-    training_id = fields.Many2one('kpi.training', string='Training', required=True, tracking=True)
+    kpi_id = fields.Many2one('kpi.kpi', string='KPI', required=True, ondelete='cascade', tracking=True, check_company=True)
+    company_id = fields.Many2one('res.company', string='Company', related='kpi_id.company_id', store=True, readonly=True)
+    training_id = fields.Many2one('kpi.training', string='Training', required=True, tracking=True, check_company=True)
     reason = fields.Text(string='Reason', tracking=True)
     budget = fields.Monetary(string='Budget', tracking=True)
     currency_id = fields.Many2one('res.currency', string='Currency', default=lambda self: self.env.company.currency_id, tracking=True)
@@ -35,10 +38,19 @@ class KPI(models.Model):
     _description = 'Key Performance Index'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'sr_no desc'
+    _check_company_auto = True
 
     sr_no = fields.Integer(string='Sr. No.', required=True, copy=False)
+    company_id = fields.Many2one(
+        'res.company',
+        string='Company',
+        required=True,
+        default=lambda self: self.env.company,
+        index=True,
+        tracking=True,
+    )
     name = fields.Char(string='Name', compute='_compute_name', store=True, tracking=True)
-    employee_id = fields.Many2one('hr.employee', string='Employee', required=True, tracking=True)
+    employee_id = fields.Many2one('hr.employee', string='Employee', required=True, tracking=True, check_company=True)
     employee_code = fields.Char(string='Employee Code', related='employee_id.barcode', store=True, tracking=True)
     department_id = fields.Many2one('hr.department', string='Department', related='employee_id.department_id', store=True, tracking=True)
     department_hod = fields.Many2one('hr.employee', string='Department HOD', related='department_id.manager_id', store=True, tracking=True)
@@ -60,13 +72,16 @@ class KPI(models.Model):
     employee_count = fields.Integer(string='Employee Count', compute='_compute_employee_count')
 
     _sql_constraints = [
-        ('sr_no_uniq', 'unique(sr_no)', 'SR No must be unique!'),
+        ('sr_no_company_uniq', 'unique(sr_no, company_id)', 'SR No must be unique per company!'),
     ]
 
     @api.model
     def create(self, vals):
+        vals = dict(vals)
+        company_id = vals.get('company_id') or self.env.company.id
+        vals['company_id'] = company_id
         if 'sr_no' not in vals:
-            sequence = self.env['ir.sequence'].next_by_code('kpi.kpi')
+            sequence = self.env['ir.sequence'].with_company(company_id).next_by_code('kpi.kpi')
             if not sequence:
                 raise UserError("Failed to generate sequence for KPI. Please ensure the sequence with code 'kpi.kpi' is defined in the system.")
             vals['sr_no'] = int(sequence) if sequence else 1
@@ -164,3 +179,10 @@ class KPI(models.Model):
         self.write({
             'state': 'completed'
         })
+
+    @api.constrains('employee_id', 'company_id')
+    def _check_employee_company(self):
+        for record in self:
+            employee_company = record.employee_id.company_id
+            if employee_company and employee_company != record.company_id:
+                raise ValidationError(_('The employee must belong to the same company as the KPI.'))

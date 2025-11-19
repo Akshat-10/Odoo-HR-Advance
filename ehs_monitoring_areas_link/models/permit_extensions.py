@@ -5,7 +5,13 @@ from odoo import api, fields, models
 class WorkHeightsPermit(models.Model):
     _inherit = 'work.heights.permit'
 
-    monitoring_area_id = fields.Many2one('monitoring.areas', string='Monitoring Area', ondelete='restrict')
+    monitoring_area_id = fields.Many2one(
+        'monitoring.areas',
+        string='Monitoring Area',
+        ondelete='restrict',
+        domain="[('company_id', 'in', allowed_company_ids)]",
+        check_company=True,
+    )
     monitoring_area_qr_value = fields.Char(string='QR Code', related='monitoring_area_id.qr_value', readonly=True)
     monitoring_area_qr_image = fields.Binary(string='Area QR Code', related='monitoring_area_id.qr_image', readonly=True)
     monitoring_scan_url = fields.Char(string='Monitoring Scan URL', compute='_compute_monitoring_scan_url')
@@ -98,7 +104,13 @@ class WorkHeightsPermit(models.Model):
 class DailyPermitWork(models.Model):
     _inherit = 'daily.permit.work'
 
-    monitoring_area_id = fields.Many2one('monitoring.areas', string='Monitoring Area', ondelete='restrict')
+    monitoring_area_id = fields.Many2one(
+        'monitoring.areas',
+        string='Monitoring Area',
+        ondelete='restrict',
+        domain="[('company_id', 'in', allowed_company_ids)]",
+        check_company=True,
+    )
     monitoring_area_qr_value = fields.Char(string='QR Code', related='monitoring_area_id.qr_value', readonly=True)
     monitoring_area_qr_image = fields.Binary(string='Area QR Code', related='monitoring_area_id.qr_image', readonly=True)
     monitoring_scan_url = fields.Char(string='Monitoring Scan URL', compute='_compute_monitoring_scan_url')
@@ -185,7 +197,13 @@ class DailyPermitWork(models.Model):
 class HotWorkPermit(models.Model):
     _inherit = 'hot.work.permit'
 
-    monitoring_area_id = fields.Many2one('monitoring.areas', string='Monitoring Area', ondelete='restrict')
+    monitoring_area_id = fields.Many2one(
+        'monitoring.areas',
+        string='Monitoring Area',
+        ondelete='restrict',
+        domain="[('company_id', 'in', allowed_company_ids)]",
+        check_company=True,
+    )
     monitoring_area_qr_value = fields.Char(string='QR Code', related='monitoring_area_id.qr_value', readonly=True)
     monitoring_area_qr_image = fields.Binary(string='Area QR Code', related='monitoring_area_id.qr_image', readonly=True)
     monitoring_scan_url = fields.Char(string='Monitoring Scan URL', compute='_compute_monitoring_scan_url')
@@ -272,7 +290,13 @@ class HotWorkPermit(models.Model):
 class EnergizedWorkPermit(models.Model):
     _inherit = 'energized.work.permit'
 
-    monitoring_area_id = fields.Many2one('monitoring.areas', string='Monitoring Area', ondelete='restrict')
+    monitoring_area_id = fields.Many2one(
+        'monitoring.areas',
+        string='Monitoring Area',
+        ondelete='restrict',
+        domain="[('company_id', 'in', allowed_company_ids)]",
+        check_company=True,
+    )
     monitoring_area_qr_value = fields.Char(string='QR Code', related='monitoring_area_id.qr_value', readonly=True)
     monitoring_area_qr_image = fields.Binary(string='Area QR Code', related='monitoring_area_id.qr_image', readonly=True)
     monitoring_scan_url = fields.Char(string='Monitoring Scan URL', compute='_compute_monitoring_scan_url')

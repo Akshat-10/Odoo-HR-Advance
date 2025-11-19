@@ -6,6 +6,7 @@
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" optional="show"/>
                 <field name="permit_model"/>
                 <field name="permit_res_id" invisible="1"/>
                 <!-- Direct permit links (conditionally visible) -->
@@ -38,7 +39,8 @@
                     <group>
                         <group>
                             <field name="name" readonly="1"/>
-                            <field name="monitoring_area_id" options="{'no_create': True}" readonly="1"/>
+                            <field name="company_id" readonly="1" groups="base.group_multi_company" options="{'no_create': True}"/>
+                            <field name="monitoring_area_id" options="{'no_create': True}" readonly="1" domain="[('company_id', '=', company_id)]"/>
                             <field name="permit_model" readonly="1"/>
                             <field name="permit_res_id" invisible="1" readonly="1"/>
                             <!-- Direct permit links (read-only, visible according to type) -->

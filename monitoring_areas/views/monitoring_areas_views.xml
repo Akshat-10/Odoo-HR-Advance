@@ -9,6 +9,7 @@
             <list>
                 <field name="name"/>
                 <field name="code"/>
+                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                 <field name="active"/>
             </list>
         </field>
@@ -23,6 +24,7 @@
                     <group>
                         <field name="name"/>
                         <field name="code"/>
+                        <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                         <field name="active"/>
                     </group>
                 </sheet>
@@ -43,6 +45,7 @@
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                 <field name="area_id"/>
                 <field name="qr_value"/>
             </list>
@@ -57,7 +60,8 @@
                 <sheet>
                     <group>
                         <field name="name" readonly="1"/>
-                        <field name="area_id"/>
+                        <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                        <field name="area_id" domain="[('company_id', '=', company_id)]"/>
                     </group>
                     <group string="QR Code">
                         <field name="qr_value" readonly="1"/>

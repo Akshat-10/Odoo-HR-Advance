@@ -9,6 +9,7 @@ class PermitMonitoringLine(models.Model):
     _description = 'Work Permit Monitoring Line'
     _order = 'name desc'
     _inherit = ['mail.thread', 'mail.activity.mixin']
+    _check_company_auto = True
 
     name = fields.Integer(string='Serial No.', readonly=True)
     permit_model = fields.Selection([
@@ -26,7 +27,15 @@ class PermitMonitoringLine(models.Model):
     hot_work_permit_id = fields.Many2one('hot.work.permit', string='Hot Work Permit', compute='_compute_permit_m2os', store=False, readonly=True)
     energized_work_permit_id = fields.Many2one('energized.work.permit', string='Energized Work Permit', compute='_compute_permit_m2os', store=False, readonly=True)
 
-    monitoring_area_id = fields.Many2one('monitoring.areas', string='Monitoring Record', required=True, ondelete='restrict', index=True)
+    monitoring_area_id = fields.Many2one('monitoring.areas', string='Monitoring Record', required=True, ondelete='restrict', index=True, check_company=True)
+    company_id = fields.Many2one(
+        'res.company',
+        string='Company',
+        required=True,
+        default=lambda self: self.env.company,
+        index=True,
+        tracking=True,
+    )
 
     user_id = fields.Many2one('res.users', string='Logged User', default=lambda self: self.env.user, tracking=True, index=True, readonly=True)
     datetime = fields.Datetime(string='Time and Date', default=lambda self: fields.Datetime.now(), tracking=True, readonly=True)
@@ -73,6 +82,7 @@ class PermitMonitoringLine(models.Model):
     def create(self, vals_list):
         Param = self.env['ir.config_parameter'].sudo()
         for vals in vals_list:
+            vals['company_id'] = self._resolve_company(vals)
             # Assign per-group incremental serial starting at 1 for each (permit_model, monitoring_area_id)
             if not vals.get('name'):
                 permit_model = vals.get('permit_model')
@@ -81,6 +91,7 @@ class PermitMonitoringLine(models.Model):
                     last = self.search([
                         ('permit_model', '=', permit_model),
                         ('monitoring_area_id', '=', area_id),
+                        ('company_id', '=', vals['company_id']),
                     ], order='name desc', limit=1)
                     next_no = (last.name or 0) + 1
                     vals['name'] = next_no
@@ -99,6 +110,9 @@ class PermitMonitoringLine(models.Model):
         return recs
 
     def write(self, vals):
+        if {'monitoring_area_id', 'permit_model', 'permit_res_id', 'company_id'} & set(vals.keys()):
+            vals = dict(vals)
+            vals.setdefault('company_id', self._resolve_company(vals))
         res = super().write(vals)
         # After write, check if non-compliance and call_meeting True to trigger mail once
         for rec in self:
@@ -108,6 +122,20 @@ class PermitMonitoringLine(models.Model):
                     # Log in chatter
                     rec.message_post(body=_('Non-compliance email sent to admins.'))
         return res
+
+    def _resolve_company(self, vals):
+        Area = self.env['monitoring.areas']
+        if vals.get('monitoring_area_id'):
+            area = Area.browse(vals['monitoring_area_id'])
+            if area.company_id:
+                return area.company_id.id
+        permit_model = vals.get('permit_model')
+        permit_res_id = vals.get('permit_res_id')
+        if permit_model and permit_res_id:
+            permit = self.env[permit_model].browse(permit_res_id)
+            if permit and hasattr(permit, 'company_id') and permit.company_id:
+                return permit.company_id.id
+        return vals.get('company_id') or self.env.company.id
 
     def action_mark_done(self):
         for rec in self:
@@ -241,7 +269,22 @@ class PermitMonitoringLine(models.Model):
             qr_rec = QR.search([
                 ('permit_model', '=', rec.permit_model),
                 ('permit_res_id', '=', rec.permit_res_id),
-                ('area_id', '=', rec.monitoring_area_id.id)
+                ('area_id', '=', rec.monitoring_area_id.id),
+                ('company_id', '=', rec.company_id.id),
             ], limit=1)
             if qr_rec:
                 qr_rec.rotate_code()
+
+    @api.constrains('monitoring_area_id', 'company_id')
+    def _check_monitoring_area_company(self):
+        for rec in self:
+            if rec.monitoring_area_id and rec.monitoring_area_id.company_id != rec.company_id:
+                raise ValidationError(_('Monitoring line company must match the monitoring record company.'))
+
+    @api.constrains('permit_model', 'permit_res_id', 'company_id')
+    def _check_permit_company(self):
+        for rec in self:
+            if rec.permit_model and rec.permit_res_id:
+                permit = self.env[rec.permit_model].browse(rec.permit_res_id)
+                if permit and hasattr(permit, 'company_id') and permit.company_id and permit.company_id != rec.company_id:
+                    raise ValidationError(_('Monitoring line company must match the permit company.'))
