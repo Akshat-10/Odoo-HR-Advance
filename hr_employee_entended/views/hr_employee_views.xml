@@ -11,6 +11,7 @@
                 <field name="contract_id" readonly="0"/>
                 <field name="first_contract_date" readonly="0" />
                 <field name="joining_date" readonly="0" />
+                <field name="join_date" readonly="0" invisible="1" />
             </xpath>
 
             <xpath expr="//page[@name='hr_settings']" position="after">

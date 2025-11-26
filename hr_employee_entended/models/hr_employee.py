@@ -11,12 +11,16 @@ class Employee(models.Model):
         store=True,
         help="Employee joining date"
     )
+    
+    join_date = fields.Date(string='Join Date', store=True)
 
-    @api.depends('create_date')
+    @api.depends('join_date', 'create_date')
     def _compute_joining_date(self):
         """Compute the joining date based on when the employee record was created."""
         for employee in self:
-            if employee.create_date:
+            if employee.join_date:
+                employee.joining_date = employee.join_date
+            elif employee.create_date:
                 employee.joining_date = employee.create_date.date()
             else:
                 employee.joining_date = False
