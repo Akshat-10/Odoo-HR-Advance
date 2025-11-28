@@ -12,6 +12,7 @@
                 <field name="first_contract_date" readonly="0" />
                 <field name="joining_date" readonly="0" />
                 <field name="join_date" readonly="0" invisible="1" />
+                <field name="father_name"/>
             </xpath>
 
             <xpath expr="//page[@name='hr_settings']" position="after">
@@ -114,6 +115,17 @@
                 <!-- to delete later maybe  above -->
 
 
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hr_contract_form_inherit_father_name" model="ir.ui.view">
+        <field name="name">hr.contract.form.inherit.father.name</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='employee_id']" position="after">
+                <field name="father_name"/>
             </xpath>
         </field>
     </record>

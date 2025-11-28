@@ -13,6 +13,7 @@ class Employee(models.Model):
     )
     
     join_date = fields.Date(string='Join Date', store=True)
+    father_name = fields.Char(string='Father Name')
 
     @api.depends('join_date', 'create_date')
     def _compute_joining_date(self):
@@ -82,6 +83,8 @@ class Employee(models.Model):
 
 class Contract(models.Model):
     _inherit = 'hr.contract'
+
+    father_name = fields.Char(string='Father Name')
 
     def write(self, vals):
         """Override write to handle contract updates, relying on base behavior for employee sync."""
