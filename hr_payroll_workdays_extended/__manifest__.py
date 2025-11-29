@@ -11,7 +11,7 @@
     'depends': [
         'hr_payroll',
         'payroll_salary_link',
-        'hr_attendance_calculs',
+        # 'hr_attendance_calculs',
     ],
     'data': [
         'data/hr_work_entry_type_data.xml',
