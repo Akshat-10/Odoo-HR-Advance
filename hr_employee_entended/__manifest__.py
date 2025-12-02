@@ -13,15 +13,17 @@
     "summary": "Human Resources Employees Management System Extended Module",
     "depends": ["hr", "hr_recruitment",
                 'hr_attendance', 'hr_holidays', 'hr_contract','hr_org_chart', 
-                # 'hr_payroll', 
+                'hr_payroll', 
                 # 'hr_expense',
-                'hr_induction', 'hr_employee_updation', 'hr_timesheet'
+                'hr_induction', 'hr_employee_updation', 'hr_timesheet',
+                'EHS',
                 ],
     "data": [
         'views/hr_employee_views.xml',
         # 'views/hr_contract_views.xml',
         'views/hr_timeoff_allocation_views.xml',
         'views/hr_timeoff_rename_inherit.xml',
+        'views/playslip_report_modifications.xml',
     ],
     
     

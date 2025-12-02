@@ -9,8 +9,8 @@
             <t t-set="overtime_lines" t-value="worked_days_lines.filtered(lambda wd: (wd.work_entry_type_id.code or '').upper() == 'OVERTIME')"/>
             <!-- Remaining lines counted as regular worked days (exclude overtime from day count) -->
             <t t-set="regular_worked_days_lines" t-value="worked_days_lines.filtered(lambda wd: (wd.work_entry_type_id.code or '').upper() != 'OVERTIME')"/>
-            <!-- Total days excludes overtime, but total amount includes all lines -->
-            <t t-set="worked_days_total_days" t-value="round(sum(regular_worked_days_lines.mapped('number_of_days')), 2)"/>
+            <!-- Total days excludes overtime AND unpaid entries, but total amount includes all lines -->
+            <t t-set="worked_days_total_days" t-value="round(sum(regular_worked_days_lines.filtered(lambda wd: wd.is_paid).mapped('number_of_days')), 2)"/>
             <!-- Total amount must reflect every worked day line (matches paid_amount) -->
             <t t-set="worked_days_total_amount" t-value="sum(worked_days_lines.mapped('amount'))"/>
             <!-- YTD includes regular + overtime as well -->
@@ -60,6 +60,25 @@
             </div>
         </xpath>
 
+        <!-- change name <strong class="me-2">Contract Wage  to CTC -->
+        <xpath expr="//div[@id='wage']" position="replace">
+            <div id="wage">
+                <strong class="me-2">CTC (<span class="text-capitalize" t-out="o.contract_id.wage_type"/>):</strong>
+                <span t-out="o.contract_id._get_contract_wage()" t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}" style="color:#875A7B" class="fw-bold"/>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[@id='working_schedule']" position="attributes">
+            <attribute name="style">display:none;</attribute>
+        </xpath>
+
+        <!-- Change ID label to Aadhar -->
+        <xpath expr="//div[@id='employee_id']//strong[@class='me-2']" position="replace">
+            <strong class="me-2">Aadhar:</strong>
+        </xpath>
+
+        
+
         <!-- Customization: Remove Amount, Quantity, and Rate columns from payslip lines table -->
         <xpath expr="//div[@id='payslip_lines_table']//th[@id='line_header_amount']" position="replace"/>
         <xpath expr="//div[@id='payslip_lines_table']//th[@id='line_header_quantity']" position="replace"/>
@@ -68,5 +87,14 @@
         <xpath expr="//div[@id='payslip_lines_table']//td[@id='payslip_line_amount']" position="replace"/>
         <xpath expr="//div[@id='payslip_lines_table']//td[@id='payslip_line_quantity']" position="replace"/>
         <xpath expr="//div[@id='payslip_lines_table']//td[@id='payslip_line_rate']" position="replace"/>
+    </template>
+
+    <template id="report_payslip_details_hide_schedule" inherit_id="l10n_in_hr_payroll.report_payslip_details">
+        <!-- Hide the Working Schedule label -->
+        <xpath expr="//strong[@class='me-2'][contains(text(),'Working Schedule:')]" position="replace"/>
+        <!-- Hide the first t element (monthly) using span inside it -->
+        <xpath expr="//span[@t-out='o._get_l10n_in_company_working_time()']/.." position="replace"/>
+        <!-- Hide the t-else element (hourly) using span inside it -->
+        <xpath expr="//span[@t-out='o._get_l10n_in_company_working_time(return_hours=True)']/.." position="replace"/>
     </template>
 </odoo>

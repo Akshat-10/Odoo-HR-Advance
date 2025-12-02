@@ -11,6 +11,7 @@
     'depends': [
         'hr_payroll',
         'payroll_salary_link',
+        'l10n_in_hr_payroll',
         # 'hr_attendance_calculs',
     ],
     'data': [

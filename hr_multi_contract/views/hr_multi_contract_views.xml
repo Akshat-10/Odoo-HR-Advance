@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Multi Contract Form View -->
+        <record id="hr_multi_contract_view_form" model="ir.ui.view">
+            <field name="name">hr.multi.contract.view.form</field>
+            <field name="model">hr.multi.contract</field>
+            <field name="arch" type="xml">
+                <form string="Multi Contract">
+                    <header>
+                        <button name="action_confirm" string="Confirm" type="object" 
+                                class="oe_highlight" invisible="state != 'draft'"/>
+                        <button name="action_create_contracts" string="Create Contracts" type="object" 
+                                class="oe_highlight" invisible="state != 'confirmed'"/>
+                        <button name="action_draft" string="Reset to Draft" type="object" 
+                                invisible="state not in ['confirmed', 'cancel']"/>
+                        <button name="action_cancel" string="Cancel" type="object" 
+                                invisible="state in ['done', 'cancel']"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_contracts" type="object" 
+                                    class="oe_stat_button" icon="fa-file-text-o"
+                                    invisible="contract_count == 0">
+                                <field name="contract_count" widget="statbutton" string="Contracts"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <label for="name" string="Reference"/>
+                            <h1>
+                                <field name="name" readonly="state in ['done', 'cancel']"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="company_id" groups="base.group_multi_company" 
+                                       readonly="state != 'draft'"/>
+                                <field name="employee_count" invisible="1"/>
+                                <field name="employee_ids" widget="many2many_tags" 
+                                       readonly="state != 'draft'"
+                                       options="{'color_field': 'color', 'no_create_edit': True}"/>
+                                <field name="structure_type_id" readonly="state != 'draft'"/>
+                                <field name="contract_type_id" readonly="state != 'draft'"/>
+                            </group>
+                            <group>
+                                <field name="date_start" readonly="state != 'draft'"/>
+                                <field name="date_end" readonly="state != 'draft'"/>
+                                <field name="wage" readonly="state != 'draft'"/>
+                                <field name="currency_id" invisible="1"/>
+                                <field name="resource_calendar_id" readonly="state != 'draft'"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="department_id" readonly="state != 'draft'"/>
+                                <field name="job_id" readonly="state != 'draft'"/>
+                            </group>
+                            <group>
+                                <field name="use_employee_specific_dates" readonly="state != 'draft'"/>
+                                <field name="auto_fetch_custom_fields" readonly="state != 'draft'"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Notes" name="notes">
+                                <field name="notes" placeholder="Add any additional notes here..." 
+                                       readonly="state == 'done'"/>
+                            </page>
+                            <page string="Created Contracts" name="contracts" 
+                                  invisible="contract_count == 0">
+                                <field name="contract_ids" readonly="1">
+                                    <list>
+                                        <field name="name"/>
+                                        <field name="employee_id"/>
+                                        <field name="date_start"/>
+                                        <field name="date_end"/>
+                                        <field name="wage"/>
+                                        <field name="state" widget="badge" 
+                                               decoration-success="state == 'open'"
+                                               decoration-info="state == 'draft'"
+                                               decoration-warning="state == 'close'"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Multi Contract list View -->
+        <record id="hr_multi_contract_view_list" model="ir.ui.view">
+            <field name="name">hr.multi.contract.view.list</field>
+            <field name="model">hr.multi.contract</field>
+            <field name="arch" type="xml">
+                <list string="Multi Contracts" decoration-info="state == 'draft'" 
+                      decoration-warning="state == 'confirmed'" 
+                      decoration-success="state == 'done'"
+                      decoration-muted="state == 'cancel'">
+                    <field name="name"/>
+                    <field name="date_start"/>
+                    <field name="date_end"/>
+                    <field name="employee_count" string="Employees"/>
+                    <field name="contract_count" string="Contracts"/>
+                    <field name="wage" widget="monetary"/>
+                    <field name="currency_id" column_invisible="1"/>
+                    <field name="department_id"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="state" widget="badge" 
+                           decoration-info="state == 'draft'"
+                           decoration-warning="state == 'confirmed'"
+                           decoration-success="state == 'done'"
+                           decoration-danger="state == 'cancel'"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Multi Contract Search View -->
+        <record id="hr_multi_contract_view_search" model="ir.ui.view">
+            <field name="name">hr.multi.contract.view.search</field>
+            <field name="model">hr.multi.contract</field>
+            <field name="arch" type="xml">
+                <search string="Multi Contracts">
+                    <field name="name" string="Reference"/>
+                    <field name="employee_ids" string="Employee"/>
+                    <field name="department_id"/>
+                    <field name="job_id"/>
+                    <separator/>
+                    <filter name="filter_draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                    <filter name="filter_confirmed" string="Confirmed" domain="[('state', '=', 'confirmed')]"/>
+                    <filter name="filter_done" string="Done" domain="[('state', '=', 'done')]"/>
+                    <separator/>
+                    <filter name="filter_current_month" string="This Month" 
+                            domain="[('date_start', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                     ('date_start', '&lt;=', (context_today() + relativedelta(day=31)).strftime('%Y-%m-%d'))]"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                        <filter name="group_department" string="Department" context="{'group_by': 'department_id'}"/>
+                        <filter name="group_job" string="Job Position" context="{'group_by': 'job_id'}"/>
+                        <filter name="group_start_date" string="Start Date" context="{'group_by': 'date_start'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Multi Contract Kanban View -->
+        <record id="hr_multi_contract_view_kanban" model="ir.ui.view">
+            <field name="name">hr.multi.contract.view.kanban</field>
+            <field name="model">hr.multi.contract</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile">
+                    <field name="name"/>
+                    <field name="date_start"/>
+                    <field name="employee_count"/>
+                    <field name="contract_count"/>
+                    <field name="state"/>
+                    <field name="wage"/>
+                    <field name="currency_id"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_global_click">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                    </div>
+                                    <span class="badge rounded-pill" 
+                                          t-att-class="{'text-bg-info': record.state.raw_value == 'draft',
+                                                       'text-bg-warning': record.state.raw_value == 'confirmed',
+                                                       'text-bg-success': record.state.raw_value == 'done',
+                                                       'text-bg-secondary': record.state.raw_value == 'cancel'}">
+                                        <field name="state"/>
+                                    </span>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <field name="employee_count"/> Employees |
+                                    <field name="contract_count"/> Contracts
+                                    <br/>
+                                    Start: <field name="date_start"/>
+                                    <br/>
+                                    Wage: <field name="wage" widget="monetary"/>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Multi Contract Action -->
+        <record id="hr_multi_contract_action" model="ir.actions.act_window">
+            <field name="name">Multi Contracts</field>
+            <field name="res_model">hr.multi.contract</field>
+            <field name="view_mode">list,kanban,form</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a Multi Contract
+                </p>
+                <p>
+                    Create contracts for multiple employees at once with a single click.
+                    <br/>
+                    Perfect for bulk hiring or annual contract renewals.
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu Items -->
+        <menuitem id="menu_hr_multi_contract_root"
+                  name="Multi Contracts"
+                  parent="hr.menu_hr_employee_payroll"
+                  sequence="10"/>
+
+        <menuitem id="menu_hr_multi_contract"
+                  name="Multi Contracts"
+                  parent="menu_hr_multi_contract_root"
+                  action="hr_multi_contract_action"
+                  sequence="1"/>
+
+        <!-- Sequence for Multi Contract Reference -->
+        <record id="seq_hr_multi_contract" model="ir.sequence">
+            <field name="name">Multi Contract Reference</field>
+            <field name="code">hr.multi.contract</field>
+            <field name="prefix">MC/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

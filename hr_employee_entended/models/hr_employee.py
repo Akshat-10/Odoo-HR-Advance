@@ -84,7 +84,27 @@ class Employee(models.Model):
 class Contract(models.Model):
     _inherit = 'hr.contract'
 
-    father_name = fields.Char(string='Father Name')
+    father_name = fields.Char(string='Father Name', related='employee_id.father_name', store=True)
+    employee_code = fields.Char(string='Employee Code', related='employee_id.employee_code', store=True)
+
+    @api.depends('employee_id')
+    def _compute_employee_contract(self):
+        """Override to ensure job_id and department_id are properly computed from employee."""
+        super(Contract, self)._compute_employee_contract()
+        for contract in self.filtered('employee_id'):
+            if contract.employee_id:
+                # Ensure job_id is set if not already
+                if not contract.job_id and contract.employee_id.job_id:
+                    contract.job_id = contract.employee_id.job_id
+                # Ensure department_id is set if not already
+                if not contract.department_id and contract.employee_id.department_id:
+                    contract.department_id = contract.employee_id.department_id
+                # Ensure resource_calendar_id is set if not already
+                if not contract.resource_calendar_id and contract.employee_id.resource_calendar_id:
+                    contract.resource_calendar_id = contract.employee_id.resource_calendar_id
+                # Ensure company_id is set if not already
+                if not contract.company_id and contract.employee_id.company_id:
+                    contract.company_id = contract.employee_id.company_id
 
     def write(self, vals):
         """Override write to handle contract updates, relying on base behavior for employee sync."""
@@ -105,3 +125,27 @@ class Contract(models.Model):
                     })
 
         return res
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create to ensure employee fields are properly populated."""
+        contracts = super(Contract, self).create(vals_list)
+        
+        # Populate missing fields from employee after creation
+        for contract in contracts:
+            if contract.employee_id:
+                update_vals = {}
+                if not contract.job_id and contract.employee_id.job_id:
+                    update_vals['job_id'] = contract.employee_id.job_id.id
+                if not contract.department_id and contract.employee_id.department_id:
+                    update_vals['department_id'] = contract.employee_id.department_id.id
+                if not contract.resource_calendar_id and contract.employee_id.resource_calendar_id:
+                    update_vals['resource_calendar_id'] = contract.employee_id.resource_calendar_id.id
+                if not contract.company_id and contract.employee_id.company_id:
+                    update_vals['company_id'] = contract.employee_id.company_id.id
+                
+                if update_vals:
+                    # Use super().write to avoid triggering custom logic
+                    super(Contract, contract).write(update_vals)
+        
+        return contracts

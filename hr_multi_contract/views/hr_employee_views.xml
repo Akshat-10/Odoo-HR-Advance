@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Inherit Employee Form View -->
+        <record id="hr_employee_view_form_inherit_multi_contract" model="ir.ui.view">
+            <field name="name">hr.employee.view.form.inherit.multi.contract</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="action_view_multi_contracts" type="object" 
+                            class="oe_stat_button" icon="fa-files-o"
+                            invisible="multi_contract_count == 0">
+                        <field name="multi_contract_count" widget="statbutton" string="Multi Contracts"/>
+                    </button>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Inherit Employee List View - Add Action Button -->
+        <record id="hr_employee_view_tree_inherit_multi_contract" model="ir.ui.view">
+            <field name="name">hr.employee.view.tree.inherit.multi.contract</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//list" position="attributes">
+                    <attribute name="multi_edit">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Action to be available on employee list view -->
+        <record id="action_employee_create_mass_contracts" model="ir.actions.server">
+            <field name="name">Create Mass Contracts</field>
+            <field name="model_id" ref="hr.model_hr_employee"/>
+            <field name="binding_model_id" ref="hr.model_hr_employee"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+if records:
+    action = records.action_create_mass_contracts()
+            </field>
+        </record>
+
+    </data>
+</odoo>
