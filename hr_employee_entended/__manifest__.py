@@ -23,6 +23,7 @@
         # 'views/hr_contract_views.xml',
         'views/hr_timeoff_allocation_views.xml',
         'views/hr_timeoff_rename_inherit.xml',
+        'views/hr_payslip_views.xml',
         'views/playslip_report_modifications.xml',
     ],
     
