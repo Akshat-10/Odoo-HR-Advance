@@ -6,6 +6,12 @@ class AttendanceReportXlsx(models.AbstractModel):
     _inherit = 'report.report_xlsx.abstract'
 
     def generate_xlsx_report(self, workbook, data, wizard):
+        wizard = wizard.ensure_one()
+        records = data.get('data') if isinstance(data, dict) else None
+        if not records:
+            # Fallback for direct report calls where the data payload is missing.
+            records = wizard._prepare_report_payload().get('data', [])
+
         sheet = workbook.add_worksheet('Attendance Report')
         bold = workbook.add_format({'bold': True})
         
@@ -33,7 +39,7 @@ class AttendanceReportXlsx(models.AbstractModel):
             sheet.write(0, col, header, bold)
         
         # Write data rows
-        for row, record in enumerate(data['data'], start=1):
+        for row, record in enumerate(records, start=1):
             for col, field in enumerate(headers):
                 key = field.lower().replace(' ', '_') if field not in date_headers else field
                 value = record.get(key, '')

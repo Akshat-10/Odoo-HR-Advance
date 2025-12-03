@@ -8,6 +8,14 @@ import math
 class HrPayslip(models.Model):
     _inherit = 'hr.payslip'
 
+    # Override employee_id to show only active employees
+    employee_id = fields.Many2one(
+        'hr.employee',
+        string='Employee',
+        required=True,
+        domain="[('active', '=', True), '|', ('company_id', '=', False), ('company_id', '=', company_id)]"
+    )
+
     def _get_paid_amount(self):
         """Override to round paid amount to whole numbers"""
         amount = super()._get_paid_amount()

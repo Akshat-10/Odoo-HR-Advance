@@ -27,7 +27,8 @@ class AttendanceReportWizard(models.TransientModel):
         if self.start_date:
             self.end_date = date_utils.end_of(self.start_date, 'month')
 
-    def action_generate_report(self):
+    def _prepare_report_payload(self):
+        """Build the dataset expected by the XLSX report."""
         self.ensure_one()
         employees = self.employee_ids or self.env['hr.employee'].search([])
         data = []
@@ -35,7 +36,7 @@ class AttendanceReportWizard(models.TransientModel):
         for employee in employees:
             metrics = employee._get_attendance_metrics(self.start_date, self.end_date)
             row = {
-                'employee_code': employee.barcode or '',
+                'employee_code': employee.employee_code or '',
                 'full_name': employee.name or '',
                 'employment_status': employee.contract_id.state if employee.contract_id else '',
                 'company': employee.company_id.name or '',
@@ -89,4 +90,9 @@ class AttendanceReportWizard(models.TransientModel):
             for date in date_range:
                 row[str(date)] = metrics['daily_status'].get(str(date), '')
             data.append(row)
-        return self.env.ref('hr_attendance_gantt_enhanced.attendance_report_xlsx').report_action(self, data={'data': data})
+        return {'data': data}
+
+    def action_generate_report(self):
+        self.ensure_one()
+        report_data = self._prepare_report_payload()
+        return self.env.ref('hr_attendance_gantt_enhanced.attendance_report_xlsx').report_action(self, data=report_data)

@@ -9,7 +9,10 @@
     'license': 'LGPL-3',
     'website': 'https://github.com/Akshat-10',
     'category': 'Human Resources',
-    'depends': ['hr_attendance_gantt', 'hr_holidays', 'report_xlsx', 'hr_induction'],
+    'depends': ['hr_attendance_gantt', 'hr_holidays', 'report_xlsx', 'hr_induction',
+                'hr_expense',
+                'EHS',
+                ],
     'data': [
         'security/ir.model.access.csv',
         'views/attendance_report_wizard_views.xml',
