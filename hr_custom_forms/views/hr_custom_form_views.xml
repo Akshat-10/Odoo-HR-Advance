@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <menuitem id="menu_hr_custom_forms_root" name="HR Custom Forms" parent="hr.menu_hr_root" sequence="80"/>
+
+        <!-- ER1 Covering Letter -->
+        <record id="view_hr_custom_form_er1_list" model="ir.ui.view">
+            <field name="name">hr.custom.form.er1.list</field>
+            <field name="model">hr.custom.form.er1</field>
+            <field name="arch" type="xml">
+                <list default_order="sequence,name">
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="company_id"/>
+                    <field name="employee_code"/>
+                    <field name="father_name"/>
+                    <field name="joining_date"/>
+                    <field name="department_id"/>
+                    <field name="job_id"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_hr_custom_form_er1_form" model="ir.ui.view">
+            <field name="name">hr.custom.form.er1.form</field>
+            <field name="model">hr.custom.form.er1</field>
+            <field name="arch" type="xml">
+                <form string="ER1 Covering Letter">
+                    <sheet>
+                        <field name="sequence" invisible="1"/>
+                        <group>
+                            <field name="name"/>
+                            <field name="company_id" required="1"/>
+                            <field name="employee_id" required="1" domain="[('company_id', '=', company_id)]"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="employee_code" readonly="1"/>
+                                <field name="father_name"/>
+                                <field name="joining_date"/>
+                            </group>
+                            <group>
+                                <field name="department_id"/>
+                                <field name="job_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_hr_custom_form_er1" model="ir.actions.act_window">
+            <field name="name">ER1 Covering Letter</field>
+            <field name="res_model">hr.custom.form.er1</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p>Create and track ER1 Covering Letters from here.</p>
+            </field>
+        </record>
+
+        <menuitem id="menu_hr_custom_form_er1" name="ER1 Covering Letter" parent="menu_hr_custom_forms_root" action="action_hr_custom_form_er1" sequence="10"/>
+
+        <!-- Form D -->
+        <record id="view_hr_custom_form_formd_list" model="ir.ui.view">
+            <field name="name">hr.custom.form.formd.list</field>
+            <field name="model">hr.custom.form.formd</field>
+            <field name="arch" type="xml">
+                <list default_order="sequence,name">
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="company_id"/>
+                    <field name="employee_code"/>
+                    <field name="father_name"/>
+                    <field name="joining_date"/>
+                    <field name="department_id"/>
+                    <field name="job_id"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_hr_custom_form_formd_form" model="ir.ui.view">
+            <field name="name">hr.custom.form.formd.form</field>
+            <field name="model">hr.custom.form.formd</field>
+            <field name="arch" type="xml">
+                <form string="Form D">
+                    <sheet>
+                        <field name="sequence" invisible="1"/>
+                        <group>
+                            <field name="name"/>
+                            <field name="company_id" required="1"/>
+                            <field name="employee_id" required="1" domain="[('company_id', '=', company_id)]"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="employee_code" readonly="1"/>
+                                <field name="father_name"/>
+                                <field name="joining_date"/>
+                            </group>
+                            <group>
+                                <field name="department_id"/>
+                                <field name="job_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_hr_custom_form_formd" model="ir.actions.act_window">
+            <field name="name">Form D</field>
+            <field name="res_model">hr.custom.form.formd</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p>Manage Form D submissions.</p>
+            </field>
+        </record>
+
+        <menuitem id="menu_hr_custom_form_formd" name="Form D" parent="menu_hr_custom_forms_root" action="action_hr_custom_form_formd" sequence="20"/>
+
+        <!-- Minimum Wages Notice -->
+        <record id="view_hr_custom_form_mw_notice_list" model="ir.ui.view">
+            <field name="name">hr.custom.form.mw_notice.list</field>
+            <field name="model">hr.custom.form.mw_notice</field>
+            <field name="arch" type="xml">
+                <list default_order="sequence,name">
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="company_id"/>
+                    <field name="employee_code"/>
+                    <field name="father_name"/>
+                    <field name="joining_date"/>
+                    <field name="department_id"/>
+                    <field name="job_id"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_hr_custom_form_mw_notice_form" model="ir.ui.view">
+            <field name="name">hr.custom.form.mw_notice.form</field>
+            <field name="model">hr.custom.form.mw_notice</field>
+            <field name="arch" type="xml">
+                <form string="Minimum Wages Display Notice">
+                    <sheet>
+                        <field name="sequence" invisible="1"/>
+                        <group>
+                            <field name="name"/>
+                            <field name="company_id" required="1"/>
+                            <field name="employee_id" required="1" domain="[('company_id', '=', company_id)]"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="employee_code" readonly="1"/>
+                                <field name="father_name"/>
+                                <field name="joining_date"/>
+                            </group>
+                            <group>
+                                <field name="department_id"/>
+                                <field name="job_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_hr_custom_form_mw_notice" model="ir.actions.act_window">
+            <field name="name">MW Display Notices</field>
+            <field name="res_model">hr.custom.form.mw_notice</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p>Maintain Minimum Wages Act display notices.</p>
+            </field>
+        </record>
+
+        <menuitem id="menu_hr_custom_form_mw_notice" name="MW Display Notices" parent="menu_hr_custom_forms_root" action="action_hr_custom_form_mw_notice" sequence="30"/>
+
+        <!-- Form 2 Revised -->
+        <record id="view_hr_custom_form_form2_list" model="ir.ui.view">
+            <field name="name">hr.custom.form.form2.list</field>
+            <field name="model">hr.custom.form.form2</field>
+            <field name="arch" type="xml">
+                <list default_order="sequence,name">
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="company_id"/>
+                    <field name="employee_code"/>
+                    <field name="father_name"/>
+                    <field name="joining_date"/>
+                    <field name="department_id"/>
+                    <field name="job_id"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_hr_custom_form_form2_form" model="ir.ui.view">
+            <field name="name">hr.custom.form.form2.form</field>
+            <field name="model">hr.custom.form.form2</field>
+            <field name="arch" type="xml">
+                <form string="Form 2 (Revised)">
+                    <sheet>
+                        <field name="sequence" invisible="1"/>
+                        <group>
+                            <field name="name"/>
+                            <field name="company_id" required="1"/>
+                            <field name="employee_id" required="1" domain="[('company_id', '=', company_id)]"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="employee_code" readonly="1"/>
+                                <field name="father_name"/>
+                                <field name="joining_date"/>
+                            </group>
+                            <group>
+                                <field name="department_id"/>
+                                <field name="job_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_hr_custom_form_form2" model="ir.actions.act_window">
+            <field name="name">Form 2 (Revised)</field>
+            <field name="res_model">hr.custom.form.form2</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p>Track Form 2 (Revised) entries.</p>
+            </field>
+        </record>
+
+        <menuitem id="menu_hr_custom_form_form2" name="Form 2 (Revised)" parent="menu_hr_custom_forms_root" action="action_hr_custom_form_form2" sequence="40"/>
+
+        <!-- Form 11 -->
+        <record id="view_hr_custom_form_form11_list" model="ir.ui.view">
+            <field name="name">hr.custom.form.form11.list</field>
+            <field name="model">hr.custom.form.form11</field>
+            <field name="arch" type="xml">
+                <list default_order="sequence,name">
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="company_id"/>
+                    <field name="employee_code"/>
+                    <field name="father_name"/>
+                    <field name="joining_date"/>
+                    <field name="department_id"/>
+                    <field name="job_id"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_hr_custom_form_form11_form" model="ir.ui.view">
+            <field name="name">hr.custom.form.form11.form</field>
+            <field name="model">hr.custom.form.form11</field>
+            <field name="arch" type="xml">
+                <form string="Form 11 (Composite Declaration)">
+                    <sheet>
+                        <field name="sequence" invisible="1"/>
+                        <group>
+                            <field name="name"/>
+                            <field name="company_id" required="1"/>
+                            <field name="employee_id" required="1" domain="[('company_id', '=', company_id)]"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="employee_code" readonly="1"/>
+                                <field name="father_name"/>
+                                <field name="joining_date"/>
+                            </group>
+                            <group>
+                                <field name="department_id"/>
+                                <field name="job_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_hr_custom_form_form11" model="ir.actions.act_window">
+            <field name="name">Form 11 (Composite Declaration)</field>
+            <field name="res_model">hr.custom.form.form11</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p>Use this view to maintain Form 11 records.</p>
+            </field>
+        </record>
+
+        <menuitem id="menu_hr_custom_form_form11" name="Form 11" parent="menu_hr_custom_forms_root" action="action_hr_custom_form_form11" sequence="50"/>
+
+        <!-- Form 15G -->
+        <record id="view_hr_custom_form_form15g_list" model="ir.ui.view">
+            <field name="name">hr.custom.form.form15g.list</field>
+            <field name="model">hr.custom.form.form15g</field>
+            <field name="arch" type="xml">
+                <list default_order="sequence,name">
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="company_id"/>
+                    <field name="employee_code"/>
+                    <field name="father_name"/>
+                    <field name="joining_date"/>
+                    <field name="department_id"/>
+                    <field name="job_id"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_hr_custom_form_form15g_form" model="ir.ui.view">
+            <field name="name">hr.custom.form.form15g.form</field>
+            <field name="model">hr.custom.form.form15g</field>
+            <field name="arch" type="xml">
+                <form string="Form 15G">
+                    <sheet>
+                        <field name="sequence" invisible="1"/>
+                        <group>
+                            <field name="name"/>
+                            <field name="company_id" required="1"/>
+                            <field name="employee_id" required="1" domain="[('company_id', '=', company_id)]"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="employee_code" readonly="1"/>
+                                <field name="father_name"/>
+                                <field name="joining_date"/>
+                            </group>
+                            <group>
+                                <field name="department_id"/>
+                                <field name="job_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_hr_custom_form_form15g" model="ir.actions.act_window">
+            <field name="name">Form 15G</field>
+            <field name="res_model">hr.custom.form.form15g</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p>Capture Form 15G declarations.</p>
+            </field>
+        </record>
+
+        <menuitem id="menu_hr_custom_form_form15g" name="Form 15G" parent="menu_hr_custom_forms_root" action="action_hr_custom_form_form15g" sequence="60"/>
+
+        <!-- Leave Application -->
+        <record id="view_hr_custom_form_leave_application_list" model="ir.ui.view">
+            <field name="name">hr.custom.form.leave_application.list</field>
+            <field name="model">hr.custom.form.leave_application</field>
+            <field name="arch" type="xml">
+                <list default_order="sequence,name">
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="company_id"/>
+                    <field name="employee_code"/>
+                    <field name="father_name"/>
+                    <field name="joining_date"/>
+                    <field name="department_id"/>
+                    <field name="job_id"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_hr_custom_form_leave_application_form" model="ir.ui.view">
+            <field name="name">hr.custom.form.leave_application.form</field>
+            <field name="model">hr.custom.form.leave_application</field>
+            <field name="arch" type="xml">
+                <form string="Leave Application Form">
+                    <sheet>
+                        <field name="sequence" invisible="1"/>
+                        <group>
+                            <field name="name"/>
+                            <field name="company_id" required="1"/>
+                            <field name="employee_id" required="1" domain="[('company_id', '=', company_id)]"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="employee_code" readonly="1"/>
+                                <field name="father_name"/>
+                                <field name="joining_date"/>
+                            </group>
+                            <group>
+                                <field name="department_id"/>
+                                <field name="job_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_hr_custom_form_leave_application" model="ir.actions.act_window">
+            <field name="name">Leave Application Form</field>
+            <field name="res_model">hr.custom.form.leave_application</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p>Log custom leave application forms.</p>
+            </field>
+        </record>
+
+        <menuitem id="menu_hr_custom_form_leave_application" name="Leave Application" parent="menu_hr_custom_forms_root" action="action_hr_custom_form_leave_application" sequence="70"/>
+
+        <!-- Resignation Letter -->
+        <record id="view_hr_custom_form_resignation_list" model="ir.ui.view">
+            <field name="name">hr.custom.form.resignation_letter.list</field>
+            <field name="model">hr.custom.form.resignation_letter</field>
+            <field name="arch" type="xml">
+                <list default_order="sequence,name">
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="employee_code"/>
+                    <field name="father_name"/>
+                    <field name="joining_date"/>
+                    <field name="department_id"/>
+                    <field name="job_id"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_hr_custom_form_resignation_form" model="ir.ui.view">
+            <field name="name">hr.custom.form.resignation_letter.form</field>
+            <field name="model">hr.custom.form.resignation_letter</field>
+            <field name="arch" type="xml">
+                <form string="Resignation Letter">
+                    <sheet>
+                        <field name="sequence" invisible="1"/>
+                        <group>
+                            <field name="name"/>
+                            <field name="employee_id" required="1"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="employee_code" readonly="1"/>
+                                <field name="father_name"/>
+                                <field name="joining_date"/>
+                            </group>
+                            <group>
+                                <field name="department_id"/>
+                                <field name="job_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_hr_custom_form_resignation" model="ir.actions.act_window">
+            <field name="name">Resignation Letter</field>
+            <field name="res_model">hr.custom.form.resignation_letter</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p>Track resignation letter submissions.</p>
+            </field>
+        </record>
+
+        <menuitem id="menu_hr_custom_form_resignation" name="Resignation Letter" parent="menu_hr_custom_forms_root" action="action_hr_custom_form_resignation" sequence="80"/>
+    </data>
+</odoo>

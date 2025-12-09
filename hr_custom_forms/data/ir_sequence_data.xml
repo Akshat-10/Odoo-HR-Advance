@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_hr_custom_form_er1" model="ir.sequence">
+            <field name="name">ER1 Covering Letter</field>
+            <field name="code">hr.custom.form.er1</field>
+            <field name="prefix">ER1/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
+
+        <record id="seq_hr_custom_form_formd" model="ir.sequence">
+            <field name="name">Form D</field>
+            <field name="code">hr.custom.form.formd</field>
+            <field name="prefix">FD/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
+
+        <record id="seq_hr_custom_form_mw_notice" model="ir.sequence">
+            <field name="name">Minimum Wages Display Notice</field>
+            <field name="code">hr.custom.form.mw_notice</field>
+            <field name="prefix">MWN/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
+
+        <record id="seq_hr_custom_form_form2" model="ir.sequence">
+            <field name="name">Form 2 (Revised)</field>
+            <field name="code">hr.custom.form.form2</field>
+            <field name="prefix">F2/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
+
+        <record id="seq_hr_custom_form_form11" model="ir.sequence">
+            <field name="name">Form 11 (Composite Declaration)</field>
+            <field name="code">hr.custom.form.form11</field>
+            <field name="prefix">F11/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
+
+        <record id="seq_hr_custom_form_form15g" model="ir.sequence">
+            <field name="name">Form 15G</field>
+            <field name="code">hr.custom.form.form15g</field>
+            <field name="prefix">F15G/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
+
+        <record id="seq_hr_custom_form_leave_application" model="ir.sequence">
+            <field name="name">Leave Application Form</field>
+            <field name="code">hr.custom.form.leave_application</field>
+            <field name="prefix">LAF/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
+
+        <record id="seq_hr_custom_form_resignation" model="ir.sequence">
+            <field name="name">Resignation Letter</field>
+            <field name="code">hr.custom.form.resignation_letter</field>
+            <field name="prefix">RL/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
+    </data>
+</odoo>
