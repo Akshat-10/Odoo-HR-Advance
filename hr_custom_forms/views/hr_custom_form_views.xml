@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <menuitem id="menu_hr_custom_forms_root" name="HR Custom Forms" parent="hr.menu_hr_root" sequence="80"/>
+        <menuitem id="menu_hr_custom_forms_root" name="HR Forms" parent="hr.menu_hr_root" sequence="80"/>
 
         <!-- Exchange Return (ER1) -->
         <record id="view_hr_custom_form_er1_list" model="ir.ui.view">
