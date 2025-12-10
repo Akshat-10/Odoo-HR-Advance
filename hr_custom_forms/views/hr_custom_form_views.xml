@@ -3,20 +3,17 @@
     <data>
         <menuitem id="menu_hr_custom_forms_root" name="HR Custom Forms" parent="hr.menu_hr_root" sequence="80"/>
 
-        <!-- ER1 Covering Letter -->
+        <!-- Exchange Return (ER1) -->
         <record id="view_hr_custom_form_er1_list" model="ir.ui.view">
             <field name="name">hr.custom.form.er1.list</field>
             <field name="model">hr.custom.form.er1</field>
             <field name="arch" type="xml">
                 <list default_order="sequence,name">
                     <field name="name"/>
-                    <field name="employee_id"/>
                     <field name="company_id"/>
-                    <field name="employee_code"/>
-                    <field name="father_name"/>
-                    <field name="joining_date"/>
-                    <field name="department_id"/>
-                    <field name="job_id"/>
+                    <field name="er_date"/>
+                    <field name="er_quarter_end_date"/>
+                    <field name="er_subject"/>
                 </list>
             </field>
         </record>
@@ -25,40 +22,43 @@
             <field name="name">hr.custom.form.er1.form</field>
             <field name="model">hr.custom.form.er1</field>
             <field name="arch" type="xml">
-                <form string="ER1 Covering Letter">
+                <form string="Exchange Return (ER1)">
                     <sheet>
                         <field name="sequence" invisible="1"/>
                         <group>
-                            <field name="name"/>
-                            <field name="company_id" required="1"/>
-                            <field name="employee_id" required="1" domain="[('company_id', '=', company_id)]"/>
+                            <group>
+                                <field name="name"/>
+                                <field name="company_id" required="1"/>
+                                <field name="er_date" required="1"/>
+                            </group>
+                            <group>
+                                <field name="er_quarter_end_date"/>
+                                <field name="er_subject"/>
+                            </group>
                         </group>
                         <group>
-                            <group>
-                                <field name="employee_code" readonly="1"/>
-                                <field name="father_name"/>
-                                <field name="joining_date"/>
-                            </group>
-                            <group>
-                                <field name="department_id"/>
-                                <field name="job_id"/>
-                            </group>
+                            <field name="er_to_address" placeholder="To"/>
                         </group>
+                        <notebook>
+                            <page string="Body">
+                                <field name="er_body" nolabel="1"/>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
         </record>
 
         <record id="action_hr_custom_form_er1" model="ir.actions.act_window">
-            <field name="name">ER1 Covering Letter</field>
+            <field name="name">Exchange Return (ER1)</field>
             <field name="res_model">hr.custom.form.er1</field>
             <field name="view_mode">list,form</field>
             <field name="help" type="html">
-                <p>Create and track ER1 Covering Letters from here.</p>
+                <p>Prepare Exchange Return correspondence with quarter-specific details.</p>
             </field>
         </record>
 
-        <menuitem id="menu_hr_custom_form_er1" name="ER1 Covering Letter" parent="menu_hr_custom_forms_root" action="action_hr_custom_form_er1" sequence="10"/>
+        <menuitem id="menu_hr_custom_form_er1" name="Exchange Return (ER1)" parent="menu_hr_custom_forms_root" action="action_hr_custom_form_er1" sequence="10"/>
 
         <!-- Form D -->
         <record id="view_hr_custom_form_formd_list" model="ir.ui.view">
@@ -67,13 +67,10 @@
             <field name="arch" type="xml">
                 <list default_order="sequence,name">
                     <field name="name"/>
-                    <field name="employee_id"/>
                     <field name="company_id"/>
-                    <field name="employee_code"/>
-                    <field name="father_name"/>
-                    <field name="joining_date"/>
-                    <field name="department_id"/>
-                    <field name="job_id"/>
+                    <field name="formd_date"/>
+                    <field name="month_year"/>
+                    <field name="total_workers"/>
                 </list>
             </field>
         </record>
@@ -86,21 +83,37 @@
                     <sheet>
                         <field name="sequence" invisible="1"/>
                         <group>
-                            <field name="name"/>
-                            <field name="company_id" required="1"/>
-                            <field name="employee_id" required="1" domain="[('company_id', '=', company_id)]"/>
+                            <group>
+                                <field name="name"/>
+                                <field name="company_id" required="1"/>
+                                <field name="formd_date" required="1"/>
+                            </group>
+                            <group>
+                                <field name="month_year"/>
+                                <field name="total_workers"/>
+                            </group>
                         </group>
                         <group>
-                            <group>
-                                <field name="employee_code" readonly="1"/>
-                                <field name="father_name"/>
-                                <field name="joining_date"/>
-                            </group>
-                            <group>
-                                <field name="department_id"/>
-                                <field name="job_id"/>
-                            </group>
+                            <field name="company_address" readonly="1"/>
                         </group>
+                        <notebook>
+                            <page string="Wage Details">
+                                <field name="line_ids">
+                                    <list editable="bottom">
+                                        <field name="category_id"/>
+                                        <field name="work_description"/>
+                                        <field name="men_employed"/>
+                                        <field name="women_employed"/>
+                                        <field name="remuneration_rate"/>
+                                        <field name="basic_wages"/>
+                                        <field name="part_da"/>
+                                        <field name="part_hra"/>
+                                        <field name="part_other_allowances"/>
+                                        <field name="part_cash_value"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
@@ -111,31 +124,26 @@
             <field name="res_model">hr.custom.form.formd</field>
             <field name="view_mode">list,form</field>
             <field name="help" type="html">
-                <p>Manage Form D submissions.</p>
+                <p>Capture wage data, worker counts, and rate components for Form D.</p>
             </field>
         </record>
 
         <menuitem id="menu_hr_custom_form_formd" name="Form D" parent="menu_hr_custom_forms_root" action="action_hr_custom_form_formd" sequence="20"/>
 
-        <!-- Minimum Wages Notice -->
+        <!-- Minimum Wages Display Notice -->
         <record id="view_hr_custom_form_mw_notice_list" model="ir.ui.view">
             <field name="name">hr.custom.form.mw_notice.list</field>
             <field name="model">hr.custom.form.mw_notice</field>
             <field name="arch" type="xml">
                 <list default_order="sequence,name">
                     <field name="name"/>
-                    <field name="employee_id"/>
                     <field name="company_id"/>
-                    <field name="employee_code"/>
-                    <field name="father_name"/>
-                    <field name="joining_date"/>
-                    <field name="department_id"/>
-                    <field name="job_id"/>
+                    <field name="company_address"/>
                 </list>
             </field>
         </record>
 
-        <record id="view_hr_custom_form_mw_notice_form" model="ir.ui.view">
+    <record id="view_hr_custom_form_mw_notice_form" model="ir.ui.view">
             <field name="name">hr.custom.form.mw_notice.form</field>
             <field name="model">hr.custom.form.mw_notice</field>
             <field name="arch" type="xml">
@@ -143,21 +151,36 @@
                     <sheet>
                         <field name="sequence" invisible="1"/>
                         <group>
-                            <field name="name"/>
-                            <field name="company_id" required="1"/>
-                            <field name="employee_id" required="1" domain="[('company_id', '=', company_id)]"/>
-                        </group>
-                        <group>
                             <group>
-                                <field name="employee_code" readonly="1"/>
-                                <field name="father_name"/>
-                                <field name="joining_date"/>
+                                <field name="name"/>
+                                <field name="company_id" required="1"/>
                             </group>
                             <group>
-                                <field name="department_id"/>
-                                <field name="job_id"/>
+                                <field name="company_address" readonly="1"/>
                             </group>
                         </group>
+                        <notebook>
+                            <page string="Notice Entries">
+                                <field name="notice_line_ids">
+                                    <list editable="bottom">
+                                        <field name="employee_id"/>
+                                        <field name="father_name"/>
+                                        <field name="gender"/>
+                                        <field name="department_id"/>
+                                        <field name="absence_date"/>
+                                        <field name="damages_description"/>
+                                        <field name="damages_date"/>
+                                        <field name="showed_cause"/>
+                                        <field name="show_cause_date"/>
+                                        <field name="deduction_date"/>
+                                        <field name="deduction_amount"/>
+                                        <field name="installment_count"/>
+                                        <field name="realisation_date"/>
+                                        <field name="remarks"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
@@ -168,13 +191,13 @@
             <field name="res_model">hr.custom.form.mw_notice</field>
             <field name="view_mode">list,form</field>
             <field name="help" type="html">
-                <p>Maintain Minimum Wages Act display notices.</p>
+                <p>Track deductions and damages logged under the Minimum Wages Act.</p>
             </field>
         </record>
 
         <menuitem id="menu_hr_custom_form_mw_notice" name="MW Display Notices" parent="menu_hr_custom_forms_root" action="action_hr_custom_form_mw_notice" sequence="30"/>
 
-        <!-- Form 2 Revised -->
+        <!-- Form 2 (Revised) -->
         <record id="view_hr_custom_form_form2_list" model="ir.ui.view">
             <field name="name">hr.custom.form.form2.list</field>
             <field name="model">hr.custom.form.form2</field>
@@ -183,11 +206,8 @@
                     <field name="name"/>
                     <field name="employee_id"/>
                     <field name="company_id"/>
-                    <field name="employee_code"/>
-                    <field name="father_name"/>
-                    <field name="joining_date"/>
-                    <field name="department_id"/>
-                    <field name="job_id"/>
+                    <field name="date_of_joining"/>
+                    <field name="date_of_birth"/>
                 </list>
             </field>
         </record>
@@ -200,21 +220,73 @@
                     <sheet>
                         <field name="sequence" invisible="1"/>
                         <group>
-                            <field name="name"/>
-                            <field name="company_id" required="1"/>
-                            <field name="employee_id" required="1" domain="[('company_id', '=', company_id)]"/>
-                        </group>
-                        <group>
                             <group>
-                                <field name="employee_code" readonly="1"/>
-                                <field name="father_name"/>
-                                <field name="joining_date"/>
+                                <field name="name"/>
+                                <field name="company_id" required="1"/>
                             </group>
                             <group>
-                                <field name="department_id"/>
+                                <field name="employee_id" required="1" domain="[('company_id', '=', company_id)]"/>
+                                <field name="employee_code" readonly="1"/>
+                            </group>
+                        </group>
+                        <group string="Personal Information">
+                            <group>
+                                <field name="father_husband_name"/>
+                                <field name="spouse_name"/>
+                                <field name="date_of_birth"/>
+                                <field name="gender"/>
+                            </group>
+                            <group>
+                                <field name="marital_status"/>
+                                <field name="account_number"/>
+                                <field name="date_of_joining"/>
                                 <field name="job_id"/>
                             </group>
                         </group>
+                        <group string="Addresses">
+                            <field name="permanent_address"/>
+                            <field name="temporary_address"/>
+                        </group>
+                        <notebook>
+                            <page string="Part A (EPF)">
+                                <field name="part_a_line_ids">
+                                    <list editable="bottom">
+                                        <field name="nominee_name"/>
+                                        <field name="nominee_address"/>
+                                        <field name="relationship"/>
+                                        <field name="date_of_birth"/>
+                                        <field name="share_amount"/>
+                                        <field name="guardian_details"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Part B (EPS) (Para 18)">
+                                <group>
+                                    <field name="eps_part_b_date"/>
+                                </group>
+                                <group string="Family Members">
+                                    <field name="part_b_family_line_ids">
+                                        <list editable="bottom">
+                                            <field name="sequence"/>
+                                            <field name="member_name"/>
+                                            <field name="address"/>
+                                            <field name="date_of_birth"/>
+                                            <field name="relationship"/>
+                                        </list>
+                                    </field>
+                                </group>
+                                <group string="Nominees">
+                                    <field name="part_b_nominee_line_ids">
+                                        <list editable="bottom">
+                                            <field name="nominee_name"/>
+                                            <field name="nominee_address"/>
+                                            <field name="date_of_birth"/>
+                                            <field name="relationship"/>
+                                        </list>
+                                    </field>
+                                </group>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
@@ -225,7 +297,7 @@
             <field name="res_model">hr.custom.form.form2</field>
             <field name="view_mode">list,form</field>
             <field name="help" type="html">
-                <p>Track Form 2 (Revised) entries.</p>
+                <p>Record EPF/EPS nominee information using Form 2.</p>
             </field>
         </record>
 
@@ -237,14 +309,11 @@
             <field name="model">hr.custom.form.form11</field>
             <field name="arch" type="xml">
                 <list default_order="sequence,name">
+                    <field name="form_number"/>
                     <field name="name"/>
                     <field name="employee_id"/>
                     <field name="company_id"/>
-                    <field name="employee_code"/>
-                    <field name="father_name"/>
-                    <field name="joining_date"/>
-                    <field name="department_id"/>
-                    <field name="job_id"/>
+                    <field name="present_joining_date"/>
                 </list>
             </field>
         </record>
@@ -253,25 +322,91 @@
             <field name="name">hr.custom.form.form11.form</field>
             <field name="model">hr.custom.form.form11</field>
             <field name="arch" type="xml">
-                <form string="Form 11 (Composite Declaration)">
+                <form string="Composite Declaration Form - 11">
                     <sheet>
                         <field name="sequence" invisible="1"/>
+                        <div class="oe_title">
+                            <h1>Composite Declaration Form - 11</h1>
+                            <h2>EMPLOYEES' PROVIDENT FUND ORGANISATION</h2>
+                        </div>
                         <group>
-                            <field name="name"/>
-                            <field name="company_id" required="1"/>
-                            <field name="employee_id" required="1" domain="[('company_id', '=', company_id)]"/>
-                        </group>
-                        <group>
+                            <group>
+                                <field name="form_number"/>
+                                <field name="company_id" required="1"/>
+                                <field name="employee_id" required="1" domain="[('company_id', '=', company_id)]"/>
+                            </group>
                             <group>
                                 <field name="employee_code" readonly="1"/>
                                 <field name="father_name"/>
-                                <field name="joining_date"/>
+                                <field name="spouse_name"/>
+                            </group>
+                        </group>
+                        <group string="Personal Details">
+                            <group>
+                                <field name="date_of_birth"/>
+                                <field name="gender"/>
+                                <field name="marital_status"/>
+                                <field name="email"/>
                             </group>
                             <group>
+                                <field name="mobile"/>
+                                <field name="present_joining_date"/>
                                 <field name="department_id"/>
                                 <field name="job_id"/>
                             </group>
                         </group>
+                        <group string="KYC Details">
+                            <group>
+                                <field name="bank_account_no"/>
+                                <field name="bank_ifsc"/>
+                                <field name="aadhaar_number"/>
+                            </group>
+                            <group>
+                                <field name="pan_number"/>
+                                <field name="member_epf_before"/>
+                                <field name="member_eps_before"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Previous Employment (Un-exempted)">
+                                <field name="prev_unexempted_line_ids">
+                                    <list editable="bottom">
+                                        <field name="establishment"/>
+                                        <field name="uan"/>
+                                        <field name="pf_account"/>
+                                        <field name="joining_date"/>
+                                        <field name="exit_date"/>
+                                        <field name="scheme_certificate"/>
+                                        <field name="ppo_number"/>
+                                        <field name="ncp_days"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Previous Employment (Exempted Trusts)">
+                                <field name="prev_exempted_line_ids">
+                                    <list editable="bottom">
+                                        <field name="trust_name"/>
+                                        <field name="uan"/>
+                                        <field name="eps_account"/>
+                                        <field name="joining_date"/>
+                                        <field name="exit_date"/>
+                                        <field name="scheme_certificate"/>
+                                        <field name="ncp_days"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="International Worker">
+                                <group>
+                                    <field name="international_worker"/>
+                                    <field name="origin_country" invisible="international_worker == 'no'" placeholder="State country of origin"/>
+                                </group>
+                                <group invisible="international_worker == 'no'">
+                                    <field name="passport_no"/>
+                                    <field name="passport_valid_from"/>
+                                    <field name="passport_valid_to"/>
+                                </group>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
@@ -282,7 +417,7 @@
             <field name="res_model">hr.custom.form.form11</field>
             <field name="view_mode">list,form</field>
             <field name="help" type="html">
-                <p>Use this view to maintain Form 11 records.</p>
+                <p>Maintain employee declarations, KYC data, and previous EPF/EPS membership records.</p>
             </field>
         </record>
 
@@ -295,13 +430,10 @@
             <field name="arch" type="xml">
                 <list default_order="sequence,name">
                     <field name="name"/>
-                    <field name="employee_id"/>
-                    <field name="company_id"/>
-                    <field name="employee_code"/>
-                    <field name="father_name"/>
-                    <field name="joining_date"/>
-                    <field name="department_id"/>
-                    <field name="job_id"/>
+                    <field name="assessee_name"/>
+                    <field name="assessee_pan"/>
+                    <field name="declaration_date"/>
+                    <field name="place"/>
                 </list>
             </field>
         </record>
@@ -314,21 +446,83 @@
                     <sheet>
                         <field name="sequence" invisible="1"/>
                         <group>
-                            <field name="name"/>
-                            <field name="company_id" required="1"/>
-                            <field name="employee_id" required="1" domain="[('company_id', '=', company_id)]"/>
-                        </group>
-                        <group>
                             <group>
-                                <field name="employee_code" readonly="1"/>
-                                <field name="father_name"/>
-                                <field name="joining_date"/>
-                            </group>
-                            <group>
-                                <field name="department_id"/>
-                                <field name="job_id"/>
+                                <field name="name"/>
+                                <field name="company_id" required="1"/>
+                                <field name="place"/>
+                                <field name="declaration_date"/>
                             </group>
                         </group>
+                        <notebook>
+                            <page string="Part I">
+                                <group>
+                                    <group>
+                                        <field name="assessee_name"/>
+                                        <field name="assessee_pan"/>
+                                        <field name="assessee_status"/>
+                                        <field name="previous_year"/>
+                                        <field name="residential_status"/>
+                                    </group>
+                                    <group>
+                                        <field name="address_flat"/>
+                                        <field name="address_premises"/>
+                                        <field name="address_road"/>
+                                        <field name="address_area"/>
+                                        <field name="address_city"/>
+                                        <field name="address_state"/>
+                                        <field name="address_pin"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="contact_email"/>
+                                        <field name="contact_phone"/>
+                                        <field name="assessed_to_tax"/>
+                                        <field name="latest_assessment_year"/>
+                                    </group>
+                                    <group>
+                                        <field name="estimated_income"/>
+                                        <field name="estimated_total_income"/>
+                                        <field name="other_form15g_count"/>
+                                        <field name="other_form15g_amount"/>
+                                        <field name="other_form15g_details"/>
+                                    </group>
+                                </group>
+                                <group string="Income Details">
+                                    <field name="income_detail_ids">
+                                        <list editable="bottom">
+                                            <field name="sequence"/>
+                                            <field name="investment_identification"/>
+                                            <field name="income_nature"/>
+                                            <field name="deduction_section"/>
+                                            <field name="income_amount"/>
+                                        </list>
+                                    </field>
+                                </group>
+                            </page>
+                            <page string="Part II">
+                                <group>
+                                    <group>
+                                        <field name="payer_name"/>
+                                        <field name="payer_uid"/>
+                                        <field name="payer_pan"/>
+                                        <field name="payer_tan"/>
+                                    </group>
+                                    <group>
+                                        <field name="payer_address"/>
+                                        <field name="payer_email"/>
+                                        <field name="payer_phone"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="payer_income_amount"/>
+                                        <field name="declaration_received_date"/>
+                                        <field name="income_paid_date"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
@@ -339,7 +533,7 @@
             <field name="res_model">hr.custom.form.form15g</field>
             <field name="view_mode">list,form</field>
             <field name="help" type="html">
-                <p>Capture Form 15G declarations.</p>
+                <p>Collect declarant and payer information required for Form 15G.</p>
             </field>
         </record>
 
@@ -354,11 +548,10 @@
                     <field name="name"/>
                     <field name="employee_id"/>
                     <field name="company_id"/>
-                    <field name="employee_code"/>
-                    <field name="father_name"/>
-                    <field name="joining_date"/>
-                    <field name="department_id"/>
-                    <field name="job_id"/>
+                    <field name="leave_request_date"/>
+                    <field name="leave_from"/>
+                    <field name="leave_to"/>
+                    <field name="approval_status"/>
                 </list>
             </field>
         </record>
@@ -371,19 +564,35 @@
                     <sheet>
                         <field name="sequence" invisible="1"/>
                         <group>
-                            <field name="name"/>
-                            <field name="company_id" required="1"/>
-                            <field name="employee_id" required="1" domain="[('company_id', '=', company_id)]"/>
-                        </group>
-                        <group>
                             <group>
-                                <field name="employee_code" readonly="1"/>
-                                <field name="father_name"/>
-                                <field name="joining_date"/>
+                                <field name="name"/>
+                                <field name="company_id" required="1"/>
+                                <field name="leave_request_date" required="1"/>
                             </group>
                             <group>
+                                <field name="employee_id" required="1" domain="[('company_id', '=', company_id)]"/>
+                                <field name="employee_code" readonly="1"/>
                                 <field name="department_id"/>
-                                <field name="job_id"/>
+                            </group>
+                        </group>
+                        <group string="Leave Details">
+                            <group>
+                                <field name="leave_reason"/>
+                                <field name="leave_days"/>
+                                <field name="leave_from"/>
+                                <field name="leave_to"/>
+                            </group>
+                            <group>
+                                <field name="manager_remarks"/>
+                                <field name="approval_status"/>
+                            </group>
+                        </group>
+                        <group string="Contact">
+                            <group>
+                                <field name="permanent_address"/>
+                            </group>
+                            <group>
+                                <field name="contact_number"/>
                             </group>
                         </group>
                     </sheet>
@@ -396,7 +605,7 @@
             <field name="res_model">hr.custom.form.leave_application</field>
             <field name="view_mode">list,form</field>
             <field name="help" type="html">
-                <p>Log custom leave application forms.</p>
+                <p>Log employee leave requests along with manager remarks and approval status.</p>
             </field>
         </record>
 
@@ -410,9 +619,7 @@
                 <list default_order="sequence,name">
                     <field name="name"/>
                     <field name="employee_id"/>
-                    <field name="employee_code"/>
-                    <field name="father_name"/>
-                    <field name="joining_date"/>
+                    <field name="resignation_date"/>
                     <field name="department_id"/>
                     <field name="job_id"/>
                 </list>
@@ -427,19 +634,17 @@
                     <sheet>
                         <field name="sequence" invisible="1"/>
                         <group>
-                            <field name="name"/>
-                            <field name="employee_id" required="1"/>
+                            <group>
+                                <field name="name"/>
+                                <field name="company_id" required="1"/>
+                                <field name="employee_id" required="1" domain="[('company_id', '=', company_id)]"/>
+                            </group>
+                            <group>
+                                <field name="resignation_date"/>
+                            </group>
                         </group>
                         <group>
-                            <group>
-                                <field name="employee_code" readonly="1"/>
-                                <field name="father_name"/>
-                                <field name="joining_date"/>
-                            </group>
-                            <group>
-                                <field name="department_id"/>
-                                <field name="job_id"/>
-                            </group>
+                            <field name="resignation_description" placeholder="Resignation details"/>
                         </group>
                     </sheet>
                 </form>
@@ -451,7 +656,7 @@
             <field name="res_model">hr.custom.form.resignation_letter</field>
             <field name="view_mode">list,form</field>
             <field name="help" type="html">
-                <p>Track resignation letter submissions.</p>
+                <p>Store resignation submissions with effective dates and narratives.</p>
             </field>
         </record>
 
