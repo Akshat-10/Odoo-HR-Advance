@@ -11,9 +11,10 @@
                 <list default_order="sequence,name">
                     <field name="name"/>
                     <field name="company_id"/>
-                    <field name="er_date"/>
-                    <field name="er_quarter_end_date"/>
-                    <field name="er_subject"/>
+                    <field name="quarter_ended"/>
+                    <field name="employer_name"/>
+                    <field name="office_type"/>
+                    <field name="business_nature"/>
                 </list>
             </field>
         </record>
@@ -23,6 +24,100 @@
             <field name="model">hr.custom.form.er1</field>
             <field name="arch" type="xml">
                 <form string="Exchange Return (ER1)">
+                    <sheet>
+                        <field name="sequence" invisible="1"/>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="company_id" required="1"/>
+                                <field name="quarter_ended" required="1"/>
+                            </group>
+                            <group>
+                                <field name="office_type"/>
+                                <field name="business_nature"/>
+                            </group>
+                        </group>
+                        <group string="Employer">
+                            <group>
+                                <field name="employer_name" placeholder="Employer name"/>
+                                <field name="employer_address" placeholder="Address"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Employment">
+                                <field name="employment_line_ids">
+                                    <list editable="bottom">
+                                        <field name="occupation"/>
+                                        <field name="qualification"/>
+                                        <field name="men_count"/>
+                                        <field name="women_count"/>
+                                        <field name="sc_st_count"/>
+                                        <field name="obc_count"/>
+                                        <field name="other_count"/>
+                                        <field name="remarks"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Vacancies">
+                                <field name="vacancy_line_ids">
+                                    <list editable="bottom">
+                                        <field name="occupation"/>
+                                        <field name="vacancies_notified"/>
+                                        <field name="notification_source"/>
+                                        <field name="vacancies_unfilled"/>
+                                        <field name="vacancy_reason"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Manpower Shortages">
+                                <field name="shortage_line_ids">
+                                    <list editable="bottom">
+                                        <field name="skill_category"/>
+                                        <field name="qualification"/>
+                                        <field name="requirement_count"/>
+                                        <field name="pay_offered"/>
+                                        <field name="recruitment_action"/>
+                                        <field name="shortage_reason"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_hr_custom_form_er1" model="ir.actions.act_window">
+            <field name="name">Exchange Return (ER1)</field>
+            <field name="res_model">hr.custom.form.er1</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p>Capture quarterly ER1 employment, vacancy, and manpower shortage information.</p>
+            </field>
+        </record>
+
+        <menuitem id="menu_hr_custom_form_er1" name="Exchange Return (ER1)" parent="menu_hr_custom_forms_root" action="action_hr_custom_form_er1" sequence="10"/>
+
+        <!-- ER1 Covering Letter -->
+        <record id="view_hr_custom_form_cover_letter_list" model="ir.ui.view">
+            <field name="name">hr.custom.form.cover_letter.list</field>
+            <field name="model">hr.custom.form.cover_letter</field>
+            <field name="arch" type="xml">
+                <list default_order="sequence,name">
+                    <field name="name"/>
+                    <field name="company_id"/>
+                    <field name="er_date"/>
+                    <field name="er_quarter_end_date"/>
+                    <field name="er_subject"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_hr_custom_form_cover_letter_form" model="ir.ui.view">
+            <field name="name">hr.custom.form.cover_letter.form</field>
+            <field name="model">hr.custom.form.cover_letter</field>
+            <field name="arch" type="xml">
+                <form string="Exchange Return Covering Letter">
                     <sheet>
                         <field name="sequence" invisible="1"/>
                         <group>
@@ -49,16 +144,16 @@
             </field>
         </record>
 
-        <record id="action_hr_custom_form_er1" model="ir.actions.act_window">
-            <field name="name">Exchange Return (ER1)</field>
-            <field name="res_model">hr.custom.form.er1</field>
+        <record id="action_hr_custom_form_cover_letter" model="ir.actions.act_window">
+            <field name="name">Covering Letter</field>
+            <field name="res_model">hr.custom.form.cover_letter</field>
             <field name="view_mode">list,form</field>
             <field name="help" type="html">
-                <p>Prepare Exchange Return correspondence with quarter-specific details.</p>
+                <p>Compose the covering letter accompanying an ER1 submission.</p>
             </field>
         </record>
 
-        <menuitem id="menu_hr_custom_form_er1" name="Exchange Return (ER1)" parent="menu_hr_custom_forms_root" action="action_hr_custom_form_er1" sequence="10"/>
+        <menuitem id="menu_hr_custom_form_cover_letter" name="Covering Letter" parent="menu_hr_custom_forms_root" action="action_hr_custom_form_cover_letter" sequence="15"/>
 
         <!-- Form D -->
         <record id="view_hr_custom_form_formd_list" model="ir.ui.view">
@@ -130,7 +225,7 @@
 
         <menuitem id="menu_hr_custom_form_formd" name="Form D" parent="menu_hr_custom_forms_root" action="action_hr_custom_form_formd" sequence="20"/>
 
-        <!-- Minimum Wages Display Notice -->
+        <!-- Minimum Wages Registers -->
         <record id="view_hr_custom_form_mw_notice_list" model="ir.ui.view">
             <field name="name">hr.custom.form.mw_notice.list</field>
             <field name="model">hr.custom.form.mw_notice</field>
@@ -147,7 +242,7 @@
             <field name="name">hr.custom.form.mw_notice.form</field>
             <field name="model">hr.custom.form.mw_notice</field>
             <field name="arch" type="xml">
-                <form string="Minimum Wages Display Notice">
+                <form string="Minimum Wages Registers">
                     <sheet>
                         <field name="sequence" invisible="1"/>
                         <group>
@@ -160,7 +255,7 @@
                             </group>
                         </group>
                         <notebook>
-                            <page string="Notice Entries">
+                            <page string="Minimum Wages Entries">
                                 <field name="notice_line_ids">
                                     <list editable="bottom">
                                         <field name="employee_id"/>
@@ -187,7 +282,7 @@
         </record>
 
         <record id="action_hr_custom_form_mw_notice" model="ir.actions.act_window">
-            <field name="name">MW Display Notices</field>
+            <field name="name">Minimum Wages Registers</field>
             <field name="res_model">hr.custom.form.mw_notice</field>
             <field name="view_mode">list,form</field>
             <field name="help" type="html">
@@ -195,7 +290,7 @@
             </field>
         </record>
 
-        <menuitem id="menu_hr_custom_form_mw_notice" name="MW Display Notices" parent="menu_hr_custom_forms_root" action="action_hr_custom_form_mw_notice" sequence="30"/>
+        <menuitem id="menu_hr_custom_form_mw_notice" name="Minimum Wages Registers" parent="menu_hr_custom_forms_root" action="action_hr_custom_form_mw_notice" sequence="30"/>
 
         <!-- Form 2 (Revised) -->
         <record id="view_hr_custom_form_form2_list" model="ir.ui.view">

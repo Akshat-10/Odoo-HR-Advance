@@ -2,9 +2,16 @@
 <odoo>
     <data noupdate="1">
         <record id="seq_hr_custom_form_er1" model="ir.sequence">
-            <field name="name">ER1 Covering Letter</field>
+            <field name="name">Exchange Return (ER1)</field>
             <field name="code">hr.custom.form.er1</field>
             <field name="prefix">ER1/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
+
+        <record id="seq_hr_custom_form_cover_letter" model="ir.sequence">
+            <field name="name">ER1 Covering Letter</field>
+            <field name="code">hr.custom.form.cover_letter</field>
+            <field name="prefix">ERCL/%(year)s/</field>
             <field name="padding">4</field>
         </record>
 

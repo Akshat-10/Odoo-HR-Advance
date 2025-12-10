@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- File: views/salary_structure_calculation_views.xml -->
+<odoo>
+    <!-- Form View - Single Table Like Excel -->
+    <record id="view_salary_structure_calculation_form" model="ir.ui.view">
+        <field name="name">salary.structure.calculation.custom.form</field>
+        <field name="model">salary.structure.calculation.custom</field>
+        <field name="arch" type="xml">
+            <form string="Salary Structure Calculation">
+                <sheet>
+                    <!-- Header Info -->
+                    <group>
+                        <group>
+                            <field name="employee_code"/>
+                            <field name="department_id"/>
+                            <field name="doj"/>
+                            <field name="ctc"/>
+                        </group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="designation"/>
+                            <field name="revise_date"/>
+                        </group>
+                    </group>
+
+                    <field name="salary_line_ids" nolabel="1">
+                        <list editable="bottom" create="true" delete="true">
+                            <field name="sequence" widget="handle"/>
+                            <field name="pay_head_custom"/>
+                            <field name="percentage"/>
+                            <field name="calculated_from"/>
+                            <field name="rate" sum="Total"/>
+                            <field name="remarks"/>
+                        </list>
+                    </field>
+
+                    <field name="gross_salary_line_ids" nolabel="1">
+                        <list editable="bottom" create="true" delete="true">
+                            <field name="name" string="Pay Heads"/>
+                            <field name="percentage"/>
+                            <field name="calculated_from"/>
+                            <field name="rate"/>
+                            <field name="remarks"/>
+                        </list>
+                    </field>
+
+
+                            <!-- Summary Section -->
+                    <group>
+                        <group string="Summary">
+                            <field name="total_fixed_ctc" readonly="1"/>
+                            <field name="gross_salary" readonly="1"/>
+                            <field name="total_deduction" readonly="1"/>
+                            <field name="in_hand_salary" readonly="1"
+                                   style="font-weight: bold; font-size: 14px;"/>
+                        </group>
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View -->
+    <record id="view_salary_structure_calculation_tree" model="ir.ui.view">
+        <field name="name">salary.structure.calculation.custom.tree</field>
+        <field name="model">salary.structure.calculation.custom</field>
+        <field name="arch" type="xml">
+            <list string="Salary Structures">
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="designation"/>
+                <field name="ctc"/>
+                <field name="total_fixed_ctc"/>
+                <field name="gross_salary"/>
+                <field name="total_deduction"/>
+                <field name="in_hand_salary"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_salary_structure_calculation_search" model="ir.ui.view">
+        <field name="name">salary.structure.calculation.custom.search</field>
+        <field name="model">salary.structure.calculation.custom</field>
+        <field name="arch" type="xml">
+            <search string="Search Salary Structure">
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <filter string="My Department" name="my_department"
+                        domain="[('department_id.manager_id.user_id', '=', uid)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Department" name="group_department"
+                            context="{'group_by': 'department_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_salary_structure_calculation" model="ir.actions.act_window">
+        <field name="name">Salary Structure Calculation</field>
+        <field name="res_model">salary.structure.calculation.custom</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Salary Structure
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_salary_structure_root"
+              name="Salary Structure"
+              sequence="10"/>
+
+    <menuitem id="menu_salary_structure_calculation"
+              name="Salary Calculations"
+              parent="menu_salary_structure_root"
+              action="action_salary_structure_calculation"
+              sequence="10"/>
+</odoo>

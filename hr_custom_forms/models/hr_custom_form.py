@@ -109,11 +109,68 @@ class HrCustomFormEr1(models.Model):
 
     _sequence_code = "hr.custom.form.er1"
 
-    er_date = fields.Date(string="Date", default=fields.Date.context_today, required=True)
-    er_to_address = fields.Text(string="To Address")
-    er_subject = fields.Char(string="Subject")
-    er_body = fields.Text(string="Body")
-    er_quarter_end_date = fields.Date(string="Quarter Ending Date")
+    quarter_ended = fields.Date(
+        string="Quarter Ended",
+        required=True,
+        default=fields.Date.context_today,
+    )
+    employer_name = fields.Char(string="Name of Employer")
+    employer_address = fields.Text(string="Address of Employer")
+    office_type = fields.Selection(
+        [
+            ("head", "Head Office"),
+            ("branch", "Branch Office"),
+        ],
+        string="Office Type",
+        default="head",
+        required=True,
+    )
+    business_nature = fields.Char(string="Nature of Business")
+    employment_line_ids = fields.One2many(
+        "hr.custom.form.er1.employment.line",
+        "form_id",
+        string="Employment Details",
+    )
+    vacancy_line_ids = fields.One2many(
+        "hr.custom.form.er1.vacancy.line",
+        "form_id",
+        string="Vacancies",
+    )
+    shortage_line_ids = fields.One2many(
+        "hr.custom.form.er1.shortage.line",
+        "form_id",
+        string="Manpower Shortages",
+    )
+
+    def _set_default_employer_details(self, vals):
+        company_id = vals.get("company_id") or self.env.company.id
+        if not company_id:
+            return
+        company = self.env["res.company"].browse(company_id)
+        if not company:
+            return
+        if not vals.get("employer_name") and company.name:
+            vals["employer_name"] = company.name
+        if not vals.get("employer_address") and company.partner_id:
+            vals["employer_address"] = company.partner_id._display_address()
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            self._set_default_employer_details(vals)
+        return super().create(vals_list)
+
+    @api.onchange("company_id")
+    def _onchange_company_id(self):
+        super()._onchange_company_id()
+        for record in self:
+            company = record.company_id
+            if not company:
+                continue
+            if not record.employer_name and company.name:
+                record.employer_name = company.name
+            if not record.employer_address and company.partner_id:
+                record.employer_address = company.partner_id._display_address()
 
 
 class HrCustomFormD(models.Model):
@@ -144,7 +201,7 @@ class HrCustomFormD(models.Model):
 
 class HrCustomFormMinimumWageNotice(models.Model):
     _name = "hr.custom.form.mw_notice"
-    _description = "Minimum Wages Display Notice"
+    _description = "Minimum Wages Registers"
     _inherit = "hr.custom.form.base"
 
     _sequence_code = "hr.custom.form.mw_notice"
@@ -153,7 +210,7 @@ class HrCustomFormMinimumWageNotice(models.Model):
     notice_line_ids = fields.One2many(
         "hr.custom.form.mw.notice.line",
         "notice_id",
-        string="Notice Entries",
+        string="Minimum Wages Entries",
     )
 
     @api.depends("company_id")
@@ -442,6 +499,60 @@ class HrCustomFormResignationLetter(models.Model):
 
     resignation_date = fields.Date(string="Date", default=fields.Date.context_today, required=True)
     resignation_description = fields.Text(string="Description")
+
+
+class HrCustomFormCoverLetter(models.Model):
+    _name = "hr.custom.form.cover_letter"
+    _description = "Exchange Return Covering Letter"
+    _inherit = "hr.custom.form.base"
+
+    _sequence_code = "hr.custom.form.cover_letter"
+
+    er_date = fields.Date(string="Date", default=fields.Date.context_today, required=True)
+    er_to_address = fields.Text(string="To Address")
+    er_subject = fields.Char(string="Subject")
+    er_body = fields.Text(string="Body")
+    er_quarter_end_date = fields.Date(string="Quarter Ending Date")
+
+
+class HrCustomFormEr1EmploymentLine(models.Model):
+    _name = "hr.custom.form.er1.employment.line"
+    _description = "ER1 Employment Detail"
+
+    form_id = fields.Many2one("hr.custom.form.er1", string="ER1 Form", ondelete="cascade")
+    occupation = fields.Char(string="Occupation / Category")
+    qualification = fields.Char(string="Qualification / Skill")
+    men_count = fields.Integer(string="Men", default=0)
+    women_count = fields.Integer(string="Women", default=0)
+    sc_st_count = fields.Integer(string="SC / ST", default=0)
+    obc_count = fields.Integer(string="OBC", default=0)
+    other_count = fields.Integer(string="Others", default=0)
+    remarks = fields.Char(string="Remarks")
+
+
+class HrCustomFormEr1VacancyLine(models.Model):
+    _name = "hr.custom.form.er1.vacancy.line"
+    _description = "ER1 Vacancy Detail"
+
+    form_id = fields.Many2one("hr.custom.form.er1", string="ER1 Form", ondelete="cascade")
+    occupation = fields.Char(string="Occupation / Category")
+    vacancies_notified = fields.Integer(string="Vacancies Notified", default=0)
+    notification_source = fields.Char(string="Notified To")
+    vacancies_unfilled = fields.Integer(string="Unfilled Vacancies", default=0)
+    vacancy_reason = fields.Char(string="Reason for Remaining Vacant")
+
+
+class HrCustomFormEr1ShortageLine(models.Model):
+    _name = "hr.custom.form.er1.shortage.line"
+    _description = "ER1 Manpower Shortage Detail"
+
+    form_id = fields.Many2one("hr.custom.form.er1", string="ER1 Form", ondelete="cascade")
+    skill_category = fields.Char(string="Skill Category")
+    qualification = fields.Char(string="Essential Qualification")
+    requirement_count = fields.Integer(string="No. Required", default=0)
+    pay_offered = fields.Char(string="Pay Offered")
+    recruitment_action = fields.Char(string="Action Taken")
+    shortage_reason = fields.Char(string="Remarks / Difficulties")
 
 
 class HrCustomFormFormDLine(models.Model):

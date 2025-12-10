@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_salary_structure_calculation_custom_user,salary.structure.calculation.custom.user,model_salary_structure_calculation_custom,base.group_user,1,1,1,1
+access_salary_structure_line_custom_user,salary.structure.line.custom.user,model_salary_structure_line_custom,base.group_user,1,1,1,1
+access_salary_gross_line_custom_user,salary.gross.line.custom.user,model_salary_gross_line_custom,base.group_user,1,1,1,1
