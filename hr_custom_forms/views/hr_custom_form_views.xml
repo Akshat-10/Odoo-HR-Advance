@@ -15,6 +15,7 @@
                     <field name="employer_name"/>
                     <field name="office_type"/>
                     <field name="business_nature"/>
+                    <field name="shortage_open_count"/>
                 </list>
             </field>
         </record>
@@ -47,37 +48,33 @@
                             <page string="Employment">
                                 <field name="employment_line_ids">
                                     <list editable="bottom">
-                                        <field name="occupation"/>
-                                        <field name="qualification"/>
-                                        <field name="men_count"/>
-                                        <field name="women_count"/>
-                                        <field name="sc_st_count"/>
-                                        <field name="obc_count"/>
-                                        <field name="other_count"/>
-                                        <field name="remarks"/>
+                                        <field name="manpower_name"/>
+                                        <field name="prev_quarter_count"/>
+                                        <field name="current_quarter_count"/>
                                     </list>
                                 </field>
                             </page>
                             <page string="Vacancies">
                                 <field name="vacancy_line_ids">
                                     <list editable="bottom">
-                                        <field name="occupation"/>
-                                        <field name="vacancies_notified"/>
-                                        <field name="notification_source"/>
-                                        <field name="vacancies_unfilled"/>
-                                        <field name="vacancy_reason"/>
+                                        <field name="occurred"/>
+                                        <field name="notified_local"/>
+                                        <field name="notified_central"/>
+                                        <field name="filled_count"/>
+                                        <field name="source"/>
                                     </list>
                                 </field>
                             </page>
                             <page string="Manpower Shortages">
+                                <group>
+                                    <field name="shortage_open_count"/>
+                                </group>
                                 <field name="shortage_line_ids">
                                     <list editable="bottom">
-                                        <field name="skill_category"/>
-                                        <field name="qualification"/>
-                                        <field name="requirement_count"/>
-                                        <field name="pay_offered"/>
-                                        <field name="recruitment_action"/>
-                                        <field name="shortage_reason"/>
+                                        <field name="occupation_name"/>
+                                        <field name="essential_qualification"/>
+                                        <field name="essential_experience"/>
+                                        <field name="experience_not_required"/>
                                     </list>
                                 </field>
                             </page>

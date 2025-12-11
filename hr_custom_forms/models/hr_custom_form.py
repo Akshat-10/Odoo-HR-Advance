@@ -109,23 +109,24 @@ class HrCustomFormEr1(models.Model):
 
     _sequence_code = "hr.custom.form.er1"
 
-    quarter_ended = fields.Date(
+    quarter_ended = fields.Char(
         string="Quarter Ended",
         required=True,
-        default=fields.Date.context_today,
     )
     employer_name = fields.Char(string="Name of Employer")
     employer_address = fields.Text(string="Address of Employer")
     office_type = fields.Selection(
-        [
+        [   
+            ("none", " "),
             ("head", "Head Office"),
             ("branch", "Branch Office"),
         ],
         string="Office Type",
-        default="head",
+        # default="head",
         required=True,
     )
-    business_nature = fields.Char(string="Nature of Business")
+    business_nature = fields.Char(string="Nature of Business / Principal Activity")
+    shortage_open_count = fields.Char(string="Number of Unfilled Vacancies / Posts")
     employment_line_ids = fields.One2many(
         "hr.custom.form.er1.employment.line",
         "form_id",
@@ -520,14 +521,9 @@ class HrCustomFormEr1EmploymentLine(models.Model):
     _description = "ER1 Employment Detail"
 
     form_id = fields.Many2one("hr.custom.form.er1", string="ER1 Form", ondelete="cascade")
-    occupation = fields.Char(string="Occupation / Category")
-    qualification = fields.Char(string="Qualification / Skill")
-    men_count = fields.Integer(string="Men", default=0)
-    women_count = fields.Integer(string="Women", default=0)
-    sc_st_count = fields.Integer(string="SC / ST", default=0)
-    obc_count = fields.Integer(string="OBC", default=0)
-    other_count = fields.Integer(string="Others", default=0)
-    remarks = fields.Char(string="Remarks")
+    manpower_name = fields.Char(string="Man Power")
+    prev_quarter_count = fields.Integer(string="Previous Quarter (Last Working Day)", default=0)
+    current_quarter_count = fields.Integer(string="Reporting Quarter (Last Working Day)", default=0)
 
 
 class HrCustomFormEr1VacancyLine(models.Model):
@@ -535,11 +531,11 @@ class HrCustomFormEr1VacancyLine(models.Model):
     _description = "ER1 Vacancy Detail"
 
     form_id = fields.Many2one("hr.custom.form.er1", string="ER1 Form", ondelete="cascade")
-    occupation = fields.Char(string="Occupation / Category")
-    vacancies_notified = fields.Integer(string="Vacancies Notified", default=0)
-    notification_source = fields.Char(string="Notified To")
-    vacancies_unfilled = fields.Integer(string="Unfilled Vacancies", default=0)
-    vacancy_reason = fields.Char(string="Reason for Remaining Vacant")
+    occurred = fields.Integer(string="Occurred", default=0)
+    notified_local = fields.Integer(string="Notified to Local Employment Exchange", default=0)
+    notified_central = fields.Integer(string="Notified to Central Employment Exchange", default=0)
+    filled_count = fields.Integer(string="Filled", default=0)
+    source = fields.Char(string="Source (from which filled)")
 
 
 class HrCustomFormEr1ShortageLine(models.Model):
@@ -547,12 +543,10 @@ class HrCustomFormEr1ShortageLine(models.Model):
     _description = "ER1 Manpower Shortage Detail"
 
     form_id = fields.Many2one("hr.custom.form.er1", string="ER1 Form", ondelete="cascade")
-    skill_category = fields.Char(string="Skill Category")
-    qualification = fields.Char(string="Essential Qualification")
-    requirement_count = fields.Integer(string="No. Required", default=0)
-    pay_offered = fields.Char(string="Pay Offered")
-    recruitment_action = fields.Char(string="Action Taken")
-    shortage_reason = fields.Char(string="Remarks / Difficulties")
+    occupation_name = fields.Char(string="Occupation / Designation")
+    essential_qualification = fields.Char(string="Essential Qualifications Prescribed")
+    essential_experience = fields.Char(string="Essential Experience")
+    experience_not_required = fields.Char(string="Experience Not Necessary")
 
 
 class HrCustomFormFormDLine(models.Model):
