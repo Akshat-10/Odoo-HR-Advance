@@ -16,7 +16,7 @@
             <!-- YTD includes regular + overtime as well -->
             <t t-set="worked_days_total_ytd" t-value="sum(worked_days_lines.mapped('ytd'))"/>
 
-            <div id="worked_days_summary" class="mt-3">
+            <div id="worked_days_summary" class="mt-3" style="font-size: 14px;">
                 <!-- Customization Note: Showing only aggregated worked days info as per client request -->
                 <table class="table table-sm table-borderless">
                     <thead class="o_black_border">
@@ -62,6 +62,11 @@
 
         <xpath expr="//div[@id='working_schedule']" position="attributes">
             <attribute name="style">display:none;</attribute>
+        </xpath>
+
+        <!-- Add smaller font-size to infos_table for compact display -->
+        <xpath expr="//div[@id='infos_table']" position="attributes">
+            <attribute name="style">font-size: 14px;</attribute>
         </xpath>
 
         <!-- Hide CTC/Wage section -->
@@ -119,7 +124,7 @@
             <t t-set="total_deductions" t-value="sum(deduction_lines.mapped('total'))"/>
 
             <!-- Earnings Table -->
-            <div id="payslip_lines_table">
+            <div id="payslip_lines_table" style="font-size: 14px;">
                 <table class="table table-sm table-borderless">
                     <thead class="o_black_border">
                         <tr>
@@ -158,7 +163,7 @@
             </div>
 
             <!-- Deductions Table -->
-            <div id="deduction_lines_table" t-if="deduction_lines" class="mt-3">
+            <div id="deduction_lines_table" t-if="deduction_lines" class="mt-3" style="font-size: 14px;">
                 <table class="table table-sm table-borderless">
                     <thead class="o_black_border">
                         <tr>
@@ -199,7 +204,7 @@
             </div>
 
             <!-- NET Section after Deductions -->
-            <div id="net_section" class="mt-3" t-if="net_line">
+            <div id="net_section" class="mt-3" style="font-size: 15px;" t-if="net_line">
                 <t t-foreach="net_line" t-as="line">
                     <t t-set="line_styling" t-value="line.get_payslip_styling_dict()"/>
                     <t t-set="line_style" t-value="''"/>
@@ -260,6 +265,16 @@
                 <span t-if="o.employee_id.l10n_in_esic_number" t-field="o.employee_id.l10n_in_esic_number"/>
                 <span t-else="">-</span>
             </div>
+        </xpath>
+    </template>
+
+    <!-- Inherit from l10n_in_to_pay template to decrease font-size for footer messages -->
+    <template id="l10n_in_to_pay_custom" inherit_id="l10n_in_hr_payroll.l10n_in_to_pay">
+        <xpath expr="//div[@t-else='']" position="attributes">
+            <attribute name="style">font-size: 10px;</attribute>
+        </xpath>
+        <xpath expr="//div[@class='mt-2']" position="attributes">
+            <attribute name="style">font-size: 10px;</attribute>
         </xpath>
     </template>
 </odoo>
