@@ -44,7 +44,7 @@ class AttendanceReportWizard(models.TransientModel):
                 'department': employee.department_id.name if employee.department_id else '',
                 'designation': employee.job_id.name if employee.job_id else '',
                 'card_no': employee.barcode or '',
-                'father_name': 'employee.father_name' if hasattr(employee, 'father_name') else '',
+                'father_name': employee.father_name if employee.father_name else '',
                 'age': '',
                 'gender': employee.gender if employee.gender else None,
                 'date_of_joining': employee.joining_date or '',
