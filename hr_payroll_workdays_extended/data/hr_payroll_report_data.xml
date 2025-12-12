@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Override payslip report naming to include employee code and month -->
+    <record id="l10n_in_hr_payroll.payslip_details_report" model="ir.actions.report">
+        <field name="print_report_name">'Payslip - %s - %s - %s' % (object.employee_id.name, object.employee_id.employee_code or '', object.date_from.strftime('%B %Y') if object.date_from else '')</field>
+    </record>
+
+    <record id="l10n_in_hr_payroll.light_payslip_details_report" model="ir.actions.report">
+        <field name="print_report_name">'Payslip - %s - %s - %s' % (object.employee_id.name, object.employee_id.employee_code or '', object.date_from.strftime('%B %Y') if object.date_from else '')</field>
+    </record>
+</odoo>

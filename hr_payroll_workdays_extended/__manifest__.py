@@ -16,6 +16,7 @@
     ],
     'data': [
         'data/hr_work_entry_type_data.xml',
+        'data/hr_payroll_report_data.xml',
         'views/report_payslip_templates.xml',
     ],
     'installable': True,

@@ -60,16 +60,23 @@
             </div>
         </xpath>
 
-        <!-- change name <strong class="me-2">Contract Wage  to CTC -->
-        <xpath expr="//div[@id='wage']" position="replace">
-            <div id="wage">
-                <strong class="me-2">CTC (<span class="text-capitalize" t-out="o.contract_id.wage_type"/>):</strong>
-                <span t-out="o.contract_id._get_contract_wage()" t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}" style="color:#875A7B" class="fw-bold"/>
-            </div>
-        </xpath>
-
         <xpath expr="//div[@id='working_schedule']" position="attributes">
             <attribute name="style">display:none;</attribute>
+        </xpath>
+
+        <!-- Hide CTC/Wage section -->
+        <xpath expr="//div[@id='wage']" position="attributes">
+            <attribute name="style">display:none;</attribute>
+        </xpath>
+
+        <!-- Hide Computed On section -->
+        <xpath expr="//div[@id='computed_on']" position="attributes">
+            <attribute name="style">display:none;</attribute>
+        </xpath>
+
+        <!-- Change Contract Start Date to Joining Date -->
+        <xpath expr="//div[@id='contract_start']//strong[@class='me-2']" position="replace">
+            <strong class="me-2">Joining Date:</strong>
         </xpath>
 
         <!-- Change ID label to Aadhar -->
@@ -77,24 +84,182 @@
             <strong class="me-2">Aadhar:</strong>
         </xpath>
 
-        
-
-        <!-- Customization: Remove Amount, Quantity, and Rate columns from payslip lines table -->
+        <!-- Customization: Remove Amount and Quantity columns, keep Rate column with fix -->
         <xpath expr="//div[@id='payslip_lines_table']//th[@id='line_header_amount']" position="replace"/>
         <xpath expr="//div[@id='payslip_lines_table']//th[@id='line_header_quantity']" position="replace"/>
-        <xpath expr="//div[@id='payslip_lines_table']//th[@id='line_header_rate']" position="replace"/>
         
         <xpath expr="//div[@id='payslip_lines_table']//td[@id='payslip_line_amount']" position="replace"/>
         <xpath expr="//div[@id='payslip_lines_table']//td[@id='payslip_line_quantity']" position="replace"/>
-        <xpath expr="//div[@id='payslip_lines_table']//td[@id='payslip_line_rate']" position="replace"/>
+
+        <!-- Change header Name to Component -->
+        <xpath expr="//div[@id='payslip_lines_table']//th[@id='line_header_name']" position="replace">
+            <th id="line_header_name">Component</th>
+        </xpath>
+
+        <!-- Change header Total to Earning -->
+        <xpath expr="//div[@id='payslip_lines_table']//th[@id='line_header_total']" position="replace">
+            <th id="line_header_total" class="text-end">Earning</th>
+        </xpath>
+
+        <!-- Fix Rate column - show rate properly calculated -->
+        <xpath expr="//div[@id='payslip_lines_table']//td[@id='payslip_line_rate']" position="replace">
+            <td id="payslip_line_rate" t-attf-class="#{line_class} text-end" t-att-style="line_style">
+                <span t-if="line.rate != 100" t-out="str(round(line.rate, 2)) + ' %'"
+                    t-att-style="'color:#875A7B;' if line.rate &lt; 0 else ''"/>
+            </td>
+        </xpath>
+
+        <!-- Replace payslip_lines_table to separate Earnings and Deductions -->
+        <xpath expr="//div[@id='payslip_lines_table']" position="replace">
+            <!-- Separate earnings (non-DED) and deductions (DED) -->
+            <t t-set="all_lines" t-value="o.line_ids.filtered(lambda line: line.appears_on_payslip)"/>
+            <t t-set="earning_lines" t-value="all_lines.filtered(lambda line: line.category_id.code != 'DED' and line.code != 'NET')"/>
+            <t t-set="deduction_lines" t-value="all_lines.filtered(lambda line: line.category_id.code == 'DED')"/>
+            <t t-set="net_line" t-value="all_lines.filtered(lambda line: line.code == 'NET')"/>
+            <t t-set="total_deductions" t-value="sum(deduction_lines.mapped('total'))"/>
+
+            <!-- Earnings Table -->
+            <div id="payslip_lines_table">
+                <table class="table table-sm table-borderless">
+                    <thead class="o_black_border">
+                        <tr>
+                            <th id="line_header_name">Component</th>
+                            <th id="line_header_amount" class="text-end">Rate</th>
+                            <th id="line_header_total" class="text-end">Earning</th>
+                        </tr>
+                    </thead>
+                    <tbody id="payslip_lines">
+                        <t t-foreach="earning_lines" t-as="line">
+                            <t t-set="line_styling" t-value="line.get_payslip_styling_dict()"/>
+                            <t t-set="line_style" t-value="''"/>
+                            <t t-set="line_class" t-value="''"/>
+                            <t t-if="line.code in line_styling">
+                                <t t-set="line_style" t-value="line_styling[line.code]['line_style']"/>
+                                <t t-set="line_class" t-value="line_styling[line.code]['line_class']"/>
+                            </t>
+                            <tr id="line_display">
+                                <td id="payslip_line_name" t-att-class="line_class" t-att-style="line_style">
+                                    <span t-field="line.name"/>
+                                </td>
+                                <td id="payslip_line_amount" t-attf-class="#{line_class} text-end" t-att-style="line_style">
+                                    <span t-out="line.amount"
+                                        t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'
+                                        t-att-style="'color:#875A7B;' if line.amount &lt; 0 else ''"/>
+                                </td>
+                                <td id="payslip_line_total" t-attf-class="#{line_class} text-end" t-att-style="line_style">
+                                    <span t-out="line.total"
+                                        t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'
+                                        t-att-style="'color:#875A7B;' if line.total &lt; 0 else ''"/>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Deductions Table -->
+            <div id="deduction_lines_table" t-if="deduction_lines" class="mt-3">
+                <table class="table table-sm table-borderless">
+                    <thead class="o_black_border">
+                        <tr>
+                            <th>Component</th>
+                            <th class="text-end">Deduction</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="deduction_lines" t-as="line">
+                            <t t-set="line_styling" t-value="line.get_payslip_styling_dict()"/>
+                            <t t-set="line_style" t-value="''"/>
+                            <t t-set="line_class" t-value="''"/>
+                            <t t-if="line.code in line_styling">
+                                <t t-set="line_style" t-value="line_styling[line.code]['line_style']"/>
+                                <t t-set="line_class" t-value="line_styling[line.code]['line_class']"/>
+                            </t>
+                            <tr>
+                                <td t-att-class="line_class" t-att-style="line_style">
+                                    <span t-field="line.name"/>
+                                </td>
+                                <td t-attf-class="#{line_class} text-end" t-att-style="line_style">
+                                    <span t-out="abs(line.total)"
+                                        t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'
+                                        style="color:#875A7B;"/>
+                                </td>
+                            </tr>
+                        </t>
+                        <!-- Total Deduction Row -->
+                        <tr class="o_total o_border_bottom fw-bold" style="color:#875A7B;">
+                            <td><strong>Total Deduction</strong></td>
+                            <td class="text-end">
+                                <span t-out="abs(total_deductions)"
+                                    t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- NET Section after Deductions -->
+            <div id="net_section" class="mt-3" t-if="net_line">
+                <t t-foreach="net_line" t-as="line">
+                    <t t-set="line_styling" t-value="line.get_payslip_styling_dict()"/>
+                    <t t-set="line_style" t-value="''"/>
+                    <t t-set="line_class" t-value="''"/>
+                    <t t-if="line.code in line_styling">
+                        <t t-set="line_style" t-value="line_styling[line.code]['line_style']"/>
+                        <t t-set="line_class" t-value="line_styling[line.code]['line_class']"/>
+                    </t>
+                    <div class="d-flex justify-content-between fw-bold p-2 o_black_border" style="font-size: 1.1em;">
+                        <span t-att-class="line_class" t-att-style="line_style">Net Payable Salary</span>
+                        <span t-attf-class="#{line_class}" t-att-style="line_style">
+                            <span t-out="line.total"
+                                t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'
+                                t-att-style="'color:#875A7B;' if line.total &lt; 0 else ''"/>
+                        </span>
+                    </div>
+                </t>
+            </div>
+            <div class="oe_structure"></div>
+        </xpath>
     </template>
 
     <template id="report_payslip_details_hide_schedule" inherit_id="l10n_in_hr_payroll.report_payslip_details">
-        <!-- Hide the Working Schedule label -->
+        <!-- Hide the Working Schedule label and values -->
         <xpath expr="//strong[@class='me-2'][contains(text(),'Working Schedule:')]" position="replace"/>
-        <!-- Hide the first t element (monthly) using span inside it -->
         <xpath expr="//span[@t-out='o._get_l10n_in_company_working_time()']/.." position="replace"/>
-        <!-- Hide the t-else element (hourly) using span inside it -->
         <xpath expr="//span[@t-out='o._get_l10n_in_company_working_time(return_hours=True)']/.." position="replace"/>
+
+        <!-- Hide the Bank Information table header row -->
+        <xpath expr="//th[text()='Bank Information']/../.." position="attributes">
+            <attribute name="style">display:none;</attribute>
+        </xpath>
+        
+        <!-- Hide the Bank Information table tbody -->
+        <xpath expr="//span[@t-field='o.employee_id.bank_account_id.acc_number']/ancestor::tbody" position="attributes">
+            <attribute name="style">display:none;</attribute>
+        </xpath>
+
+        <!-- Add Bank Account, PAN, UAN, ESIC under Other Information section to balance columns -->
+        <xpath expr="//td[@id='other_infos']" position="inside">
+            <div id="employee_bank_account">
+                <strong class="me-2">Bank Account:</strong>
+                <span t-if="o.employee_id.bank_account_id" t-field="o.employee_id.bank_account_id.acc_number"/>
+                <span t-else="">-</span>
+            </div>
+            <div id="employee_pan">
+                <strong class="me-2">PAN:</strong>
+                <span t-if="o.employee_id.l10n_in_pan" t-field="o.employee_id.l10n_in_pan"/>
+                <span t-else="">-</span>
+            </div>
+            <div id="employee_uan">
+                <strong class="me-2">UAN:</strong>
+                <span t-if="o.employee_id.l10n_in_uan" t-field="o.employee_id.l10n_in_uan"/>
+                <span t-else="">-</span>
+            </div>
+            <div id="employee_esic">
+                <strong class="me-2">ESIC:</strong>
+                <span t-if="o.employee_id.l10n_in_esic_number" t-field="o.employee_id.l10n_in_esic_number"/>
+                <span t-else="">-</span>
+            </div>
+        </xpath>
     </template>
 </odoo>
