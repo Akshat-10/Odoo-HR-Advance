@@ -1,0 +1,14 @@
+
+<odoo>
+    <record id="resignation_letter_report" model="ir.actions.report">
+        <field name="name">Resignation Letter</field>
+        <field name="model">hr.custom.form.resignation_letter</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_reporting.resignation_letter_template</field>
+        <field name="report_file">hr_reporting.resignation_letter</field>
+        <field name="print_report_name">'Resignation Letter - %s' % (object.employee_id.name)</field>
+        <field name="binding_model_id" ref="model_hr_custom_form_resignation_letter"/>
+        <field name="binding_type">report</field>
+        <!-- <field name="context">{'docs': object}</field> -->
+    </record>
+</odoo>

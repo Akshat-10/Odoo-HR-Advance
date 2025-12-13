@@ -1,1 +1,1 @@
-from . import resignation_letter_old
+from . import resignation_letter

@@ -13,8 +13,8 @@
     "summary": "Human Resources Forms Reporting",
     "depends": [ "hr_custom_forms" ],
     "data": [
-        'views/resignation_letter_old_views.xml',
-        ],
-    
-    
+        'views/resignation_letter_views.xml',
+        'report/resignation_action.xml',
+        'report/resignation_report.xml',
+        ],   
 }
