@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_salary_attachment_type_user,hr.salary.attachment.type.user,model_hr_salary_attachment_type,hr_payroll.group_hr_payroll_user,1,1,1,1
+access_hr_salary_attachment_type_manager,hr.salary.attachment.type.manager,model_hr_salary_attachment_type,hr_payroll.group_hr_payroll_manager,1,1,1,1
+access_hr_salary_attachment_line_user,hr.salary.attachment.line.user,model_hr_salary_attachment_line,hr_payroll.group_hr_payroll_user,1,1,1,1
+access_hr_salary_attachment_line_manager,hr.salary.attachment.line.manager,model_hr_salary_attachment_line,hr_payroll.group_hr_payroll_manager,1,1,1,1

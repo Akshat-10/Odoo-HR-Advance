@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Salary Attachment Type Form View -->
+    <record id="hr_salary_attachment_type_view_form" model="ir.ui.view">
+        <field name="name">hr.salary.attachment.type.form</field>
+        <field name="model">hr.salary.attachment.type</field>
+        <field name="arch" type="xml">
+            <form string="Salary Attachment Type">
+                <sheet>
+                    <div class="oe_button_box" name="button_box"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name" string="Type Name"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Medical Deduction"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description" placeholder="Description of this attachment type..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Salary Attachment Type Tree View -->
+    <record id="hr_salary_attachment_type_view_tree" model="ir.ui.view">
+        <field name="name">hr.salary.attachment.type.list</field>
+        <field name="model">hr.salary.attachment.type</field>
+        <field name="arch" type="xml">
+            <list string="Salary Attachment Types">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Salary Attachment Type Search View -->
+    <record id="hr_salary_attachment_type_view_search" model="ir.ui.view">
+        <field name="name">hr.salary.attachment.type.search</field>
+        <field name="model">hr.salary.attachment.type</field>
+        <field name="arch" type="xml">
+            <search string="Search Salary Attachment Types">
+                <field name="name"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Company" name="group_by_company" context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Salary Attachment Type Action -->
+    <record id="action_hr_salary_attachment_type" model="ir.actions.act_window">
+        <field name="name">Salary Attachment Types</field>
+        <field name="res_model">hr.salary.attachment.type</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Salary Attachment Type
+            </p>
+            <p>
+                Salary Attachment Types are used to categorize salary attachment lines.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item for Salary Attachment Types -->
+    <menuitem
+        id="menu_hr_salary_attachment_type"
+        name="Attachment Types"
+        parent="hr_payroll.menu_hr_payroll_employees_root"
+        action="action_hr_salary_attachment_type"
+        sequence="60"/>
+</odoo>

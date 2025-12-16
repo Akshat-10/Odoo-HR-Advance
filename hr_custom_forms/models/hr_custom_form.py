@@ -672,3 +672,204 @@ class HrCustomForm15GIncomeLine(models.Model):
     income_nature = fields.Char(string="Nature of income")
     deduction_section = fields.Char(string="Section")
     income_amount = fields.Float(string="Amount of income")
+
+
+class HrCustomFormEsicDeclaration(models.Model):
+    _name = "hr.custom.form.esic_declaration"
+    _description = "ESIC Declaration Form"
+    _inherit = "hr.custom.form.base"
+
+    _sequence_code = "hr.custom.form.esic_declaration"
+
+    esic_employee_name = fields.Char(string="Employee Name")
+    esic_date_of_birth = fields.Date(string="Date of Birth")
+    esic_father_name = fields.Char(string="Father Name")
+    esic_gender = fields.Selection(
+        [("male", "Male"), ("female", "Female"), ("other", "Other")],
+        string="Gender",
+    )
+    esic_marital_status = fields.Selection(
+        [("single", "Single"), ("married", "Married"), ("widowed", "Widowed"), ("divorced", "Divorced")],
+        string="Marital Status",
+    )
+    esic_present_address = fields.Text(string="Present Address")
+    esic_permanent_address = fields.Text(string="Permanent Address")
+    esic_date_of_joining = fields.Date(string="Date of Joining")
+    esic_mobile_number = fields.Char(string="Mobile Number")
+    # Bank Details
+    esic_bank_name = fields.Char(string="Name of Bank")
+    esic_bank_account_no = fields.Char(string="Bank Account Number")
+    esic_bank_ifsc = fields.Char(string="IFSC Code")
+    esic_bank_micr = fields.Char(string="MICR Number")
+    # One2many fields
+    family_line_ids = fields.One2many(
+        "hr.custom.form.esic.family.line",
+        "form_id",
+        string="Family Details",
+    )
+    nominee_line_ids = fields.One2many(
+        "hr.custom.form.esic.nominee.line",
+        "form_id",
+        string="Nominee Details",
+    )
+
+    def _prepare_employee_related_vals(self, vals):
+        super()._prepare_employee_related_vals(vals)
+        employee_id = vals.get("employee_id")
+        if not employee_id:
+            return
+        employee = self.env["hr.employee"].browse(employee_id)
+        if not employee:
+            return
+        if not vals.get("esic_employee_name"):
+            vals["esic_employee_name"] = employee.name or False
+        if not vals.get("esic_date_of_birth"):
+            vals["esic_date_of_birth"] = employee.birthday or False
+        if not vals.get("esic_father_name"):
+            vals["esic_father_name"] = employee.father_name or False
+        if not vals.get("esic_gender") and employee.gender:
+            vals["esic_gender"] = employee.gender
+        if not vals.get("esic_marital_status") and employee.marital:
+            vals["esic_marital_status"] = employee.marital
+        if not vals.get("esic_present_address") and employee.address_id:
+            vals["esic_present_address"] = employee.address_id._display_address()
+        if not vals.get("esic_permanent_address") and employee.private_street:
+            vals["esic_permanent_address"] = employee.private_street
+        if not vals.get("esic_date_of_joining"):
+            vals["esic_date_of_joining"] = employee.joining_date or employee.join_date or False
+        if not vals.get("esic_mobile_number"):
+            vals["esic_mobile_number"] = employee.mobile_phone or employee.work_phone or False
+        # Bank details
+        if hasattr(employee, "bank_account_id") and employee.bank_account_id:
+            if not vals.get("esic_bank_account_no"):
+                vals["esic_bank_account_no"] = employee.bank_account_id.acc_number or False
+            if not vals.get("esic_bank_name") and employee.bank_account_id.bank_id:
+                vals["esic_bank_name"] = employee.bank_account_id.bank_id.name or False
+
+    @api.onchange("employee_id")
+    def _onchange_employee_id(self):
+        super()._onchange_employee_id()
+        for record in self:
+            employee = record.employee_id
+            if not employee:
+                continue
+            record.esic_employee_name = employee.name or False
+            record.esic_date_of_birth = employee.birthday or False
+            record.esic_father_name = employee.father_name or False
+            record.esic_gender = employee.gender or False
+            record.esic_marital_status = employee.marital or False
+            if employee.address_id:
+                record.esic_present_address = employee.address_id._display_address()
+            if employee.private_street:
+                record.esic_permanent_address = employee.private_street
+            record.esic_date_of_joining = employee.joining_date or employee.join_date or False
+            record.esic_mobile_number = employee.mobile_phone or employee.work_phone or False
+            if hasattr(employee, "bank_account_id") and employee.bank_account_id:
+                record.esic_bank_account_no = employee.bank_account_id.acc_number or False
+                if employee.bank_account_id.bank_id:
+                    record.esic_bank_name = employee.bank_account_id.bank_id.name or False
+
+
+class HrCustomFormEsicFamilyLine(models.Model):
+    _name = "hr.custom.form.esic.family.line"
+    _description = "ESIC Family Detail"
+
+    form_id = fields.Many2one("hr.custom.form.esic_declaration", string="ESIC Form", ondelete="cascade")
+    sequence = fields.Integer(string="Sr. No.")
+    family_member_name = fields.Char(string="Family Member's Name")
+    relation = fields.Char(string="Relation With Employee")
+    date_of_birth = fields.Date(string="Date of Birth")
+    residing_with_ip = fields.Selection(
+        [("yes", "Yes"), ("no", "No")],
+        string="Whether Residing with IP?",
+    )
+    residence_state = fields.Char(string="State (If Not Residing)")
+    residence_district = fields.Char(string="District (If Not Residing)")
+    aadhaar_no = fields.Char(string="Aadhar No.")
+
+
+class HrCustomFormEsicNomineeLine(models.Model):
+    _name = "hr.custom.form.esic.nominee.line"
+    _description = "ESIC Nominee Detail"
+
+    form_id = fields.Many2one("hr.custom.form.esic_declaration", string="ESIC Form", ondelete="cascade")
+    nominee_name = fields.Char(string="Name of Nominee")
+    relation = fields.Char(string="Relation With Employee")
+    nominee_address = fields.Text(string="Address of Nominee")
+    contact_no = fields.Char(string="Contact No.")
+
+
+class HrCustomFormPf(models.Model):
+    _name = "hr.custom.form.pf"
+    _description = "PF Form"
+    _inherit = "hr.custom.form.base"
+
+    _sequence_code = "hr.custom.form.pf"
+
+    pf_line_ids = fields.One2many(
+        "hr.custom.form.pf.line",
+        "form_id",
+        string="PF Details",
+    )
+
+
+class HrCustomFormPfLine(models.Model):
+    _name = "hr.custom.form.pf.line"
+    _description = "PF Form Line"
+
+    form_id = fields.Many2one("hr.custom.form.pf", string="PF Form", ondelete="cascade")
+    sequence = fields.Integer(string="Sr. No.")
+    old_uan_no = fields.Char(string="Old UAN No. (if new Employees Have)")
+    dol_prev_employment = fields.Date(string="DOL of Previous Employment")
+    personal_title = fields.Selection(
+        [("mr", "Mr."), ("ms", "Ms."), ("mrs", "Mrs.")],
+        string="Personal Title",
+    )
+    employee_id = fields.Many2one("hr.employee", string="Name", check_company=True)
+    gender = fields.Selection(
+        [("male", "Male"), ("female", "Female"), ("other", "Other")],
+        string="Gender",
+    )
+    date_of_birth = fields.Date(string="Date of Birth")
+    father_husband_name = fields.Char(string="Father's / Husband Name")
+    relation = fields.Selection(
+        [("father", "Father"), ("husband", "Husband")],
+        string="Relation",
+    )
+    marital_status = fields.Selection(
+        [("single", "Single"), ("married", "Married"), ("widowed", "Widowed"), ("divorced", "Divorced")],
+        string="Marital Status",
+    )
+    date_of_joining = fields.Date(string="Date of Joining")
+    mobile_number = fields.Char(string="Mobile Number")
+    pan_number = fields.Char(string="PAN Number")
+    pan_card_name = fields.Char(string="Name as per PAN Card")
+    aadhaar_number = fields.Char(string="Aadhar Number")
+    aadhaar_name = fields.Char(string="Name as per Aadhar")
+    pf_wage_type = fields.Selection(
+        [
+            ("pf_wages", "PF Wages"),
+            ("pf_salary", "PF Salary"),
+            ("pf_deductible_salary", "PF Deductible Salary"),
+        ],
+        string="PF Wages / PF Salary / PF Deductible Salary",
+    )
+    pension_applicable = fields.Selection(
+        [("yes", "Yes"), ("no", "No")],
+        string="Is Pension Contribution Applicable",
+    )
+
+    @api.onchange("employee_id")
+    def _onchange_employee(self):
+        for record in self:
+            employee = record.employee_id
+            if not employee:
+                continue
+            record.gender = employee.gender or False
+            record.date_of_birth = employee.birthday or False
+            record.father_husband_name = employee.father_name or False
+            record.marital_status = employee.marital or False
+            record.date_of_joining = employee.joining_date or employee.join_date or False
+            record.mobile_number = employee.mobile_phone or employee.work_phone or False
+            if hasattr(employee, "identification_id"):
+                record.aadhaar_number = employee.identification_id or False

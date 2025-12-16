@@ -1,6 +1,7 @@
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError, UserError
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
+from dateutil.relativedelta import relativedelta
 
 class Employee(models.Model):
     _inherit = 'hr.employee'
@@ -14,6 +15,23 @@ class Employee(models.Model):
     
     join_date = fields.Date(string='Join Date', store=True)
     father_name = fields.Char(string='Father Name')
+    age = fields.Integer(
+        string='Age',
+        compute='_compute_age',
+        store=True,
+        help="Employee age computed from date of birth"
+    )
+
+    @api.depends('birthday')
+    def _compute_age(self):
+        """Compute employee age from birthday."""
+        today = date.today()
+        for employee in self:
+            if employee.birthday:
+                delta = relativedelta(today, employee.birthday)
+                employee.age = delta.years
+            else:
+                employee.age = 0
 
     @api.depends('join_date', 'create_date')
     def _compute_joining_date(self):

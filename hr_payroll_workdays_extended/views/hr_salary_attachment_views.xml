@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extend Salary Attachment Form View to add one2many lines -->
+    <record id="hr_salary_attachment_view_form_inherit" model="ir.ui.view">
+        <field name="name">hr.salary.attachment.form.inherit.workdays.extended</field>
+        <field name="model">hr.salary.attachment</field>
+        <field name="inherit_id" ref="hr_payroll.hr_salary_attachment_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <notebook>
+                    <page string="Attachment Lines" name="attachment_lines">
+                        <field name="attachment_line_ids">
+                            <list editable="bottom">
+                                <field name="sequence" widget="handle"/>
+                                <field name="attachment_type_id"/>
+                                <field name="amount"/>
+                                <field name="currency_id" column_invisible="1"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+</odoo>

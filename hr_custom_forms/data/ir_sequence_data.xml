@@ -63,5 +63,19 @@
             <field name="prefix">RL/%(year)s/</field>
             <field name="padding">4</field>
         </record>
+
+        <record id="seq_hr_custom_form_esic_declaration" model="ir.sequence">
+            <field name="name">ESIC Declaration Form</field>
+            <field name="code">hr.custom.form.esic_declaration</field>
+            <field name="prefix">ESIC/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
+
+        <record id="seq_hr_custom_form_pf" model="ir.sequence">
+            <field name="name">PF Form</field>
+            <field name="code">hr.custom.form.pf</field>
+            <field name="prefix">PF/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
     </data>
 </odoo>

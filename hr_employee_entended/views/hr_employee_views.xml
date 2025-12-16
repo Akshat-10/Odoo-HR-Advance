@@ -13,6 +13,7 @@
                 <field name="joining_date" readonly="0" />
                 <field name="join_date" readonly="0" invisible="1" />
                 <field name="father_name"/>
+                <field name="age" readonly="0"/>
             </xpath>
 
             <xpath expr="//page[@name='hr_settings']" position="after">
