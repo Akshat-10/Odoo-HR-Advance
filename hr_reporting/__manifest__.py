@@ -20,5 +20,16 @@
         'views/form15G_views.xml',
         'views/form_11_newsept_17_views.xml',
         'views/recruitment_views.xml',
-        ],   
+
+        "views/covering_letter_views.xml",
+        'report/covering_letter_action.xml',
+        'report/covering_letter_report.xml',
+
+        "views/mw_notice_views.xml",
+        "views/formd_excel_views.xml",
+        "views/form2_word_views.xml",
+        "views/er1_word_views.xml",
+
+
+        ],
 }

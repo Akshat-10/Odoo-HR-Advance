@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_hr_custom_form_er1_word_button" model="ir.ui.view">
+        <field name="name">hr.custom.form.er1.form.inherit.word</field>
+        <field name="model">hr.custom.form.er1</field>
+        <field name="inherit_id" ref="hr_custom_forms.view_hr_custom_form_er1_form"/>
+        <field name="arch" type="xml">
+
+
+            <xpath expr="//form/sheet" position="before">
+                <header>
+                    <button name="action_download_er1_word"
+                            type="object"
+                            string="Download ER-1 (Word)"
+                            class="btn-primary"/>
+                </header>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

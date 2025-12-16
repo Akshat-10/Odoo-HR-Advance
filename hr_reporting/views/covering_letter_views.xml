@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_hr_custom_form_cover_letter_form_report"
+            model="ir.ui.view">
+        <field name="name">hr.custom.form.cover.letter.form.inherit.report</field>
+        <field name="model">hr.custom.form.cover_letter</field>
+        <field name="inherit_id" ref="hr_custom_forms.view_hr_custom_form_cover_letter_form"/>
+
+        <field name="arch" type="xml">
+
+
+            <xpath expr="//field[@name='er_subject']" position="after">
+                <div class="oe_button_box" style="margin-top: 10px;">
+<!--                    <button name="action_generate_covering_letter_report"-->
+<!--                            string="Generate Covering Letter"-->
+<!--                            type="object"-->
+<!--                            class="btn-primary"/>-->
+
+                    <!-- WORD -->
+                    <button name="action_download_covering_letter_word"
+                            string="Download Word"
+                            type="object"
+                            class="btn-primary"
+                            style="margin-left: 10px;"/>
+                </div>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

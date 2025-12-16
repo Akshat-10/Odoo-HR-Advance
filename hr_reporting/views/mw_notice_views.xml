@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_hr_custom_form_mw_notice_form_inherit_excel" model="ir.ui.view">
+        <field name="name">hr.custom.form.mw_notice.form.inherit.excel</field>
+        <field name="model">hr.custom.form.mw_notice</field>
+        <field name="inherit_id" ref="hr_custom_forms.view_hr_custom_form_mw_notice_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//form/sheet" position="before">
+                <header>
+                    <button
+                        name="action_generate_mv_register_excel"
+                        type="object"
+                        string="Download MV Register (Excel)"
+                        class="btn-primary"
+                        icon="fa-file-excel-o"/>
+                </header>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>
