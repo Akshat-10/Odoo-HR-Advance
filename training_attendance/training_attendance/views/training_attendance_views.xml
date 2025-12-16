@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record id="view_training_attendance_form" model="ir.ui.view">
+        <field name="name">training.attendance.form</field>
+        <field name="model">training.attendance</field>
+        <field name="arch" type="xml">
+            <form string="Training Attendance">
+
+                <!-- ===== HEADER BUTTON ===== -->
+                <header>
+                    <button name="action_download_word"
+                            type="object"
+                            string="Download Word"
+                            class="btn-primary"
+                            icon="fa-file-word-o"/>
+                </header>
+
+                <sheet>
+
+                    <group>
+                        <group>
+                            <field name="program_name"/>
+                            <field name="department_id"/>
+                            <field name="faculty_name"/>
+                        </group>
+                        <group>
+                            <field name="venue"/>
+                            <field name="date"/>
+                            <field name="time"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Training">
+                            <group>
+                                <field name="training_given_to"/>
+                            </group>
+                        </page>
+
+                        <page string="Employees">
+                            <field name="employee_line_ids">
+                                <list editable="bottom">
+                                    <field name="sr_no"/>
+                                    <field name="employee_name"/>
+                                    <field name="employee_code"/>
+                                    <field name="department_id"/>
+                                    <field name="designation"/>
+                                    <field name="signature"/>
+                                    <field name="attachment" filename="attachment_filename"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="view_training_attendance_list" model="ir.ui.view">
+        <field name="name">training.attendance.list</field>
+        <field name="model">training.attendance</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="program_name"/>
+                <field name="department_id"/>
+                <field name="date"/>
+                <field name="training_given_to"/>
+            </list>
+        </field>
+    </record>
+
+
+    <record id="action_training_attendance" model="ir.actions.act_window">
+        <field name="name">Training Attendance</field>
+        <field name="res_model">training.attendance</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+
+    <menuitem
+            id="menu_training_attendance_root_app"
+            name="Training Attendance"
+            sequence="4"/>
+
+    <menuitem
+            id="menu_training_attendance_action"
+            name="Training Attendance"
+            parent="menu_training_attendance_root_app"
+            action="action_training_attendance"
+            sequence="4"/>
+    a
+
+</odoo>
