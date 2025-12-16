@@ -8,10 +8,16 @@
         <field name="arch" type="xml">
 
             <xpath expr="//form/sheet" position="inside">
-                <button name="action_generate_resignation_report"
+                <button name="action_download_word"
                         string="Generate Report"
                         type="object"
                         class="btn-primary"/>
+
+                <button name="action_generate_resignation_report"
+                        string="Generate Report"
+                        type="object"
+                        class="btn-primary"
+                        invisible="1"/>
             </xpath>
         </field>
     </record>

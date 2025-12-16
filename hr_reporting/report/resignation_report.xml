@@ -5,9 +5,9 @@
       <div class="page">
         <p><strong>Date:</strong> <t t-esc="docs.resignation_date"/></p>
 
-        <p>To,<br/>
+        <p><strong>To,<br/>
         The General Manager,<br/>
-        GERMAN TMX PVT LTD,</p>
+        GERMAN TMX PVT LTD,</strong></p>
 
         <p><strong>Sub: Resignation from the post of <t t-esc="docs.employee_id.job_id.name"/></strong><br/>
         <strong>DEPARTMENT <t t-esc="docs.employee_id.department_id.name"/></strong></p>
@@ -15,10 +15,13 @@
         <p>Dear Sir,</p>
 
         <p>
-          I the undersigned <t t-esc="docs.employee_id.name"/> S/O <t t-esc="docs.employee_id.father_name"/> 
-          is working as <t t-esc="docs.employee_id.job_id.name"/> with your Company. 
-          Due to my personal reason, salary not affordable to me, I could not work further more 
-          with Company and hence tendering my Resignation from the post of <t t-esc="docs.employee_id.job_id.name"/>.
+        I the undersigned 
+        <strong><t t-esc="docs.employee_id.name"/></strong> 
+        S/O <strong><t t-esc="docs.employee_id.father_name"/></strong> 
+        is working as <strong><t t-esc="docs.employee_id.job_id.name"/></strong> with your Company. 
+        Due to my personal reason, salary not affordable to me, I could not work further more 
+        with Company and hence tendering my Resignation from the post of 
+        <strong><t t-esc="docs.employee_id.job_id.name"/></strong>.
         </p>
 
         <p>
@@ -34,7 +37,7 @@
 
         <p>Thanking you,<br/>
         Your's truly<br/><br/>
-        (<t t-esc="docs.employee_id.name"/>)</p>
+        <strong>(<t t-esc="docs.employee_id.name"/>)</strong></p>
 
         <p>Approved By,<br/><br/>
         ____________________<br/>

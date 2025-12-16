@@ -11,10 +11,14 @@
     "installable": True,
     "application": True,
     "summary": "Human Resources Forms Reporting",
-    "depends": [ "hr_custom_forms" ],
+    "depends": [ "hr_custom_forms" , "hr_recruitment_extended"],
     "data": [
         'views/resignation_letter_views.xml',
         'report/resignation_action.xml',
         'report/resignation_report.xml',
+        'views/leave_application_views.xml',
+        'views/form15G_views.xml',
+        'views/form_11_newsept_17_views.xml',
+        'views/recruitment_views.xml',
         ],   
 }

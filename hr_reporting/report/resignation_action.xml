@@ -1,5 +1,6 @@
 
 <odoo>
+    <!-- code for PDF file  -->
     <record id="resignation_letter_report" model="ir.actions.report">
         <field name="name">Resignation Letter</field>
         <field name="model">hr.custom.form.resignation_letter</field>
@@ -8,7 +9,25 @@
         <field name="report_file">hr_reporting.resignation_letter</field>
         <field name="print_report_name">'Resignation Letter - %s' % (object.employee_id.name)</field>
         <field name="binding_model_id" ref="model_hr_custom_form_resignation_letter"/>
-        <field name="binding_type">report</field>
-        <!-- <field name="context">{'docs': object}</field> -->
+        <field name="binding_type">report</field> 
     </record>
+
+    <!-- code for word file -->
+    <!-- <record id="resignation_letter_docx" model="ir.actions.report">
+        <field name="name">Resignation Letter (Word)</field>
+        <field name="model">hr.custom.form.resignation_letter</field>
+        <field name="report_type">docx</field>
+        <field name="report_name">hr_reporting.resignation_letter_docx_template</field>
+        <field name="binding_model_id" ref="model_hr_custom_form_resignation_letter"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="resignation_letter_docx_template" model="ir.attachment">
+        <field name="name">resignation_letter_template.docx</field>
+        <field name="type">binary</field>
+        <field name="res_model">ir.actions.report</field>
+        <field name="res_id" ref="resignation_letter_docx"/>
+        <field name="datas" type="base64" file="resignation_letter_template.docx"/>
+    </record> -->
+
 </odoo>
