@@ -13,7 +13,6 @@ class ResignationLetter(models.Model):
 
 
     def action_download_word(self):
-        # return self.env.ref('hr_reporting.resignation_letter_docx').report_action(self)
         self.ensure_one()
 
         doc = Document()
