@@ -4,6 +4,7 @@ from docx.shared import Pt,Cm
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 import io
 import base64
+import os
 
 class Form15G(models.Model):
     _inherit = "hr.applicant"
@@ -65,7 +66,12 @@ class Form15G(models.Model):
         p = cell.paragraphs[0]
         p.alignment = 1   # center
         run = p.add_run()
-        run.add_picture("C:\\Odoo\\v18\\odoo18\\custom_addons\\Odoo-HR-Advance\\hr_reporting\\static\\images\\image.png", width=Cm(3))
+        
+        # Get the absolute path to the image file
+        module_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        image_path = os.path.join(module_path, "static", "images", "image.png")
+        if os.path.exists(image_path):
+            run.add_picture(image_path, width=Cm(3))
         
         t4.cell(0,2).text = f"Full Signature: ____________\nInitial: _____________________"
      
