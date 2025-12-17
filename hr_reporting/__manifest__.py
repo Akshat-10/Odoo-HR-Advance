@@ -20,6 +20,7 @@
         'views/form15G_views.xml',
         'views/form_11_newsept_17_views.xml',
         'views/recruitment_views.xml',
+        'views/ESIC_form_views.xml',
 
         "views/covering_letter_views.xml",
         'report/covering_letter_action.xml',
