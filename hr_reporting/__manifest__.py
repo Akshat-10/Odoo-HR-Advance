@@ -21,6 +21,7 @@
         'views/form_11_newsept_17_views.xml',
         'views/recruitment_views.xml',
         'views/ESIC_form_views.xml',
+        'views/pf_form_views.xml',
 
         "views/covering_letter_views.xml",
         'report/covering_letter_action.xml',
