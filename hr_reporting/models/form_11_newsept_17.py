@@ -31,7 +31,7 @@ class LeaveApplication(models.Model):
 
         p = cell.paragraphs[0]
         run = p.add_run()
-        run.add_picture("C:\\Users\\Admin\\Desktop\\MEERA\\HR\\emp.png",
+        run.add_picture("C:\\Odoo\\v18\\odoo18\\custom_addons\\Odoo-HR-Advance\\hr_reporting\\static\\images\\emp.png",
             width=Inches(0.6)
         )
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -62,7 +62,7 @@ class LeaveApplication(models.Model):
         p = cell.paragraphs[0]
         run = p.add_run()
         run.add_picture(
-            "C:\\Users\\Admin\\Desktop\\MEERA\\HR\\pandit.png",
+            "C:\\Odoo\\v18\\odoo18\\custom_addons\\Odoo-HR-Advance\\hr_reporting\\static\\images\\pandit.png",
             width=Inches(0.6)
         )
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER        

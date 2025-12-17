@@ -65,7 +65,7 @@ class Form15G(models.Model):
         p = cell.paragraphs[0]
         p.alignment = 1   # center
         run = p.add_run()
-        run.add_picture("C:\\Users\\Admin\\Pictures\\Screenshots\\image.png", width=Cm(3))
+        run.add_picture("C:\\Odoo\\v18\\odoo18\\custom_addons\\Odoo-HR-Advance\\hr_reporting\\static\\images\\image.png", width=Cm(3))
         
         t4.cell(0,2).text = f"Full Signature: ____________\nInitial: _____________________"
      
