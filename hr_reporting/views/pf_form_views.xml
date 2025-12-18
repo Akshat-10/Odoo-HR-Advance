@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_hr_custom_form_pf_form_report" model="ir.ui.view">
+        <field name="name">hr.custom.form.pf.form.inherit.report</field>
+        <field name="model">hr.custom.form.pf</field>
+        <field name="inherit_id" ref="hr_custom_forms.view_hr_custom_form_pf_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//form/sheet" position="before">
+                <header>
+                    <button name="action_generate_excel_report"
+                            string="Generate Report"
+                            type="object"
+                            class="btn-primary"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+</odoo>
