@@ -1,4 +1,6 @@
 from odoo import fields, models, api
+from datetime import date
+from dateutil.relativedelta import relativedelta
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -16,6 +18,13 @@ class HrCandidate(models.Model):
     father_name = fields.Char(string="Father's Name")
     mother_name = fields.Char(string="Mother's Name")
     dob = fields.Date(string="Date of Birth")
+    age = fields.Integer(
+        string='Age',
+        compute='_compute_age',
+        inverse='_inverse_age',
+        store=True,
+        help="Candidate age computed from date of birth or can be set manually"
+    )
     marital_status = fields.Selection([('yes', 'Yes'), ('no', 'No')], string="Marital Status")
     spouse_name = fields.Char(string="Spouse Name")
     mobile_no = fields.Char(string="Mobile No.")
@@ -48,6 +57,25 @@ class HrCandidate(models.Model):
     destination = fields.Char(string='Destination')
     grade = fields.Char(string='Grade')
     other_skills = fields.Text(string="Other Skills")
+
+    @api.depends('dob')
+    def _compute_age(self):
+        """Compute candidate age from date of birth."""
+        today = date.today()
+        for candidate in self:
+            if candidate.dob:
+                delta = relativedelta(today, candidate.dob)
+                candidate.age = delta.years
+            else:
+                # Keep existing age if no dob (allows manual entry)
+                if not candidate.age:
+                    candidate.age = 0
+
+    def _inverse_age(self):
+        """Allow manual age entry without requiring dob."""
+        # This inverse method allows the age to be set manually
+        # When age is set manually, we don't modify dob
+        pass
     
 
 class Applicant(models.Model):
@@ -73,6 +101,7 @@ class Applicant(models.Model):
             'father_name': candidate.father_name,
             'mother_name': candidate.mother_name,
             'dob': candidate.dob,
+            'age': candidate.age,
             'marital_status': candidate.marital_status,
             'spouse_name': candidate.spouse_name,
             'mobile_no': candidate.mobile_no,

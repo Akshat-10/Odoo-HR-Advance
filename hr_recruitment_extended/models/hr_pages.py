@@ -1,4 +1,6 @@
-from odoo import fields, models
+from odoo import api, fields, models
+from datetime import date
+from dateutil.relativedelta import relativedelta
 import uuid
 
 
@@ -108,6 +110,13 @@ class Applicant(models.Model):
     father_name = fields.Char(string="Father's Name")
     mother_name = fields.Char(string="Mother's Name")
     dob = fields.Date(string="Date of Birth")
+    age = fields.Integer(
+        string='Age',
+        compute='_compute_age',
+        inverse='_inverse_age',
+        store=True,
+        help="Applicant age computed from date of birth or can be set manually"
+    )
     marital_status = fields.Selection(
         [('yes', 'Yes'), ('no', 'No')],
         string="Marital Status"
@@ -151,4 +160,22 @@ class Applicant(models.Model):
     )
     referred_by = fields.Char(string="Referred By")
     other_skills = fields.Text(string="Other Skills")
-    
+
+    @api.depends('dob')
+    def _compute_age(self):
+        """Compute applicant age from date of birth."""
+        today = date.today()
+        for applicant in self:
+            if applicant.dob:
+                delta = relativedelta(today, applicant.dob)
+                applicant.age = delta.years
+            else:
+                # Keep existing age if no dob (allows manual entry)
+                if not applicant.age:
+                    applicant.age = 0
+
+    def _inverse_age(self):
+        """Allow manual age entry without requiring dob."""
+        # This inverse method allows the age to be set manually
+        # When age is set manually, we don't modify dob
+        pass

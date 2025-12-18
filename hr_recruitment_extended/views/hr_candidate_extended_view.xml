@@ -25,6 +25,7 @@
                             <field name="father_name"/>
                             <field name="mother_name"/>
                             <field name="dob"/>
+                            <field name="age"/>
                             <field name="marital_status"/>
                             <field name="spouse_name" invisible="marital_status != 'yes'" />
                         </group>
