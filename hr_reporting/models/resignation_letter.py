@@ -24,7 +24,7 @@ class ResignationLetter(models.Model):
 
         # Date
         p = doc.add_paragraph()
-        p.add_run(f"Date. {self.resignation_date.strftime('%d/%m/%Y')}\n")
+        p.add_run(f"Date. {self.resignation_date.strftime('%d/%m/%Y') or ''}\n")
 
         # Address block
         doc.add_paragraph(
@@ -35,8 +35,8 @@ class ResignationLetter(models.Model):
 
         # Subject & Department
         doc.add_paragraph(
-            f"Sub: Resignation from the post of {self.employee_id.job_id.name}\n"
-            f"DEPARTMENT {self.employee_id.department_id.name}"
+            f"Sub: Resignation from the post of {self.employee_id.job_id.name or '____________________'}\n"
+            f"DEPARTMENT {self.employee_id.department_id.name or '____________________'}"
         )
 
         # Salutation
@@ -44,13 +44,13 @@ class ResignationLetter(models.Model):
 
         # Main body
         doc.add_paragraph(
-            f"I the undersigned Ms/Mr. {self.employee_id.name} "
-            f"S/O {self.employee_id.father_name} is working "
-            f"{self.employee_id.job_id.name} as with your Company. "
+            f"I the undersigned Ms/Mr. {self.employee_id.name or '____________________'} "
+            f"S/O {self.employee_id.father_name or '____________________'} is working "
+            f"{self.employee_id.job_id.name or '____________________'} as with your Company. "
             "Due to my personal reason salary not affordable to me "
             "could not work further more with Company and hence "
             f"tendering my Resignation from the post of "
-            f"{self.employee_id.job_id.name}."
+            f"{self.employee_id.job_id.name or '____________________'}."
         )
 
         doc.add_paragraph(
@@ -70,7 +70,7 @@ class ResignationLetter(models.Model):
         doc.add_paragraph(
             "\nThanking you,\n"
             "Your's truly\n\n"
-            f"({self.employee_id.name})"
+            f"({self.employee_id.name or '____________________'})"
         )
 
         p = doc.add_paragraph(
@@ -84,10 +84,16 @@ class ResignationLetter(models.Model):
         # Save to memory
         buffer = io.BytesIO()
         doc.save(buffer)
+        
+        filename = (
+            f"Resignation Letter - {self.employee_id.name or ''}({self.employee_id.employee_code or ''}).docx"
+            if self.employee_id.employee_code
+            else f"Resignation Letter - {self.employee_id.name or ''}.docx"
+        )
 
         # Create attachment
         attachment = self.env['ir.attachment'].create({
-            'name': f"Resignation Letter - {self.employee_id.name}.docx",
+            'name': filename,
             'type': 'binary',
             'datas': base64.b64encode(buffer.getvalue()),
             'mimetype': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',

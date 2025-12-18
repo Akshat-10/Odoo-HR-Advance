@@ -58,8 +58,6 @@ class LeaveApplication(models.Model):
         teal_fill = PatternFill(start_color='005A70', end_color='005A70', fill_type='solid') 
         red_font = Font(name='Arial',size=11,bold=True,color="FF0000")
 
-
-
         # Column widths
         for i in range(1,9):
             col = get_column_letter(i)
@@ -324,7 +322,12 @@ class LeaveApplication(models.Model):
         output.close()
 
         # Create attachment
-        filename = f'ESIC_declaration_form.xlsx'
+        filename = (
+            f"ESIC - {self.employee_id.name or ''}({self.employee_id.employee_code or ''}).docx"
+            if self.employee_id.employee_code
+            else f"ESIC - {self.employee_id.name or ''}.docx"
+        )
+        
         attachment = self.env['ir.attachment'].create({
             'name': filename,
             'type': 'binary',

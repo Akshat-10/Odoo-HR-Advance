@@ -69,9 +69,14 @@ class LeaveApplication(models.Model):
         buffer = io.BytesIO()
         doc.save(buffer)
 
-
+        filename = (
+            f"Leave Application - {self.employee_id.name or ''}({self.employee_id.employee_code or ''}).docx"
+            if self.employee_id.employee_code
+            else f"Leave Application - {self.employee_id.name or ''}.docx"
+        )
+        
         attachment = self.env['ir.attachment'].create({
-            'name': f"Leave Application - {self.employee_id.name}.docx",
+            'name': filename,
             'type': 'binary',
             'datas': base64.b64encode(buffer.getvalue()),
             'mimetype': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',

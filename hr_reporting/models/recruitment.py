@@ -45,13 +45,12 @@ class Form15G(models.Model):
        
         t = doc.add_table(2, 3)
         
-        t.cell(0,0).text = f"DEPARTMENT : {self.department_id.name}"
-        t.cell(0,1).text = ""
+        t.cell(0, 0).merge(t.cell(0, 1))
+        t.cell(0,0).text = f"DEPARTMENT : {self.department_id.name or ''}"
         t.cell(0,2).text = f"Emp. No. "
         
-        
-        t.cell(1,0).text = f"DESIGNATION : {self.destination}"
-        t.cell(1,1).text = ""
+        t.cell(1, 0).merge(t.cell(1, 1))
+        t.cell(1,0).text = f"DESIGNATION : {self.destination or ''}"
         t.cell(1,2).text = f"Date Of Joining :"
         
         # Title
@@ -77,8 +76,8 @@ class Form15G(models.Model):
      
 
         # Personal Details
-        ptext("1. Full Name : Mr./Ms.")
-        ptext(f"Father's Name : {self.father_name}")
+        ptext(f"1. Full Name : Mr./Ms. {self.candidate_id.partner_name or ''}",bold=True)
+        ptext(f"    Father's Name : {self.father_name or ''}\n")
 
 
         # ========== table =========
@@ -88,34 +87,33 @@ class Form15G(models.Model):
         ctext(t1.cell(0,0), "PRESENT", bold=True)
         ctext(t1.cell(0,1), "PERMANENT", bold=True)
 
-        ctext(t1.cell(1,0), self.present_address)
-        ctext(t1.cell(1,1), self.permanent_address)
+        ctext(t1.cell(1,0), self.present_address or "")
+        ctext(t1.cell(1,1), self.permanent_address or "")
 
-        ctext(t1.cell(2,0), f"Mobile: {str(self.mobile_no)}")
-        ctext(t1.cell(2,1), f"Mobile: {str(self.partner_phone)}")
+        ctext(t1.cell(2,0), f"Mobile: {str(self.partner_phone or '')}")
+        ctext(t1.cell(2,1), f"Mobile: {str(self.mobile_no or '')}")
 
         ctext(t1.cell(3,0), "Telephone:")
         ctext(t1.cell(3,1), "Telephone:")
 
         t1.cell(4,0).merge(t1.cell(4,1))
-        ctext(t1.cell(4,0), f"Email ID: {str(self.mail_id)}")
-        
+        ctext(t1.cell(4,0), f"Email ID: {str(self.email_from or '')}")
         
         # Emergency Contact
-        ptext("\nPERSON TO BE NOTIFIED IN CASE OF EMERGENCY:", bold=True)
-        ptext(f"     Name: {self.emergency_contact_name}")
-        ptext("      Address: AS ABOVE")
-        ptext(f"     Telephone: {str(self.emergency_contact_no)}")
+        ptext("\n3. PERSON TO BE NOTIFIED IN CASE OF EMERGENCY:", bold=True)
+        ptext(f"     Name: {self.emergency_contact_name or ''}")
+        ptext("     Address: AS ABOVE")
+        ptext(f"     Telephone: {str(self.emergency_contact_no or '')}\n")
                 
                 
         # Personal information 
-        ptext("3. PERSONAL PARTICULARS:", bold=True)
-        ptext(f"    a) Date of Birth : {str(self.dob)}")
-        ptext("     b) Age :")
-        ptext("     c) Nationality : Indian")
-        ptext("     d) Religion / Caste : HINDU")
-        ptext(f"4. MARITAL STATUS : {str(self.marital_status)}", bold=True)
-    
+        ptext("4. PERSONAL PARTICULARS:", bold=True)
+        ptext(f"    a) Date of Birth : {str(self.dob or '')}")
+        ptext(f"     b) Age : {self.age}")
+        ptext(f"     c) Nationality : Indian")
+        ptext(f"     d) Religion / Caste : HINDU")
+        ptext(f"4. MARITAL STATUS : {str(self.marital_status or '')}\n", bold=True)
+
 
         # Family Details
         ptext("\n5. FAMILY PARTICULARS", bold=True)
@@ -129,9 +127,9 @@ class Form15G(models.Model):
 
 
         family_data = [
-            ("1", self.father_name, "Father"),
-            ("2", self.mother_name, "Mother"),
-            ("3", self.spouse_name, "Husband / Wife"),
+            ("1", self.father_name or "", "Father"),
+            ("2", self.mother_name or "", "Mother"),
+            ("3", self.spouse_name or "", "Husband / Wife"),
         ]
 
         row = 1
@@ -155,11 +153,11 @@ class Form15G(models.Model):
         
          
         for idx, rec in enumerate(self.education_ids, start=1):
-            ctext(t3.cell(idx, 0), str(idx))
-            ctext(t3.cell(idx, 1), str(rec.year_of_passing))
-            ctext(t3.cell(idx, 2), str(rec.exam_passed))
-            ctext(t3.cell(idx, 3), str(rec.institution))
-            ctext(t3.cell(idx, 4), str(rec.marks_obtained))
+            ctext(t3.cell(idx, 0), str(idx or ""))
+            ctext(t3.cell(idx, 1), str(rec.year_of_passing or ""))
+            ctext(t3.cell(idx, 2), str(rec.exam_passed or ""))
+            ctext(t3.cell(idx, 3), str(rec.institution or ""))
+            ctext(t3.cell(idx, 4), str(rec.marks_obtained or ""))
             ctext(t3.cell(idx, 5), "")
                     
             
@@ -178,12 +176,12 @@ class Form15G(models.Model):
 
 
         for idx, rec in enumerate(self.employment_ids, start=1):
-            ctext(t4.cell(idx, 0), str(idx))
-            ctext(t4.cell(idx, 1), rec.employment_type_id.name)
-            ctext(t4.cell(idx, 2), rec.location)
-            ctext(t4.cell(idx, 3), rec.designation)
+            ctext(t4.cell(idx, 0), str(idx or ""))
+            ctext(t4.cell(idx, 1), rec.employment_type_id.name or "")
+            ctext(t4.cell(idx, 2), rec.location or "")
+            ctext(t4.cell(idx, 3), rec.designation or "")
             ctext(t4.cell(idx, 4), "")
-            ctext(t4.cell(idx, 5), str(rec.years_of_experience))
+            ctext(t4.cell(idx, 5), str(rec.years_of_experience or ""))
 
             
         # Declaration
@@ -198,7 +196,7 @@ class Form15G(models.Model):
 
         # Create attachment
         attachment = self.env['ir.attachment'].create({
-            'name': "recruitment.docx",
+            'name': f"Application_of_{self.candidate_id.partner_name or ''}.docx",
             'type': 'binary',
             'datas': base64.b64encode(buffer.getvalue()),
             'mimetype': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',

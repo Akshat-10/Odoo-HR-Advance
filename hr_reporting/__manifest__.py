@@ -11,7 +11,7 @@
     "installable": True,
     "application": True,
     "summary": "Human Resources Forms Reporting",
-    "depends": [ "hr_custom_forms" , "hr_recruitment_extended"],
+    "depends": [ "hr_custom_forms" , "hr_recruitment_extended", 'l10n_in_hr_payroll'],
     "data": [
         'views/resignation_letter_views.xml',
         'report/resignation_action.xml',

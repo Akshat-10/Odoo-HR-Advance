@@ -207,7 +207,7 @@ class LeaveApplication(models.Model):
         output.close()
 
         # Create attachment
-        filename = f'PF_form.xlsx'
+        filename = (f"PF Form ({self.name or ''}).docx")
         attachment = self.env['ir.attachment'].create({
             'name': filename,
             'type': 'binary',

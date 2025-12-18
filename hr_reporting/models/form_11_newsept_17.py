@@ -1,8 +1,9 @@
 from odoo import models
 from docx import Document
-from docx.shared import Pt, Inches
+from docx.shared import Pt, Inches, Cm
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 import io
+import os
 import base64
 from datetime import date
 from docx.enum.table import WD_TABLE_ALIGNMENT, WD_CELL_VERTICAL_ALIGNMENT
@@ -31,11 +32,12 @@ class LeaveApplication(models.Model):
 
         p = cell.paragraphs[0]
         run = p.add_run()
-        run.add_picture("C:\\Odoo\\v18\\odoo18\\custom_addons\\Odoo-HR-Advance\\hr_reporting\\static\\images\\emp.png",
-            width=Inches(0.6)
-        )
+        # Get the absolute path to the image file
+        module_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        image_path = os.path.join(module_path, "static", "images", "emp.png")
+        if os.path.exists(image_path):
+            run.add_picture(image_path, width=Cm(1.6))
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-
 
         # ---------- CENTER TEXT ----------
         t.cell(0,1).merge(t.cell(0,7))
@@ -61,10 +63,11 @@ class LeaveApplication(models.Model):
 
         p = cell.paragraphs[0]
         run = p.add_run()
-        run.add_picture(
-            "C:\\Odoo\\v18\\odoo18\\custom_addons\\Odoo-HR-Advance\\hr_reporting\\static\\images\\pandit.png",
-            width=Inches(0.6)
-        )
+        # Get the absolute path to the image file
+        module_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        image_path = os.path.join(module_path, "static", "images", "pandit.png")
+        if os.path.exists(image_path):
+            run.add_picture(image_path, width=Cm(1.6))
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER        
         
         doc.add_paragraph(f"Date:{date.today()}").alignment = WD_ALIGN_PARAGRAPH.RIGHT
@@ -233,22 +236,22 @@ class LeaveApplication(models.Model):
         ]
         
         data = [
-            self.employee_id.name,
-            self.father_name,
-            self.spouse_name,
-            self.date_of_birth,
-            self.gender,
-            self.marital_status,
-            self.email,
-            self.mobile,
-            self.present_joining_date,
+            self.employee_id.name or "",
+            self.father_name or "",
+            self.spouse_name or "",
+            self.date_of_birth or "",
+            self.gender or "",
+            self.marital_status or "",
+            self.email or "",
+            self.mobile or "",
+            self.present_joining_date or "",
             "",
-            self.bank_account_no,
-            self.bank_ifsc,
-            self.aadhaar_number,
-            self.pan_number,
-            self.member_epf_before,
-            self.member_eps_before  
+            self.bank_account_no or "",
+            self.bank_ifsc or "",
+            self.aadhaar_number or "",
+            self.pan_number or "",
+            self.member_epf_before or "",
+            self.member_eps_before or "",  
         ]
 
         for i, label in enumerate(rows):
@@ -291,7 +294,7 @@ class LeaveApplication(models.Model):
             prev1.cell(row_index, 4).text = str(rec.exit_date) or ""
             prev1.cell(row_index, 5).text = str(rec.scheme_certificate) or ""
             prev1.cell(row_index, 6).text = str(rec.ppo_number) or ""
-            prev1.cell(row_index, 7).text = str(rec.ncp_days or "")
+            prev1.cell(row_index, 7).text = str(rec.ncp_days) or ""
 
             row_index += 1
 
@@ -325,7 +328,7 @@ class LeaveApplication(models.Model):
             prev2.cell(row_index, 3).text = str(rec.joining_date) or ""
             prev2.cell(row_index, 4).text = str(rec.exit_date) or ""
             prev2.cell(row_index, 5).text = str(rec.scheme_certificate) or ""
-            prev2.cell(row_index, 6).text = str(rec.ncp_days or "")
+            prev2.cell(row_index, 6).text = str(rec.ncp_days) or ""
 
             row_index += 1
 
@@ -344,10 +347,10 @@ class LeaveApplication(models.Model):
         ]
         
         data = [
-            self.international_worker,
-            self.origin_country,
-            self.passport_no,
-            f"{self.passport_valid_from} to {self.passport_valid_to}"
+            self.international_worker or '',
+            self.origin_country or '',
+            self.passport_no or '',
+            f"{self.passport_valid_from or ''} to {self.passport_valid_to or ''}"
         ]
 
         for i, label in enumerate(header):
@@ -378,8 +381,8 @@ class LeaveApplication(models.Model):
         d.alignment = WD_ALIGN_PARAGRAPH.CENTER
         
         doc.add_paragraph(
-            f"A.   The member Mr/Ms/Mrs {self.employee_id.name} has joined on {str(self.joining_date)}"
-            f"and has been allotted PF No _______________ and UAN ___________________."
+            f"A.   The member Mr/Ms/Mrs {self.employee_id.name or ''} has joined on {str(self.joining_date or '')} "
+            f"and has been allotted PF No _______________ and UAN {self.employee_id.l10n_in_uan}."
         )
 
         doc.add_paragraph(
@@ -408,10 +411,16 @@ class LeaveApplication(models.Model):
 
         buffer = io.BytesIO()
         doc.save(buffer)
+        
+        filename = (
+            f"Form 11 - {self.employee_id.name or ''}({self.employee_id.employee_code or ''}).docx"
+            if self.employee_id.employee_code
+            else f"Form 11 -{self.employee_id.name or ''}.docx"
+        )
 
         # ===== Create Attachment =====
         attachment = self.env['ir.attachment'].create({
-            'name': 'Form_11.docx',
+            'name': filename,
             'type': 'binary',
             'datas': base64.b64encode(buffer.getvalue()),
             'mimetype': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
