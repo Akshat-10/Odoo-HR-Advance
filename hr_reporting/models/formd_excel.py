@@ -194,9 +194,20 @@ class HrCustomFormFormD(models.Model):
 
         self.generate_xls_file = base64.b64encode(output.getvalue())
 
+        document_reference = (
+            self.name.strip()
+            .replace(" ", "_")
+            .replace("/", "_")
+            if self.name
+            else "Document_Reference"
+        )
+
         return {
             "type": "ir.actions.act_url",
             "url": f"/web/content/?model=hr.custom.form.formd&id={self.id}"
-                   f"&field=generate_xls_file&filename=Form_D_Register_{self.name}.xlsx&download=true",
+                   f"&field=generate_xls_file"
+                   f"&filename=Form_D_Register_{document_reference}.xlsx"
+                   f"&download=true",
             "target": "self",
         }
+

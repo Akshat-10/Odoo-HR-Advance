@@ -182,11 +182,28 @@ class HrCustomFormMwNotice(models.Model):
         wb.save(output)
         output.seek(0)
 
+
+
         self.generate_xls_file = base64.b64encode(output.getvalue())
+
+        # ========= FILE NAME LOGIC =========
+        document_reference = (
+            self.name.strip().replace(" ", "_")
+            if self.name
+            else "Document_Reference"
+        )
 
         return {
             "type": "ir.actions.act_url",
-            "url": f"/web/content/?model=hr.custom.form.mw_notice&id={self.id}"
-                   f"&field=generate_xls_file&filename=MV_Register.xlsx&download=true",
+            "url": (
+                f"/web/content/?model=hr.custom.form.mw_notice&id={self.id}"
+                f"&field=generate_xls_file"
+                f"&filename=MV_Register_{document_reference}.xlsx"
+                f"&download=true"
+            ),
             "target": "self",
         }
+
+
+
+

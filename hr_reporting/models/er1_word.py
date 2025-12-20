@@ -195,8 +195,17 @@ class HrCustomFormER1(models.Model):
         doc.save(buffer)
         buffer.seek(0)
 
+        # ========= FILE NAME LOGIC =========
+        employer_name = (
+            getattr(self, 'employer_name', '').strip().replace(" ", "_")
+            if getattr(self, 'employer_name', '')
+            else "Employer"
+        )
+
+        file_name = f"ER_1_{employer_name}.docx"
+
         attachment = self.env["ir.attachment"].create({
-            "name": f"ER1_{self.id}.docx",
+            "name": file_name,
             "type": "binary",
             "datas": base64.b64encode(buffer.read()),
             "res_model": self._name,

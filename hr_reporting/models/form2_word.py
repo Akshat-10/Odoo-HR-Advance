@@ -303,8 +303,14 @@ class HrCustomFormTwo(models.Model):
         doc.save(buffer)
         buffer.seek(0)
 
+        employee_name = (
+            self.employee_id.name.strip().replace(" ", "_")
+            if self.employee_id and self.employee_id.name
+            else "Employee"
+        )
+
         attachment = self.env["ir.attachment"].create({
-            "name": f"Form_2_{self.name}.docx",
+            "name": f"Form_2_{employee_name}.docx",
             "type": "binary",
             "datas": base64.b64encode(buffer.read()),
             "res_model": self._name,
@@ -317,3 +323,4 @@ class HrCustomFormTwo(models.Model):
             "url": f"/web/content/{attachment.id}?download=true",
             "target": "self",
         }
+

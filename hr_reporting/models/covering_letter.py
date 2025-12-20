@@ -59,9 +59,18 @@ class HrCustomFormCoverLetter(models.Model):
         doc.save(buffer)
         buffer.seek(0)
 
+        # ========= DOCUMENT REFERENCE BASED FILE NAME =========
+        document_reference = (
+            self.name.strip()
+            .replace(" ", "_")
+            .replace("/", "_")
+            if self.name
+            else "Document_Reference"
+        )
+
         # Create attachment
         attachment = self.env["ir.attachment"].create({
-            "name": f"Covering_Letter_{self.name}.docx",
+            "name": f"Covering_Letter_{document_reference}.docx",
             "type": "binary",
             "datas": base64.b64encode(buffer.read()),
             "res_model": self._name,
@@ -69,7 +78,7 @@ class HrCustomFormCoverLetter(models.Model):
             "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         })
 
-        # Download action (CORRECT URL)
+        # Download action
         return {
             "type": "ir.actions.act_url",
             "url": f"/web/content/{attachment.id}?download=true",
