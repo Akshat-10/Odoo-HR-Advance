@@ -11,3 +11,4 @@ from . import form_11_newsept_17
 from . import recruitment
 from . import ESIC_form
 from . import pf_form
+from . import hr_salary_attachment_excel

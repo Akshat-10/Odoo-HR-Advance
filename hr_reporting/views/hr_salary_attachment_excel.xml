@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hr_salary_attachment_form_excel_button" model="ir.ui.view">
+        <field name="name">hr.salary.attachment.form.excel.button</field>
+        <field name="model">hr.salary.attachment</field>
+        <field name="inherit_id" ref="hr_payroll.hr_salary_attachment_view_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Button in header -->
+            <xpath expr="//header" position="inside">
+                <button
+                        name="action_generate_salary_attachment_excel"
+                        type="object"
+                        string="Generate Excel"
+                        class="btn-primary"
+                        icon="fa-file-excel-o"/>
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <!-- ================= LIST (LIST VIEW) BUTTON ================= -->
+    <record id="hr_salary_attachment_list_excel_button" model="ir.ui.view">
+        <field name="name">hr.salary.attachment.list.excel.button</field>
+        <field name="model">hr.salary.attachment</field>
+        <field name="inherit_id" ref="hr_payroll.hr_salary_attachment_view_tree"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//list" position="inside">
+                <header>
+                    <button
+                            name="action_generate_salary_attachment_excel"
+                            type="object"
+                            string="Generate Excel"
+                            class="btn-primary"
+                            icon="fa-file-excel-o"/>
+                </header>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>
+
+

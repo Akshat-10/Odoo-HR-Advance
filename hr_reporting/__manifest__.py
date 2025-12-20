@@ -11,6 +11,7 @@
     "installable": True,
     "application": True,
     "summary": "Human Resources Forms Reporting",
+    "depends": [ "hr_custom_forms" , "hr_recruitment_extended" , "hr_payroll"],
     "depends": [ "hr_custom_forms" , "hr_recruitment_extended", 'l10n_in_hr_payroll'],
     "data": [
         'views/resignation_letter_views.xml',
@@ -31,6 +32,7 @@
         "views/formd_excel_views.xml",
         "views/form2_word_views.xml",
         "views/er1_word_views.xml",
+        "views/hr_salary_attachment_excel.xml",
 
 
         ],
