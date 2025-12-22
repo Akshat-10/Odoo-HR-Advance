@@ -103,6 +103,9 @@ class HrSalaryAttachment(models.Model):
         ws.row_dimensions[1].height = 60
         ws.row_dimensions[2].height = 40
 
+        ws.column_dimensions["E"].hidden = True  # Description
+        ws.column_dimensions["F"].hidden = True  # Start Date
+
         base_widths = [18, 30, 22, 25, 25, 18, 18]
         all_widths = base_widths + [15] * len(attachment_types)
 
@@ -129,11 +132,12 @@ class HrSalaryAttachment(models.Model):
         ws["A2"].fill = blue_fill
         apply_border(ws, f"A2:{last_col_letter}2", border)
 
+        ws.merge_cells("B3:C3")
         ws["A3"] = "Date"
         ws["A3"].fill = grey_fill
-        ws.merge_cells("B3:C3")
         ws["A3"].alignment = align_left
         ws["B3"] = fields.Date.context_today(self)
+        ws["B3"].alignment = align_left
 
         ws["D3"] = "Month & Year"
         ws["D3"].fill = grey_fill
@@ -229,8 +233,8 @@ class HrSalaryAttachment(models.Model):
         # FINAL TOTAL ROW (LIKE YOUR SCREENSHOT)
         # =================================================
         row += 1
-        ws.cell(row=row, column=6, value="SUB TOTAL").font = header_font
-        ws.cell(row=row, column=6).alignment = align_center
+        ws.cell(row=row, column=4, value="SUB TOTAL").font = header_font
+        ws.cell(row=row, column=4).alignment = align_center
 
         ws.cell(row=row, column=7, value=total_amount_sum).font = total_font
 
