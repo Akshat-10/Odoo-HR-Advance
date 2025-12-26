@@ -6,6 +6,8 @@ from openpyxl import Workbook
 from openpyxl.styles import Alignment, PatternFill, Font, Border, Side
 from PIL import Image as PILImage
 from openpyxl.drawing.image import Image
+from odoo.tools.misc import format_date
+
 
 
 class HrCustomFormFormD(models.Model):
@@ -63,7 +65,7 @@ class HrCustomFormFormD(models.Model):
         ws.row_dimensions[1].height = 60
         ws.row_dimensions[2].height = 40
         ws.row_dimensions[3].height = 15
-        ws.row_dimensions[3].height = 18
+        ws.row_dimensions[4].height = 15
 
         # ================= ROW 1 =================
         ws.merge_cells("A1:J1")
@@ -95,7 +97,8 @@ class HrCustomFormFormD(models.Model):
         ws["D3"].fill = grey_fill
 
         ws.merge_cells("E3:F3")
-        ws["E3"] = fields.Date.context_today(self)
+        formatted_date = format_date(self.env, fields.Date.context_today(self))
+        ws["E3"] = formatted_date
         ws["E3"].alignment = align_left
 
         ws.merge_cells("G3:H3")

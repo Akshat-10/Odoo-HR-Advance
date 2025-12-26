@@ -4,6 +4,8 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import OxmlElement, ns
 from io import BytesIO
 import base64
+from odoo.tools.misc import format_date
+
 
 
 def apply_table_borders(table):
@@ -43,7 +45,10 @@ class HrCustomFormER1(models.Model):
         info_table.autofit = True
 
         info_data = [
-            ("Quarter Ended", getattr(self, 'quarter_ended', '') or ''),
+            (
+                "Quarter Ended",
+                format_date(self.env, self.quarter_ended) if self.quarter_ended else ""
+            ),
             ("Company", self.company_id.name if self.company_id else ''),
             ("Name of Employer", getattr(self, 'employer_name', '') or ''),
             ("Address of Employer",
