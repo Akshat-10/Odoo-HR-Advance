@@ -90,6 +90,7 @@
                             <field name="mother_name"/>
                             <field name="dob"/>
                             <field name="age"/>
+                            <field name="caste_id"/>
                             <field name="marital_status"/>
                             <field name="spouse_name" invisible="marital_status != 'yes'" />
                         </group>
@@ -137,8 +138,9 @@
                                 <field name="duration_from"/>
                                 <field name="duration_to"/>
                                 <field name="designation"/>
-                                <field name="reporting_officer"/>
+                                <field name="reporting_officer" optional="hide"/>
                                 <field name="years_of_experience"/>
+                                <field name="previous_salary"/>
                                 <field name="leaving_reason"/>
                                 <field name="attachment_ids" widget="many2many_binary"/>
                             </list>
@@ -155,6 +157,7 @@
                                         <field name="designation"/>
                                         <field name="reporting_officer"/>
                                         <field name="years_of_experience"/>
+                                        <field name="previous_salary"/>
                                         <field name="leaving_reason"/>
                                         <field name="attachment_ids" widget="many2many_binary"/>
                                     </group>

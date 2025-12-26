@@ -57,6 +57,7 @@ class HrCandidate(models.Model):
     destination = fields.Char(string='Destination')
     grade = fields.Char(string='Grade')
     other_skills = fields.Text(string="Other Skills")
+    caste_id = fields.Many2one('applicant.caste', string='Caste')
 
     @api.depends('dob')
     def _compute_age(self):
@@ -129,6 +130,7 @@ class Applicant(models.Model):
             'destination': candidate.destination,
             'grade': candidate.grade,
             'other_skills': candidate.other_skills,
+            'caste_id': candidate.caste_id.id if candidate.caste_id else False,
         }
         
         # Filter out None values to avoid errors
@@ -162,6 +164,7 @@ class Applicant(models.Model):
                 'reporting_officer': emp.reporting_officer,
                 'years_of_experience': emp.years_of_experience,
                 'leaving_reason': emp.leaving_reason,
+                'previous_salary': emp.previous_salary,
             }
             new_emp = applicant.env['applicant.employment'].sudo().create(emp_vals)
             if emp.attachment_ids:

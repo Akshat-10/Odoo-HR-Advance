@@ -18,6 +18,8 @@ access_employment_type,employment.type,model_employment_type,,1,1,1,1
 
 access_applicant_employment,applicant.employment,model_applicant_employment,,1,1,1,1
 
+access_applicant_caste,applicant.caste,model_applicant_caste,,1,1,1,1
+
 
 access_hr_skill_type_for_canditates,hr.skill.type.for.candidates,hr_skills.model_hr_skill_type,base.group_portal,1,1,1,1
 

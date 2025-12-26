@@ -4,6 +4,13 @@ from dateutil.relativedelta import relativedelta
 import uuid
 
 
+class ApplicantCaste(models.Model):
+    _name = 'applicant.caste'
+    _description = 'Applicant Caste'
+
+    name = fields.Char(string='Caste Name', required=True)
+
+
 class ApplicantEducation(models.Model):
     _name = 'applicant.education'
     _description = 'Applicant Education Details'
@@ -86,6 +93,7 @@ class ApplicantEmployment(models.Model):
     reporting_officer = fields.Char(string='Reporting Officer')
     years_of_experience = fields.Float(string='No. of years of Exp.')
     leaving_reason = fields.Text(string='Reason for leaving')
+    previous_salary = fields.Float(string='Previous Salary')
     attachment_ids = fields.Many2many('ir.attachment', string='Experience Certificate')
 
 
@@ -160,6 +168,7 @@ class Applicant(models.Model):
     )
     referred_by = fields.Char(string="Referred By")
     other_skills = fields.Text(string="Other Skills")
+    caste_id = fields.Many2one('applicant.caste', string='Caste')
 
     @api.depends('dob')
     def _compute_age(self):
