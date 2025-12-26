@@ -164,24 +164,26 @@ class Form15G(models.Model):
         # Previous Employee Details
         ptext("\n7. PREVIOUS EMPLOYEMENT DETAILS:", bold=True)
         
-        t4 = table(len(self.employment_ids) + 1, 6)
+        t4 = table(len(self.employment_ids) + 1, 7)
 
         
         ctext(t4.cell(0,0), "Sr No",bold=True)
         ctext(t4.cell(0,1), "Employer Name",bold=True)
-        ctext(t4.cell(0,2), "Address",bold=True)
-        ctext(t4.cell(0,3), "Designation",bold=True)
-        ctext(t4.cell(0,4), "Salary",bold=True)
-        ctext(t4.cell(0,5), "Work Duration",bold=True)
+        ctext(t4.cell(0,2), "Company",bold=True)
+        ctext(t4.cell(0,3), "Address",bold=True)
+        ctext(t4.cell(0,4), "Designation",bold=True)
+        ctext(t4.cell(0,5), "Salary",bold=True)
+        ctext(t4.cell(0,6), "Work Duration",bold=True)
 
 
         for idx, rec in enumerate(self.employment_ids, start=1):
             ctext(t4.cell(idx, 0), str(idx or ""))
             ctext(t4.cell(idx, 1), rec.employment_type_id.name or "")
-            ctext(t4.cell(idx, 2), rec.location or "")
-            ctext(t4.cell(idx, 3), rec.designation or "")
-            ctext(t4.cell(idx, 4), "")
-            ctext(t4.cell(idx, 5), str(rec.years_of_experience or ""))
+            ctext(t4.cell(idx, 2), rec.company or "")
+            ctext(t4.cell(idx, 3), rec.location or "")
+            ctext(t4.cell(idx, 4), rec.designation or "")
+            ctext(t4.cell(idx, 5), "")
+            ctext(t4.cell(idx, 6), str(rec.years_of_experience or ""))
 
             
         # Declaration
