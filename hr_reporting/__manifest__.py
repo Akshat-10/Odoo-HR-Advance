@@ -1,19 +1,23 @@
 # -*- coding: utf-8 -*-
 {
-    
+
     "name": "Human Resources Forms Reporting",
     "version": "18.0.0.0",
     "category": "Human Resources",
     'sequence': -5,
     "author": "Akshat Gupta",
-    'license': 'LGPL-3',    
+    'license': 'LGPL-3',
     'website': 'https://github.com/Akshat-10',
     "installable": True,
     "application": True,
     "summary": "Human Resources Forms Reporting",
-    "depends": [ "hr_custom_forms" , "hr_recruitment_extended" , "hr_payroll"],
-    "depends": [ "hr_custom_forms" , "hr_recruitment_extended", 'l10n_in_hr_payroll'],
+    "depends": ["hr_custom_forms", "inventory_extended", "hr_recruitment_extended", "hr_payroll", 'l10n_in_hr_payroll',],
+    "qweb": [
+        "views/vendor_selection_owl_extend.xml",
+    ],
+
     "data": [
+        'security/ir.model.access.csv',
         'views/resignation_letter_views.xml',
         'report/resignation_action.xml',
         'report/resignation_report.xml',
@@ -33,6 +37,7 @@
         "views/form2_word_views.xml",
         "views/er1_word_views.xml",
         "views/hr_salary_attachment_excel.xml",
+        'views/hr_custom_form_staff_loan_views.xml',
 
 
         ],

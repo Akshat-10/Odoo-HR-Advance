@@ -12,3 +12,4 @@ from . import recruitment
 from . import ESIC_form
 from . import pf_form
 from . import hr_salary_attachment_excel
+from . import hr_custom_form_staff_loan

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- LIST VIEW -->
+        <record id="view_hr_custom_form_staff_loan_list" model="ir.ui.view">
+            <field name="name">hr.custom.form.staff.loan.list</field>
+            <field name="model">hr.custom.form.staff_loan</field>
+            <field name="arch" type="xml">
+                <list default_order="sequence,name">
+                    <field name="employee_id"/>
+                    <field name="designation"/>
+                    <field name="department_id"/>
+                    <field name="company_id"/>
+                    <field name="form_date"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- FORM VIEW -->
+        <record id="view_hr_custom_form_staff_loan_form" model="ir.ui.view">
+            <field name="name">hr.custom.form.staff.loan.form</field>
+            <field name="model">hr.custom.form.staff_loan</field>
+            <field name="arch" type="xml">
+                <form string="Staff Loan Application">
+                    <header>
+                        <button name="action_download_staff_loan_word"
+                                string="Download Word"
+                                type="object"
+                                class="btn-primary"/>
+                    </header>
+                    <sheet>
+
+                        <group>
+                            <group>
+                                <field name="name" invisible="1"/>
+                                <field name="company_id"/>
+                                <field name="form_date"/>
+                                <field name="designation"/>
+                            </group>
+                            <group>
+                                <field name="employee_id"/>
+                                <field name="employee_code"/>
+                                <field name="department_id"/>
+                            </group>
+                        </group>
+
+                        <!-- NOTEBOOK -->
+                        <notebook>
+
+                            <!-- Loan Details -->
+                            <page string="Loan Details">
+                                <group>
+                                    <field name="loan_amount"/>
+                                    <field name="deduction_per_month"/>
+                                </group>
+                                <group>
+                                    <field name="loan_purpose"/>
+                                    <field name="remarks"/>
+                                </group>
+                            </page>
+
+                            <!-- Bank Details -->
+                            <page string="Bank Details">
+                                <group>
+                                    <field name="bank_name_as_per_bank"/>
+                                    <field name="bank_name"/>
+                                </group>
+                                <group>
+                                    <field name="bank_account_number"/>
+                                    <field name="bank_ifsc_code"/>
+                                </group>
+                            </page>
+
+                            <!-- Approval of Loan Sanction Committee -->
+                            <page string="Approval of Loan Sanction Committee">
+                                <group>
+                                    <group>
+                                        <field name="committee_member_1_id"/>
+                                        <!--                                        <field name="committee_signature_1"/>-->
+                                    </group>
+                                    <group>
+                                        <field name="committee_member_2_id"/>
+                                        <!--                                        <field name="committee_signature_2"/>-->
+                                    </group>
+                                </group>
+                            </page>
+
+                        </notebook>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ACTION -->
+        <record id="action_hr_custom_form_staff_loan" model="ir.actions.act_window">
+            <field name="name">Staff Loan Application</field>
+            <field name="res_model">hr.custom.form.staff_loan</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!-- MENU -->
+        <menuitem
+                id="menu_hr_custom_form_staff_loan"
+                name="Staff Loan Application"
+                parent="hr_custom_forms.menu_hr_custom_forms_root"
+                action="action_hr_custom_form_staff_loan"
+                sequence="100"
+        />
+
+    </data>
+</odoo>
