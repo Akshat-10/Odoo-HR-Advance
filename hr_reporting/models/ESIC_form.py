@@ -323,11 +323,11 @@ class LeaveApplication(models.Model):
 
         # Create attachment
         filename = (
-            f"ESIC - {self.employee_id.name or ''}({self.employee_id.employee_code or ''}).docx"
+            f"ESIC - {self.employee_id.name or ''}({self.employee_id.employee_code or ''}).xlsx"
             if self.employee_id.employee_code
-            else f"ESIC - {self.employee_id.name or ''}.docx"
+            else f"ESIC - {self.employee_id.name or ''}.xlsx"
         )
-        
+
         attachment = self.env['ir.attachment'].create({
             'name': filename,
             'type': 'binary',
