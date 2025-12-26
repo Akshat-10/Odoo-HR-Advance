@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menu Item for Bulk Attendance Entry -->
+    <menuitem id="menu_hr_attendance_bulk_entry"
+              name="Bulk Attendance Entry"
+              parent="hr_attendance.menu_hr_attendance_root"
+              action="action_hr_attendance_bulk_wizard"
+              sequence="25"
+              groups="hr_attendance.group_hr_attendance_officer"/>
+    
+    <!-- Add a button in hr.attendance list view header -->
+    <record id="hr_attendance_view_list_inherit_bulk" model="ir.ui.view">
+        <field name="name">hr.attendance.list.inherit.bulk</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.view_attendance_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <header>
+                    <button name="%(action_hr_attendance_bulk_wizard)d" 
+                            string="Bulk Attendance Entry" 
+                            type="action"
+                            class="btn-primary"
+                            icon="fa-users"
+                            groups="hr_attendance.group_hr_attendance_officer"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+</odoo>

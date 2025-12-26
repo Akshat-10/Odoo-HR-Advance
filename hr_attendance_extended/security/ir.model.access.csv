@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_attendance_bulk_wizard,hr.attendance.bulk.wizard,model_hr_attendance_bulk_wizard,hr_attendance.group_hr_attendance_officer,1,1,1,1
+access_hr_attendance_bulk_wizard_manager,hr.attendance.bulk.wizard.manager,model_hr_attendance_bulk_wizard,hr_attendance.group_hr_attendance_manager,1,1,1,1
+access_hr_attendance_bulk_wizard_line,hr.attendance.bulk.wizard.line,model_hr_attendance_bulk_wizard_line,hr_attendance.group_hr_attendance_officer,1,1,1,1
+access_hr_attendance_bulk_wizard_line_manager,hr.attendance.bulk.wizard.line.manager,model_hr_attendance_bulk_wizard_line,hr_attendance.group_hr_attendance_manager,1,1,1,1

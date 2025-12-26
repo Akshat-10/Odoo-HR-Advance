@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Bulk Attendance Wizard Form View -->
+    <record id="hr_attendance_bulk_wizard_form_view" model="ir.ui.view">
+        <field name="name">hr.attendance.bulk.wizard.form</field>
+        <field name="model">hr.attendance.bulk.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Bulk Attendance Entry">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Bulk Attendance Entry</h1>
+                        <p class="text-muted">
+                            Add attendance records for multiple employees at once.
+                            Select employees, date range, and check-in/check-out times.
+                        </p>
+                    </div>
+                    
+                    <group>
+                        <group name="date_range" string="Date Range">
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                        <group name="time_settings" string="Time Settings">
+                            <field name="check_in_time" widget="float_time"/>
+                            <field name="check_out_time" widget="float_time"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group name="options" string="Options">
+                            <field name="skip_non_working_days"/>
+                            <field name="skip_existing"/>
+                            <field name="overwrite_existing" 
+                                   invisible="skip_existing"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group name="statistics" string="Summary">
+                            <field name="total_employees" readonly="1"/>
+                            <field name="total_days" readonly="1"/>
+                            <field name="total_records_to_create" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page name="employees" string="Employees">
+                            <div class="mb-3">
+                                <button name="action_select_all_employees" 
+                                        string="Select All Employees" 
+                                        type="object" 
+                                        class="btn-secondary me-2"
+                                        icon="fa-users"/>
+                                <button name="action_clear_employees" 
+                                        string="Clear Selection" 
+                                        type="object" 
+                                        class="btn-secondary"
+                                        icon="fa-eraser"/>
+                            </div>
+                            <field name="employee_ids" 
+                                   widget="many2many_tags"
+                                   options="{'no_create': True, 'color_field': 'color'}"
+                                   domain="[('company_id', '=', company_id), ('active', '=', True)]"
+                                   placeholder="Select employees..."/>
+                            
+                            <p class="text-muted mt-2">
+                                <i class="fa fa-info-circle"/> 
+                                You can also use the tree view below to select employees with more details:
+                            </p>
+                            
+                            <field name="employee_ids" mode="list,kanban">
+                                <list editable="bottom" create="false">
+                                    <field name="name"/>
+                                    <field name="department_id"/>
+                                    <field name="job_id"/>
+                                    <field name="work_email"/>
+                                </list>
+                            </field>
+                        </page>
+                        
+                        <page name="preview" string="Preview" 
+                              invisible="not preview_line_ids">
+                            <field name="preview_line_ids" readonly="1">
+                                <list create="false" edit="false" delete="false">
+                                    <field name="employee_id"/>
+                                    <field name="date"/>
+                                    <field name="check_in"/>
+                                    <field name="check_out"/>
+                                    <field name="status" 
+                                           decoration-success="status == 'new'"
+                                           decoration-warning="status == 'skip'"
+                                           decoration-info="status == 'overwrite'"
+                                           decoration-danger="status == 'conflict'"
+                                           widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                
+                <footer>
+                    <button name="action_preview" 
+                            string="Preview" 
+                            type="object" 
+                            class="btn-secondary"
+                            icon="fa-eye"/>
+                    <button name="action_create_attendance" 
+                            string="Create Attendance Records" 
+                            type="object" 
+                            class="btn-primary"
+                            icon="fa-check"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Bulk Attendance Wizard Preview Line List View -->
+    <record id="hr_attendance_bulk_wizard_line_list_view" model="ir.ui.view">
+        <field name="name">hr.attendance.bulk.wizard.line.list</field>
+        <field name="model">hr.attendance.bulk.wizard.line</field>
+        <field name="arch" type="xml">
+            <list string="Preview Lines" create="false" edit="false" delete="false">
+                <field name="employee_id"/>
+                <field name="date"/>
+                <field name="check_in"/>
+                <field name="check_out"/>
+                <field name="status" 
+                       decoration-success="status == 'new'"
+                       decoration-warning="status == 'skip'"
+                       decoration-info="status == 'overwrite'"
+                       decoration-danger="status == 'conflict'"
+                       widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action to open the wizard -->
+    <record id="action_hr_attendance_bulk_wizard" model="ir.actions.act_window">
+        <field name="name">Bulk Attendance Entry</field>
+        <field name="res_model">hr.attendance.bulk.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="hr_attendance_bulk_wizard_form_view"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create bulk attendance records for multiple employees
+            </p>
+            <p>
+                Use this wizard to add attendance for multiple employees at once.
+                Select employees, specify the date range, and set check-in/check-out times.
+            </p>
+        </field>
+    </record>
+</odoo>
