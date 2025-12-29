@@ -8,6 +8,7 @@ from openpyxl.styles import Alignment, PatternFill, Font, Border, Side
 from openpyxl.drawing.image import Image
 from PIL import Image as PILImage
 from odoo.exceptions import UserError
+from odoo.tools.misc import format_date
 
 
 class HrSalaryAttachment(models.Model):
@@ -136,7 +137,8 @@ class HrSalaryAttachment(models.Model):
         ws["A3"] = "Date"
         ws["A3"].fill = grey_fill
         ws["A3"].alignment = align_left
-        ws["B3"] = fields.Date.context_today(self)
+
+        ws["B3"] = format_date(self.env, fields.Date.context_today(self))
         ws["B3"].alignment = align_left
 
         ws["D3"] = "Month & Year"

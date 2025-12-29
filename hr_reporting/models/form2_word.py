@@ -5,6 +5,8 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import OxmlElement, ns
 from io import BytesIO
 import base64
+from odoo.tools.misc import format_date
+
 
 
 def apply_table_borders(table):
@@ -47,13 +49,17 @@ class HrCustomFormTwo(models.Model):
         # ---------------- BASIC DETAILS ----------------
         doc.add_paragraph(f"1. Name (in Block letters): {self.employee_id.name or ''}")
         doc.add_paragraph(f"2. Father’s / Husband’s Name: {self.father_husband_name or ''}")
-        doc.add_paragraph(f"3. Date of Birth: {self.date_of_birth or ''}")
+        doc.add_paragraph(
+            f"3. Date of Birth: {format_date(self.env, self.date_of_birth) if self.date_of_birth else ''}"
+        )
         doc.add_paragraph(f"4. Sex: {self.gender or ''}")
         doc.add_paragraph(f"5. Marital Status: {self.marital_status or ''}")
         doc.add_paragraph(f"6. Account No.: {self.account_number or ''}")
         doc.add_paragraph(f"7. Address Permanent: {self.permanent_address or ''}")
         doc.add_paragraph(f"   Temporary: {self.temporary_address or ''}")
-        doc.add_paragraph(f"8. Date of Joining: {self.date_of_joining or ''}")
+        doc.add_paragraph(
+            f"8. Date of Joining: {format_date(self.env, self.date_of_joining) if self.date_of_joining else ''}"
+        )
 
         # ---------------- PART A (EPF) ----------------
         p = doc.add_paragraph("\nPART – A (EPF)")
@@ -82,7 +88,7 @@ class HrCustomFormTwo(models.Model):
             row[0].text = str(idx)
             row[1].text = f"{line.nominee_name or ''}\n{line.nominee_address or ''}"
             row[2].text = line.relationship or ""
-            row[3].text = str(line.date_of_birth or "")
+            row[3].text = format_date(self.env, line.date_of_birth) if line.date_of_birth else ""
             row[4].text = line.share_amount or ""
             row[5].text = line.guardian_details or ""
 
@@ -126,7 +132,7 @@ class HrCustomFormTwo(models.Model):
             row[0].text = str(idx)
             row[1].text = line.member_name or ""
             row[2].text = line.address or ""
-            row[3].text = str(line.date_of_birth or "")
+            row[3].text = format_date(self.env, line.date_of_birth) if line.date_of_birth else ""
             row[4].text = line.relationship or ""
 
         apply_table_borders(table_b1)
@@ -148,7 +154,7 @@ class HrCustomFormTwo(models.Model):
         for line in self.part_b_nominee_line_ids:
             row = table_b2.add_row().cells
             row[0].text = f"{line.nominee_name or ''}\n{line.nominee_address or ''}"
-            row[1].text = str(line.date_of_birth or "")
+            row[1].text = format_date(self.env, line.date_of_birth) if line.date_of_birth else ""
             row[2].text = line.relationship or ""
 
         apply_table_borders(table_b2)

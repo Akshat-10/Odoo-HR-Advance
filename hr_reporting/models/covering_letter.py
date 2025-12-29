@@ -30,7 +30,8 @@ class HrCustomFormCoverLetter(models.Model):
         doc.add_paragraph("")
 
         # Date
-        doc.add_paragraph(f"Date: {self.er_date or ''}")
+        formatted_date = self.er_date.strftime("%d/%m/%Y") if self.er_date else ""
+        doc.add_paragraph(f"Date: {formatted_date}")
         doc.add_paragraph("")
 
         # To

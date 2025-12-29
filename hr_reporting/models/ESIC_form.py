@@ -210,7 +210,7 @@ class LeaveApplication(models.Model):
             write_cell(ws, cur_row, 7, 7,rec.residence_district or "")
             write_cell(ws, cur_row, 8, 8,rec.aadhaar_no or "")
             cur_row += 1
-                
+
         # Add one blank line
         write_cell(ws, cur_row, 1, 8)
         
@@ -323,11 +323,11 @@ class LeaveApplication(models.Model):
 
         # Create attachment
         filename = (
-            f"ESIC - {self.employee_id.name or ''}({self.employee_id.employee_code or ''}).xls"
+            f"ESIC - {self.employee_id.name or ''}({self.employee_id.employee_code or ''}).xlsx"
             if self.employee_id.employee_code
-            else f"ESIC - {self.employee_id.name or ''}.xls"
+            else f"ESIC - {self.employee_id.name or ''}.xlsx"
         )
-        
+
         attachment = self.env['ir.attachment'].create({
             'name': filename,
             'type': 'binary',

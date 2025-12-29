@@ -5,6 +5,8 @@ from openpyxl import Workbook
 from openpyxl.styles import Alignment, PatternFill, Font, Border, Side
 from openpyxl.drawing.image import Image
 from PIL import Image as PILImage
+from odoo.tools.misc import format_date
+
 
 
 class HrCustomFormMwNotice(models.Model):
@@ -139,19 +141,19 @@ class HrCustomFormMwNotice(models.Model):
                 value=dict(line._fields['gender'].selection).get(line.gender, '') if line.gender else ''
             ).alignment = align_center
             ws.cell(row=row, column=5, value=line.department_id.name or '').alignment = align_left
-            ws.cell(row=row, column=6, value=line.absence_date or '').alignment = align_center
+            ws.cell(row=row, column=6, value=format_date(self.env, line.absence_date) if line.absence_date else "").alignment = align_center
             ws.cell(row=row, column=7, value=line.damages_description or '').alignment = align_left
-            ws.cell(row=row, column=8, value=line.damages_date or '').alignment = align_center
+            ws.cell(row=row, column=8, value=format_date(self.env, line.damages_date) if line.damages_date else "").alignment = align_center
             ws.cell(
                 row=row,
                 column=9,
                 value=dict(line._fields['showed_cause'].selection).get(line.showed_cause, '') if line.showed_cause else ''
             ).alignment = align_center
-            ws.cell(row=row, column=10, value=line.show_cause_date or '').alignment = align_center
-            ws.cell(row=row, column=11, value=line.deduction_date or '').alignment = align_center
+            ws.cell(row=row, column=10, value=format_date(self.env, line.show_cause_date) if line.show_cause_date else "").alignment = align_center
+            ws.cell(row=row, column=11, value=format_date(self.env, line.deduction_date) if line.deduction_date else "").alignment = align_center
             ws.cell(row=row, column=12, value=line.deduction_amount or 0).alignment = align_center
             ws.cell(row=row, column=13, value=line.installment_count or 0).alignment = align_center
-            ws.cell(row=row, column=14, value=line.realisation_date or '').alignment = align_center
+            ws.cell(row=row, column=14, value=format_date(self.env, line.realisation_date) if line.realisation_date else "").alignment = align_center
             ws.cell(row=row, column=15, value=line.remarks or '').alignment = align_left
 
             for col in range(1, 16):
