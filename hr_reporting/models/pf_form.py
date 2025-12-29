@@ -133,11 +133,11 @@ class LeaveApplication(models.Model):
             write_cell(ws, cur_row, 6, 6,rec.personal_title or "")
             write_cell(ws, cur_row, 7, 8,rec.employee_id.name or "")
             write_cell(ws, cur_row, 9, 9,rec.gender or "")
-            write_cell(ws, cur_row, 10, 10,rec.date_of_birth or "")
+            write_cell(ws, cur_row, 10, 10,rec.date_of_birth.strftime('%d-%m-%Y') or '')
             write_cell(ws, cur_row, 11, 11,rec.father_husband_name or "")
             write_cell(ws, cur_row, 12, 12,rec.relation or "")
             write_cell(ws, cur_row, 13, 13,rec.marital_status or "")
-            write_cell(ws, cur_row, 14, 14,rec.date_of_joining or "")
+            write_cell(ws, cur_row, 14, 14,rec.date_of_joining.strftime('%d-%m-%Y') or '')
             write_cell(ws, cur_row, 15, 15,rec.mobile_number or "")
             write_cell(ws, cur_row, 16, 16,rec.pan_number or "")
             write_cell(ws, cur_row, 17, 18,rec.pan_card_name or "")
@@ -207,7 +207,7 @@ class LeaveApplication(models.Model):
         output.close()
 
         # Create attachment
-        filename = (f"PF Form ({self.name or ''}).docx")
+        filename = (f"PF Form ({self.name or ''}).xls")
         attachment = self.env['ir.attachment'].create({
             'name': filename,
             'type': 'binary',

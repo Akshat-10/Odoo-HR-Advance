@@ -106,7 +106,7 @@ class LeaveApplication(models.Model):
         write_cell(ws, cur_row, 3, 4,self.employee_id.name or "")
         # Add text and data of 'Date Of Birth'
         write_cell(ws, cur_row, 5, 6,"Date Of Birth",font=red_font,fill=grey_fill)
-        write_cell(ws, cur_row, 7, 8,self.esic_date_of_birth or "")
+        write_cell(ws, cur_row, 7, 8,self.esic_date_of_birth.strftime('%d-%m-%Y') or '')
         
         cur_row += 1
         # Add text and data for 'Father name'
@@ -132,7 +132,7 @@ class LeaveApplication(models.Model):
         cur_row += 1
         # Add text and data for 'Date of Joining'
         write_cell(ws, cur_row, 1, 2,"Date of Joining",font=red_font,fill=grey_fill)
-        write_cell(ws, cur_row, 3, 4,self.esic_date_of_joining or "")
+        write_cell(ws, cur_row, 3, 4,self.esic_date_of_joining.strftime('%d-%m-%Y') or '')
         # Add text and data of 'Mobile Number'
         write_cell(ws, cur_row, 5, 6,"Mobile Number",font=red_font,fill=grey_fill)
         write_cell(ws, cur_row, 7, 8,self.esic_mobile_number or "")
@@ -204,13 +204,13 @@ class LeaveApplication(models.Model):
             write_cell(ws, cur_row, 1, 1,i+1 or "")
             write_cell(ws, cur_row, 2, 2,rec.family_member_name or "")
             write_cell(ws, cur_row, 3, 3,rec.relation or "")
-            write_cell(ws, cur_row, 4, 4,rec.date_of_birth or "")
+            write_cell(ws, cur_row, 4, 4,rec.date_of_birth.strftime('%d-%m-%Y') or '')
             write_cell(ws, cur_row, 5, 5,rec.residing_with_ip or "")
             write_cell(ws, cur_row, 6, 6,rec.residence_state or "")
             write_cell(ws, cur_row, 7, 7,rec.residence_district or "")
             write_cell(ws, cur_row, 8, 8,rec.aadhaar_no or "")
             cur_row += 1
-            
+                
         # Add one blank line
         write_cell(ws, cur_row, 1, 8)
         
@@ -323,9 +323,9 @@ class LeaveApplication(models.Model):
 
         # Create attachment
         filename = (
-            f"ESIC - {self.employee_id.name or ''}({self.employee_id.employee_code or ''}).docx"
+            f"ESIC - {self.employee_id.name or ''}({self.employee_id.employee_code or ''}).xls"
             if self.employee_id.employee_code
-            else f"ESIC - {self.employee_id.name or ''}.docx"
+            else f"ESIC - {self.employee_id.name or ''}.xls"
         )
         
         attachment = self.env['ir.attachment'].create({

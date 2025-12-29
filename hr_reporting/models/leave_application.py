@@ -47,8 +47,8 @@ class LeaveApplication(models.Model):
 
         add_p(
             f"Days: {self.leave_days or '_____'}        "
-            f"From Date: {self.leave_from or '___________'}        "
-            f"To Date: {self.leave_to or '___________'}"
+            f"From Date: {self.leave_from.strftime('%d-%m-%Y') or '___________'}        "
+            f"To Date: {self.leave_to.strftime('%d-%m-%Y') or '___________'}"
         )
         add_p("Applicant's Signature: ____________________")
         add_p(f"Manager Remarks: {self.manager_remarks or '____________________________'}")

@@ -2,6 +2,7 @@ from odoo import models
 from docx import Document
 from docx.shared import Pt,Cm
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from datetime import datetime
 import io
 import base64
 import os
@@ -108,10 +109,10 @@ class Form15G(models.Model):
                 
         # Personal information 
         ptext("4. PERSONAL PARTICULARS:", bold=True)
-        ptext(f"    a) Date of Birth : {str(self.dob or '')}")
-        ptext(f"     b) Age : {self.age}")
+        ptext(f"    a) Date of Birth : {str(self.dob.strftime('%d-%m-%Y') or '')}")
+        ptext(f"     b) Age :  {str(self.age)}")
         ptext(f"     c) Nationality : Indian")
-        ptext(f"     d) Religion / Caste : HINDU")
+        ptext(f"     d) Religion / Caste : {(self.caste_id.name)}") 
         ptext(f"4. MARITAL STATUS : {str(self.marital_status or '')}\n", bold=True)
 
 
@@ -164,7 +165,7 @@ class Form15G(models.Model):
         # Previous Employee Details
         ptext("\n7. PREVIOUS EMPLOYEMENT DETAILS:", bold=True)
         
-        t4 = table(len(self.employment_ids) + 1, 7)
+        t4 = table(len(self.employment_ids) + 1, 8)
 
         
         ctext(t4.cell(0,0), "Sr No",bold=True)
@@ -174,6 +175,7 @@ class Form15G(models.Model):
         ctext(t4.cell(0,4), "Designation",bold=True)
         ctext(t4.cell(0,5), "Salary",bold=True)
         ctext(t4.cell(0,6), "Work Duration",bold=True)
+        ctext(t4.cell(0,7), "Reason for Leaving",bold=True)
 
 
         for idx, rec in enumerate(self.employment_ids, start=1):
@@ -182,8 +184,10 @@ class Form15G(models.Model):
             ctext(t4.cell(idx, 2), rec.company or "")
             ctext(t4.cell(idx, 3), rec.location or "")
             ctext(t4.cell(idx, 4), rec.designation or "")
-            ctext(t4.cell(idx, 5), "")
+            ctext(t4.cell(idx, 5), rec.previous_salary or "")
             ctext(t4.cell(idx, 6), str(rec.years_of_experience or ""))
+            ctext(t4.cell(idx, 7), str(rec.leaving_reason or ""))
+            
 
             
         # Declaration

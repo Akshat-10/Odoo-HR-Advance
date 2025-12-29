@@ -30,7 +30,7 @@ class ResignationLetter(models.Model):
         doc.add_paragraph(
             "To,\n"
             "The General Manager,\n"
-            "GERMAN TMX PVT LTD,\n"
+            "GERMAN TMX PVT LTD,\n" 
         )
 
         # Subject & Department

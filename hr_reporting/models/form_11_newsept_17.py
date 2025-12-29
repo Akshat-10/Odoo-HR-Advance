@@ -70,7 +70,7 @@ class LeaveApplication(models.Model):
             run.add_picture(image_path, width=Cm(1.6))
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER        
         
-        doc.add_paragraph(f"Date:{date.today()}").alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        doc.add_paragraph(f"Date:{date.today().strftime('%d-%m-%Y') or ''}").alignment = WD_ALIGN_PARAGRAPH.RIGHT
         
         doc.add_paragraph("No: Manual/Amendment/2011\n")
         
@@ -145,7 +145,7 @@ class LeaveApplication(models.Model):
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
         
 
-        doc.add_paragraph(f"Date:{date.today()}").alignment = WD_ALIGN_PARAGRAPH.RIGHT  
+        doc.add_paragraph(f"Date:{date.today().strftime('%d-%m-%Y') or ''}").alignment = WD_ALIGN_PARAGRAPH.RIGHT  
         
         doc.add_paragraph("No: Manual/Amendment/2011\n")
         
@@ -239,12 +239,12 @@ class LeaveApplication(models.Model):
             self.employee_id.name or "",
             self.father_name or "",
             self.spouse_name or "",
-            self.date_of_birth or "",
+            self.date_of_birth.strftime('%d-%m-%Y')  or "",
             self.gender or "",
             self.marital_status or "",
             self.email or "",
             self.mobile or "",
-            self.present_joining_date or "",
+            self.present_joining_date.strftime('%d-%m-%Y') or "",
             "",
             self.bank_account_no or "",
             self.bank_ifsc or "",
@@ -290,8 +290,8 @@ class LeaveApplication(models.Model):
             prev1.cell(row_index, 0).text = rec.establishment or ""
             prev1.cell(row_index, 1).text = str(rec.uan) or ""
             prev1.cell(row_index, 2).text = str(rec.pf_account) or ""
-            prev1.cell(row_index, 3).text = str(rec.joining_date) or ""
-            prev1.cell(row_index, 4).text = str(rec.exit_date) or ""
+            prev1.cell(row_index, 3).text = str(rec.joining_date.strftime('%d-%m-%Y')) or ""
+            prev1.cell(row_index, 4).text = str(rec.exit_date.strftime('%d-%m-%Y')) or ""
             prev1.cell(row_index, 5).text = str(rec.scheme_certificate) or ""
             prev1.cell(row_index, 6).text = str(rec.ppo_number) or ""
             prev1.cell(row_index, 7).text = str(rec.ncp_days) or ""
@@ -325,8 +325,8 @@ class LeaveApplication(models.Model):
             prev2.cell(row_index, 0).text = rec.trust_name or ""
             prev2.cell(row_index, 1).text = str(rec.uan) or ""
             prev2.cell(row_index, 2).text = str(rec.eps_account) or ""
-            prev2.cell(row_index, 3).text = str(rec.joining_date) or ""
-            prev2.cell(row_index, 4).text = str(rec.exit_date) or ""
+            prev2.cell(row_index, 3).text = str(rec.joining_date.strftime('%d-%m-%Y')) or ""
+            prev2.cell(row_index, 4).text = str(rec.exit_date.strftime('%d-%m-%Y')) or ""
             prev2.cell(row_index, 5).text = str(rec.scheme_certificate) or ""
             prev2.cell(row_index, 6).text = str(rec.ncp_days) or ""
 
@@ -350,7 +350,7 @@ class LeaveApplication(models.Model):
             self.international_worker or '',
             self.origin_country or '',
             self.passport_no or '',
-            f"{self.passport_valid_from or ''} to {self.passport_valid_to or ''}"
+            f"{self.passport_valid_from.strftime('%d-%m-%Y') or ''} to {self.passport_valid_to.strftime('%d-%m-%Y') or ''}"
         ]
 
         for i, label in enumerate(header):
@@ -381,7 +381,7 @@ class LeaveApplication(models.Model):
         d.alignment = WD_ALIGN_PARAGRAPH.CENTER
         
         doc.add_paragraph(
-            f"A.   The member Mr/Ms/Mrs {self.employee_id.name or ''} has joined on {str(self.joining_date or '')} "
+            f"A.   The member Mr/Ms/Mrs {self.employee_id.name or ''} has joined on {str(self.present_joining_date.strftime('%d-%m-%Y') or '')} "
             f"and has been allotted PF No _______________ and UAN {self.employee_id.l10n_in_uan}."
         )
 
@@ -399,7 +399,7 @@ class LeaveApplication(models.Model):
             "       Please Tick the Appropriate Option\n"
             "           ☐ The KYC details of the above member in the UAN database have been approved with\n              E-sign/Digital Signature Certificate and transfer request has been generated on portal.\n"
             "           ☐ The previous Account of the member is not Aadhar verified and hence physical transfer\n              form shall be initiated.\n\n"
-            f"Date:{date.today()}\n"
+            f"Date:{date.today().strftime('%d-%m-%Y') or ''}\n"
         )
         
         doc.add_paragraph("Signature of Employer with Seal of\nEstablishment\n\n").alignment = WD_ALIGN_PARAGRAPH.RIGHT

@@ -34,6 +34,7 @@ class Form15G(models.Model):
         # =========================================================
         # HEADER
         # =========================================================
+        doc.add_paragraph(f"Date : {self.declaration_date.strftime('%d-%m-%Y') or ''}").alignment = WD_ALIGN_PARAGRAPH.RIGHT
         heading("FORM NO. 15G")
         heading("[See section 197A(1), 197A(1A) and rule 29C]")
         heading("Declaration under section 197A (1) and section 197A(1A) to be made by an individual or a person (not being a company or firm) claiming certain incomes without deduction of tax.")
