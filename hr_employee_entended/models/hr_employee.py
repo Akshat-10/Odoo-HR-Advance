@@ -3,6 +3,17 @@ from odoo.exceptions import ValidationError, UserError
 from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
 
+
+class HrCaste(models.Model):
+    _name = "hr.caste"
+    _description = "Caste Master"
+    _order = "sequence, name"
+
+    name = fields.Char(string="Caste", required=True)
+    sequence = fields.Integer(string="Sequence", default=10)
+    active = fields.Boolean(string="Active", default=True)
+
+
 class Employee(models.Model):
     _inherit = 'hr.employee'
 
@@ -15,6 +26,7 @@ class Employee(models.Model):
     
     join_date = fields.Date(string='Join Date', store=True)
     father_name = fields.Char(string='Father Name')
+    caste_id = fields.Many2one("hr.caste", string="Caste")
     age = fields.Integer(
         string='Age',
         compute='_compute_age',

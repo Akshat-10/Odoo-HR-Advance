@@ -929,5 +929,173 @@
         </record>
 
         <menuitem id="menu_hr_custom_form_pf" name="PF Form" parent="menu_hr_custom_forms_root" action="action_hr_custom_form_pf" sequence="95"/>
+
+        <!-- Relationship Master -->
+        <record id="view_hr_relationship_list" model="ir.ui.view">
+            <field name="name">hr.relationship.list</field>
+            <field name="model">hr.relationship</field>
+            <field name="arch" type="xml">
+                <list editable="bottom">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="action_hr_relationship" model="ir.actions.act_window">
+            <field name="name">Relationships</field>
+            <field name="res_model">hr.relationship</field>
+            <field name="view_mode">list</field>
+            <field name="help" type="html">
+                <p>Define relationships for nominee forms (e.g., Father, Mother, Spouse, etc.).</p>
+            </field>
+        </record>
+
+        <!-- Caste Master -->
+        <record id="view_hr_caste_list" model="ir.ui.view">
+            <field name="name">hr.caste.list</field>
+            <field name="model">hr.caste</field>
+            <field name="arch" type="xml">
+                <list editable="bottom">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="action_hr_caste" model="ir.actions.act_window">
+            <field name="name">Castes</field>
+            <field name="res_model">hr.caste</field>
+            <field name="view_mode">list</field>
+            <field name="help" type="html">
+                <p>Define caste categories for HR forms.</p>
+            </field>
+        </record>
+
+        <!-- Configuration Menu -->
+        <menuitem id="menu_hr_custom_forms_config" name="Configuration" parent="menu_hr_custom_forms_root" sequence="100"/>
+        <menuitem id="menu_hr_relationship" name="Relationships" parent="menu_hr_custom_forms_config" action="action_hr_relationship" sequence="10"/>
+        <menuitem id="menu_hr_caste" name="Castes" parent="menu_hr_custom_forms_config" action="action_hr_caste" sequence="20"/>
+
+        <!-- Nomination Form 'F' -->
+        <record id="view_hr_custom_form_nomination_f_list" model="ir.ui.view">
+            <field name="name">hr.custom.form.nomination_f.list</field>
+            <field name="model">hr.custom.form.nomination_f</field>
+            <field name="arch" type="xml">
+                <list default_order="sequence,name">
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="company_id"/>
+                    <field name="form_date"/>
+                    <field name="department_id"/>
+                    <field name="job_id"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_hr_custom_form_nomination_f_form" model="ir.ui.view">
+            <field name="name">hr.custom.form.nomination_f.form</field>
+            <field name="model">hr.custom.form.nomination_f</field>
+            <field name="arch" type="xml">
+                <form string="Nomination Form 'F'">
+                    <sheet>
+                        <field name="sequence" invisible="1"/>
+                        <div class="oe_title">
+                            <h1>Nomination Form 'F'</h1>
+                            <h2>(See sub-rule (1) of rule 6)</h2>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="company_id" required="1"/>
+                                <field name="form_date" required="1"/>
+                            </group>
+                            <group>
+                                <field name="employee_id" required="1" domain="[('company_id', '=', company_id)]"/>
+                                <field name="employee_code" readonly="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Nomination Context" name="nomination_context">
+                                <field name="nomination_context" nolabel="1"/>
+                            </page>
+                            <page string="Nominees" name="nominees">
+                                <field name="nominee_line_ids">
+                                    <list editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="nominee_name_address"/>
+                                        <field name="relationship_id"/>
+                                        <field name="age"/>
+                                        <field name="share_percentage"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Statement" name="statement">
+                                <group string="Employee Details">
+                                    <group>
+                                        <field name="gender"/>
+                                        <field name="caste_id"/>
+                                        <field name="marital_status"/>
+                                    </group>
+                                    <group>
+                                        <field name="department_id"/>
+                                        <field name="job_id"/>
+                                        <field name="post_held" placeholder="Post held with Ticket or Serial No., if any"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="joining_date"/>
+                                        <field name="permanent_address"/>
+                                    </group>
+                                </group>
+                                <group string="Location Details">
+                                    <group>
+                                        <field name="village"/>
+                                        <field name="thana"/>
+                                        <field name="sub_division"/>
+                                    </group>
+                                    <group>
+                                        <field name="post_office"/>
+                                        <field name="district"/>
+                                        <field name="state"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Witnesses" name="witnesses">
+                                <field name="witness_line_ids">
+                                    <list editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="witness_name"/>
+                                        <field name="witness_address"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_hr_custom_form_nomination_f" model="ir.actions.act_window">
+            <field name="name">Nomination Form 'F'</field>
+            <field name="res_model">hr.custom.form.nomination_f</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{
+                'default_village': 'VIRAMGAM',
+                'default_thana': 'VIRAMGAM',
+                'default_sub_division': 'VIRAMGAM',
+                'default_post_office': 'VIRAMGAM',
+                'default_district': 'AHMEDABAD',
+                'default_state': 'GUJARAT'
+            }</field>
+            <field name="help" type="html">
+                <p>Create Nomination Form 'F' for gratuity nomination under Payment of Gratuity Act.</p>
+            </field>
+        </record>
+
+        <menuitem id="menu_hr_custom_form_nomination_f" name="Nomination Form 'F'" parent="menu_hr_custom_forms_root" action="action_hr_custom_form_nomination_f" sequence="96"/>
     </data>
 </odoo>

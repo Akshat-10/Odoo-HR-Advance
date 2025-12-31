@@ -873,3 +873,166 @@ class HrCustomFormPfLine(models.Model):
             record.mobile_number = employee.mobile_phone or employee.work_phone or False
             if hasattr(employee, "identification_id"):
                 record.aadhaar_number = employee.identification_id or False
+
+
+class HrRelationship(models.Model):
+    _name = "hr.relationship"
+    _description = "Relationship Master"
+    _order = "sequence, name"
+
+    name = fields.Char(string="Relationship", required=True)
+    sequence = fields.Integer(string="Sequence", default=10)
+    active = fields.Boolean(string="Active", default=True)
+
+
+class HrCustomFormNominationF(models.Model):
+    _name = "hr.custom.form.nomination_f"
+    _description = "Nomination Form 'F'"
+    _inherit = "hr.custom.form.base"
+
+    _sequence_code = "hr.custom.form.nomination_f"
+
+    # Statement Page Fields
+    gender = fields.Selection(
+        [
+            ("male", "Male"),
+            ("female", "Female"),
+            ("other", "Other"),
+        ],
+        string="Gender",
+    )
+    caste_id = fields.Many2one("hr.caste", string="Caste")
+    marital_status = fields.Selection(
+        [
+            ("single", "Single"),
+            ("married", "Married"),
+            ("widowed", "Widowed"),
+            ("divorced", "Divorced"),
+        ],
+        string="Marital Status",
+    )
+    post_held = fields.Char(string="Post held with Ticket or Serial No., if any")
+    permanent_address = fields.Text(string="Permanent Address")
+
+    # Location Fields
+    village = fields.Char(string="Village")
+    thana = fields.Char(string="Thana")
+    sub_division = fields.Char(string="Sub-division")
+    post_office = fields.Char(string="Post Office")
+    district = fields.Char(string="District")
+    state = fields.Char(string="State")
+
+    # Nomination Context
+    nomination_context = fields.Html(
+        string="Nomination Context",
+        default=lambda self: self._get_default_nomination_context(),
+    )
+
+    def _get_default_nomination_context(self):
+        """Return default nomination context text."""
+        return """
+<p>1. Shri _______________________ whose particulars are given in the statement below,</p>
+<p>hereby nominate the person(s) mentioned below to receive the gratuity payable after my death as also the gratuity standing to my credit in the event of my death before that amount has become payable, or having become payable has not been paid and direct that the said amount of gratuity shall be paid in proportion indicated against the name(s) of the nominee(s).</p>
+<p>2. I hereby certify that the person(s) mentioned is a/are member(s) of my family within the meaning of clause (h) of section (2) of the Payment of Gratuity Act, 1972.</p>
+<p>3. I hereby declare that I have no family within the meaning of clause (h) of section (2) of the said Act.</p>
+<p>4. (a) My father/mother/parents is/are not dependent on me.<br/>
+   (b) My husband's father/mother/parents is/are not dependent on my husband.</p>
+<p>5. I have excluded my husband from my family by a notice dated the ………………… to the Controlling Authority in terms of the proviso to clause (h) of section 2 of the said Act.</p>
+<p>6. Nomination made herein invalidates my previous nomination.</p>
+"""
+
+    def _get_nomination_context_with_employee(self, employee_name):
+        """Return nomination context with employee name filled in."""
+        return f"""
+<p>1. Shri <strong>{employee_name}</strong> whose particulars are given in the statement below,</p>
+<p>hereby nominate the person(s) mentioned below to receive the gratuity payable after my death as also the gratuity standing to my credit in the event of my death before that amount has become payable, or having become payable has not been paid and direct that the said amount of gratuity shall be paid in proportion indicated against the name(s) of the nominee(s).</p>
+<p>2. I hereby certify that the person(s) mentioned is a/are member(s) of my family within the meaning of clause (h) of section (2) of the Payment of Gratuity Act, 1972.</p>
+<p>3. I hereby declare that I have no family within the meaning of clause (h) of section (2) of the said Act.</p>
+<p>4. (a) My father/mother/parents is/are not dependent on me.<br/>
+   (b) My husband's father/mother/parents is/are not dependent on my husband.</p>
+<p>5. I have excluded my husband from my family by a notice dated the ………………… to the Controlling Authority in terms of the proviso to clause (h) of section 2 of the said Act.</p>
+<p>6. Nomination made herein invalidates my previous nomination.</p>
+"""
+
+    # One2many fields
+    nominee_line_ids = fields.One2many(
+        "hr.custom.form.nomination_f.nominee.line",
+        "form_id",
+        string="Nominees",
+    )
+    witness_line_ids = fields.One2many(
+        "hr.custom.form.nomination_f.witness.line",
+        "form_id",
+        string="Witnesses",
+    )
+
+    def _prepare_employee_related_vals(self, vals):
+        super()._prepare_employee_related_vals(vals)
+        employee_id = vals.get("employee_id")
+        if not employee_id:
+            return
+        employee = self.env["hr.employee"].browse(employee_id)
+        if not employee:
+            return
+        if not vals.get("gender") and employee.gender:
+            vals["gender"] = employee.gender
+        if not vals.get("marital_status") and employee.marital:
+            vals["marital_status"] = employee.marital
+        if not vals.get("permanent_address") and employee.private_street:
+            vals["permanent_address"] = employee.private_street
+        if not vals.get("caste_id") and employee.caste_id:
+            vals["caste_id"] = employee.caste_id.id
+
+    @api.onchange("employee_id")
+    def _onchange_employee_id(self):
+        super()._onchange_employee_id()
+        for record in self:
+            employee = record.employee_id
+            if not employee:
+                continue
+            record.gender = employee.gender or False
+            record.marital_status = employee.marital or False
+            record.caste_id = employee.caste_id or False
+            if employee.private_street:
+                record.permanent_address = employee.private_street
+            # Update nomination context with employee name
+            record.nomination_context = record._get_nomination_context_with_employee(employee.name)
+
+
+class HrCustomFormNominationFNomineeLine(models.Model):
+    _name = "hr.custom.form.nomination_f.nominee.line"
+    _description = "Nomination Form 'F' Nominee Line"
+
+    form_id = fields.Many2one(
+        "hr.custom.form.nomination_f",
+        string="Nomination Form",
+        ondelete="cascade",
+    )
+    sequence = fields.Integer(string="Sr. No.", default=10)
+    nominee_name_address = fields.Text(
+        string="Name in full with full address of nominee(s)",
+        required=True,
+    )
+    relationship_id = fields.Many2one(
+        "hr.relationship",
+        string="Relationship with the employee",
+    )
+    age = fields.Char(string="Age of nominee")
+    share_percentage = fields.Float(
+        string="Proportion by which the gratuity will be shared (%)",
+        help="Percentage of gratuity to be shared with this nominee",
+    )
+
+
+class HrCustomFormNominationFWitnessLine(models.Model):
+    _name = "hr.custom.form.nomination_f.witness.line"
+    _description = "Nomination Form 'F' Witness Line"
+
+    form_id = fields.Many2one(
+        "hr.custom.form.nomination_f",
+        string="Nomination Form",
+        ondelete="cascade",
+    )
+    sequence = fields.Integer(string="Sr. No.", default=10)
+    witness_name = fields.Char(string="Witness Name", required=True)
+    witness_address = fields.Text(string="Witness Full Address", required=True)

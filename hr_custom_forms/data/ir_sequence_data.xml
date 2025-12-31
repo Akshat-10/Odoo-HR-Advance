@@ -77,5 +77,12 @@
             <field name="prefix">PF/%(year)s/</field>
             <field name="padding">4</field>
         </record>
+
+        <record id="seq_hr_custom_form_nomination_f" model="ir.sequence">
+            <field name="name">Nomination Form 'F'</field>
+            <field name="code">hr.custom.form.nomination_f</field>
+            <field name="prefix">NOM-F/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
     </data>
 </odoo>

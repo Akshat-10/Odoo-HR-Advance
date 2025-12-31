@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Wizard Form View -->
+    <record id="attendance_master_wizard_form" model="ir.ui.view">
+        <field name="name">attendance.master.wizard.form</field>
+        <field name="model">attendance.master.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Attendance Master Report">
+                <group>
+                    <group>
+                        <field name="company_id" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                    </group>
+                    <group>
+                        <field name="all_employees"/>
+                        <field name="employee_ids" 
+                               widget="many2many_tags" 
+                               options="{'no_create': True}"
+                               invisible="all_employees"/>
+                    </group>
+                </group>
+                <footer>
+                    <button string="Generate Report" 
+                            name="action_generate_report" 
+                            type="object" 
+                            class="btn-primary"
+                            icon="fa-download"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action to open wizard -->
+    <record id="attendance_master_wizard_action" model="ir.actions.act_window">
+        <field name="name">Attendance Master Report</field>
+        <field name="res_model">attendance.master.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Menu Item under HR Attendance -->
+    <menuitem id="menu_attendance_master_report" 
+              name="Attendance Master Report" 
+              parent="hr_attendance.menu_hr_attendance_root" 
+              action="attendance_master_wizard_action" 
+              sequence="8"/>
+</odoo>

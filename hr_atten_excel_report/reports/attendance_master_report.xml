@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="attendance_master_xlsx" model="ir.actions.report">
+        <field name="name">Attendance Master Report</field>
+        <field name="model">attendance.master.wizard</field>
+        <field name="report_type">xlsx</field>
+        <field name="report_name">hr_atten_excel_report.attendance_master_xlsx</field>
+        <field name="report_file">hr_atten_excel_report.attendance_master_xlsx</field>
+        <field name="print_report_name">"Attendance_Master_" + (object.start_date.strftime("%B-%Y") or "")</field>
+    </record>
+</odoo>

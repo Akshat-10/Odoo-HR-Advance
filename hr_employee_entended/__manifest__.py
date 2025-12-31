@@ -19,6 +19,7 @@
                 'EHS',
                 ],
     "data": [
+        'security/ir.model.access.csv',
         'views/hr_employee_views.xml',
         # 'views/hr_contract_views.xml',
         'views/hr_timeoff_allocation_views.xml',
