@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+    <!-- Server Action to Generate Barcodes for Selected Employees -->
+    <record id="action_generate_employee_barcodes" model="ir.actions.server">
+        <field name="name">Generate Barcodes</field>
+        <field name="model_id" ref="hr.model_hr_employee"/>
+        <field name="binding_model_id" ref="hr.model_hr_employee"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+if records:
+    action = records.action_generate_barcodes_bulk()
+        </field>
+    </record>
+
     <record id="view_employee_form_adding_imp_fields" model="ir.ui.view">
         <field name="name">hr.employee.form.inherit.for.adding.important.fields</field>
         <field name="model">hr.employee</field>

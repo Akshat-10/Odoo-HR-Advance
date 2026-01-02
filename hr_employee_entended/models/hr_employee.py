@@ -2,6 +2,8 @@ from odoo import api, fields, models
 from odoo.exceptions import ValidationError, UserError
 from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
+from random import choice
+from string import digits
 
 
 class HrCaste(models.Model):
@@ -55,6 +57,37 @@ class Employee(models.Model):
                 employee.joining_date = employee.create_date.date()
             else:
                 employee.joining_date = False
+
+    def action_generate_barcodes_bulk(self):
+        """Generate random barcodes for selected employees who don't have one.
+        
+        This method is designed to be called from a server action in the list view.
+        It only generates barcodes for employees that don't already have one,
+        preventing overwriting of existing barcodes.
+        """
+        employees_without_barcode = self.filtered(lambda e: not e.barcode)
+        generated_count = 0
+        skipped_count = len(self) - len(employees_without_barcode)
+        
+        for employee in employees_without_barcode:
+            employee.barcode = '041' + "".join(choice(digits) for i in range(9))
+            generated_count += 1
+        
+        # Return a notification message
+        message = f"Barcodes generated for {generated_count} employee(s)."
+        if skipped_count > 0:
+            message += f" {skipped_count} employee(s) already had barcodes and were skipped."
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Barcode Generation Complete',
+                'message': message,
+                'type': 'success' if generated_count > 0 else 'warning',
+                'sticky': False,
+            }
+        }
 
     def write(self, vals):
         """Override write to synchronize resource_calendar_id with open contracts."""
