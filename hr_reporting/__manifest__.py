@@ -14,15 +14,14 @@
     "depends": ["hr_custom_forms", "inventory_extended", "hr_recruitment_extended", "hr_payroll", 'l10n_in_hr_payroll', 'hr_employee_entended',
     'hr_employee_activity_calendar',
     "report_xlsx",
-    'payroll_salary_link',],
+    'payroll_salary_link',
+    ],
     "qweb": [
         "views/vendor_selection_owl_extend.xml",
     ],
 
     "data": [
         'security/ir.model.access.csv',
-        "wizard/net_salary_wizard_view.xml",
-        "views/net_salary_menu.xml",
         'views/resignation_letter_views.xml',
         'report/resignation_action.xml',
         'report/resignation_report.xml',
