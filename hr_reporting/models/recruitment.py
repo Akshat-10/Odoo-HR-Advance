@@ -184,8 +184,8 @@ class ApplicantReport(models.Model):
             ctext(t4.cell(idx, 2), rec.company or "")
             ctext(t4.cell(idx, 3), rec.location or "")
             ctext(t4.cell(idx, 4), rec.designation or "")
-            ctext(t4.cell(idx, 5), rec.previous_salary or "")
-            ctext(t4.cell(idx, 6), str(rec.years_of_experience or ""))
+            ctext(t4.cell(idx, 5), str(rec.previous_salary or ""))
+            ctext(t4.cell(idx, 6), f"{rec.years_of_experience} Years" if rec.years_of_experience else "")
             ctext(t4.cell(idx, 7), str(rec.leaving_reason or ""))
             
 
