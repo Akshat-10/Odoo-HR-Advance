@@ -5,7 +5,7 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 import io
 import base64
 
-class Form15G(models.Model):
+class HrCustomFormFifteenG(models.Model):
     _inherit = "hr.custom.form.form15g"
     
     def action_generate_excel_report(self):

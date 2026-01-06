@@ -7,7 +7,7 @@ import io
 import base64
 import os
 
-class Form15G(models.Model):
+class ApplicantReport(models.Model):
     _inherit = "hr.applicant"
     
     def action_generate_excel_report(self):
@@ -51,7 +51,7 @@ class Form15G(models.Model):
         t.cell(0,2).text = f"Emp. No. "
         
         t.cell(1, 0).merge(t.cell(1, 1))
-        t.cell(1,0).text = f"DESIGNATION : {self.destination or ''}"
+        t.cell(1,0).text = f"DESIGNATION : {self.job_id.name or ''}"
         t.cell(1,2).text = f"Date Of Joining :"
         
         # Title
@@ -109,10 +109,10 @@ class Form15G(models.Model):
                 
         # Personal information 
         ptext("4. PERSONAL PARTICULARS:", bold=True)
-        ptext(f"    a) Date of Birth : {str(self.dob.strftime('%d-%m-%Y') or '')}")
-        ptext(f"     b) Age :  {str(self.age)}")
+        ptext(f"    a) Date of Birth : {self.dob.strftime('%d-%m-%Y') if self.dob else ''}")
+        ptext(f"     b) Age :  {str(self.age or '')}")
         ptext(f"     c) Nationality : Indian")
-        ptext(f"     d) Religion / Caste : {(self.caste_id.name)}") 
+        ptext(f"     d) Religion / Caste : {self.caste_id.name if self.caste_id else ''}") 
         ptext(f"4. MARITAL STATUS : {str(self.marital_status or '')}\n", bold=True)
 
 

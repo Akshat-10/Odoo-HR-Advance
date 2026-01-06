@@ -9,7 +9,7 @@ from odoo.tools.misc import format_date
 
 
 
-class HrCustomFormMwNotice(models.Model):
+class HrCustomFormMinimumWageNotice(models.Model):
     _inherit = "hr.custom.form.mw_notice"
 
     generate_xls_file = fields.Binary(string="MV Register Excel")

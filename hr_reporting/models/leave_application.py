@@ -5,7 +5,7 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 import io
 import base64
 
-class LeaveApplication(models.Model):
+class HrCustomFormLeaveApplication(models.Model):
     _inherit = "hr.custom.form.leave_application"
     
     def action_generate_excel_report(self):

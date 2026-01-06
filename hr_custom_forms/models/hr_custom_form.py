@@ -990,6 +990,8 @@ class HrCustomFormNominationF(models.Model):
             employee = record.employee_id
             if not employee:
                 continue
+            # Ensure employee_code is updated
+            record.employee_code = employee.employee_code or False
             record.gender = employee.gender or False
             record.marital_status = employee.marital or False
             record.caste_id = employee.caste_id or False

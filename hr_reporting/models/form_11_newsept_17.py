@@ -8,7 +8,7 @@ import base64
 from datetime import date
 from docx.enum.table import WD_TABLE_ALIGNMENT, WD_CELL_VERTICAL_ALIGNMENT
 
-class LeaveApplication(models.Model):
+class HrCustomFormEleven(models.Model):
     _inherit = "hr.custom.form.form11"
     
     def action_generate_excel_report(self):

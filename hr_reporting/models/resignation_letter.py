@@ -5,7 +5,7 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 import io
 import base64
 
-class ResignationLetter(models.Model):
+class HrCustomFormResignationLetter(models.Model):
     _inherit = "hr.custom.form.resignation_letter"
     
     def action_generate_resignation_report(self):

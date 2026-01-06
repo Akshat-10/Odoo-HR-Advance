@@ -7,7 +7,7 @@ from openpyxl.utils import get_column_letter
 from PIL import Image as PILImage,ImageOps
 import base64
 
-class LeaveApplication(models.Model):
+class HrCustomFormEsicDeclaration(models.Model):
     _inherit = "hr.custom.form.esic_declaration"
 
     def action_generate_excel_report(self):
