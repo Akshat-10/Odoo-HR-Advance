@@ -62,8 +62,8 @@ class HrCustomFormNominationF(models.Model):
         run.bold = True
 
         p.add_run(
-            f"\n{partner.street or ''}"
-            f"\n{(', ' + partner.street2) if partner.street2 else ''}\n"
+            f"\n{(partner.street + ',') or ''}"
+            f"\n{partner.street2 if partner.street2 else ''}\n"
             f"{partner.city or ''} - {partner.zip or ''}"
         )
 
@@ -266,9 +266,15 @@ class HrCustomFormNominationF(models.Model):
         run = p.add_run(company.name)
         run.bold = True
 
+        # p.add_run(
+        #     f"\n{partner.street or ''}"
+        #     f"\n{(', ' + partner.street2) if partner.street2 else ''}\n"
+        #     f"{partner.city or ''} - {partner.zip or ''}"
+        # )
+        
         p.add_run(
-            f"\n{partner.street or ''}"
-            f"\n{(', ' + partner.street2) if partner.street2 else ''}\n"
+            f"\n{(partner.street + ',') or ''}"
+            f"\n{partner.street2 if partner.street2 else ''}\n"
             f"{partner.city or ''} - {partner.zip or ''}"
         )
         p.alignment = WD_ALIGN_PARAGRAPH.RIGHT

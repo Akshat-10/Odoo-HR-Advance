@@ -944,7 +944,7 @@ class HrCustomFormNominationF(models.Model):
     def _get_nomination_context_with_employee(self, employee_name):
         """Return nomination context with employee name filled in."""
         return f"""
-<p>1. Shri <strong>{employee_name}</strong> whose particulars are given in the statement below,</p>
+<p>1. Shri <strong> {employee_name} </strong> whose particulars are given in the statement below,</p>
 <p>hereby nominate the person(s) mentioned below to receive the gratuity payable after my death as also the gratuity standing to my credit in the event of my death before that amount has become payable, or having become payable has not been paid and direct that the said amount of gratuity shall be paid in proportion indicated against the name(s) of the nominee(s).</p>
 <p>2. I hereby certify that the person(s) mentioned is a/are member(s) of my family within the meaning of clause (h) of section (2) of the Payment of Gratuity Act, 1972.</p>
 <p>3. I hereby declare that I have no family within the meaning of clause (h) of section (2) of the said Act.</p>
