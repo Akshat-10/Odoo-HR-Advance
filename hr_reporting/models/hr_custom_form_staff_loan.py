@@ -119,7 +119,7 @@ class HrCustomFormStaffLoan(models.Model):
         run.font.size = Pt(15)
 
         doc.add_paragraph(
-            "We named below hereby that we stand as sureties for the amount to be MOHAMMADIQBAL "
+            f"We named below hereby that we stand as sureties for the amount to be {self.employee_id.name or ''} "
             "and GERMAN TMX PVT LTD  is authorized for recovery amount through guarantor, "
             "if above named applicant fails to repay the issues amount."
         )
