@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Wizard Form -->
+    <!-- 🔴 CHANGED: view id + name + model -->
+    <record id="view_salary_report_wizard_form" model="ir.ui.view">
+        <field name="name">salary.report.wizard.form</field>
+        <field name="model">salary.report.wizard</field>
+        <field name="arch" type="xml">
+            <!-- 🔴 CHANGED: form title -->
+            <form string="Salary Report">
+                <group>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="all_employee"/>
+                    <field name="employee_ids"
+                           widget="many2many_tags"
+                           invisible="all_employee"/>
+                </group>
+                <footer>
+                    <button name="action_generate_excel"
+                            type="object"
+                            string="Generate Excel"
+                            class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <!-- 🔴 CHANGED: action id + name + res_model -->
+    <record id="action_salary_report_wizard" model="ir.actions.act_window">
+        <field name="name">Salary Report</field>
+        <field name="res_model">salary.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- App Menu (Home Screen Icon) -->
+    <!-- 🔴 CHANGED: menu id + name + action -->
+    <menuitem id="menu_salary_report_root"
+              name="Salary Report"
+              action="action_salary_report_wizard"
+              sequence="1"/>
+
+</odoo>

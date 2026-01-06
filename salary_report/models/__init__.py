@@ -1,0 +1,1 @@
+from . import nomination_word
