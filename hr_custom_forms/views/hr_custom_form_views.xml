@@ -1083,19 +1083,116 @@
             <field name="name">Nomination Form 'F'</field>
             <field name="res_model">hr.custom.form.nomination_f</field>
             <field name="view_mode">list,form</field>
-            <field name="context">{
-                'default_village': 'VIRAMGAM',
-                'default_thana': 'VIRAMGAM',
-                'default_sub_division': 'VIRAMGAM',
-                'default_post_office': 'VIRAMGAM',
-                'default_district': 'AHMEDABAD',
-                'default_state': 'GUJARAT'
-            }</field>
+            <field name="context">{}</field>
             <field name="help" type="html">
                 <p>Create Nomination Form 'F' for gratuity nomination under Payment of Gratuity Act.</p>
             </field>
         </record>
 
         <menuitem id="menu_hr_custom_form_nomination_f" name="Nomination Form 'F'" parent="menu_hr_custom_forms_root" action="action_hr_custom_form_nomination_f" sequence="96"/>
+
+        <!-- Department Wise Attendance -->
+        <record id="view_hr_custom_form_dept_attendance_list" model="ir.ui.view">
+            <field name="name">hr.custom.form.dept_attendance.list</field>
+            <field name="model">hr.custom.form.dept_attendance</field>
+            <field name="arch" type="xml">
+                <list default_order="form_date desc, name desc">
+                    <field name="name"/>
+                    <field name="form_date"/>
+                    <field name="night_date"/>
+                    <field name="day_date"/>
+                    <field name="company_id" optional="show"/>
+                    <field name="total_night" sum="Total Night"/>
+                    <field name="total_day" sum="Total Day"/>
+                    <field name="total_attendance" sum="Grand Total"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_hr_custom_form_dept_attendance_form" model="ir.ui.view">
+            <field name="name">hr.custom.form.dept_attendance.form</field>
+            <field name="model">hr.custom.form.dept_attendance</field>
+            <field name="arch" type="xml">
+                <form string="Department Wise Attendance">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group string="General Information">
+                                <field name="form_date"/>
+                                <field name="company_id" required="1"/>
+                            </group>
+                            <group string="Shift Dates">
+                                <field name="night_date"/>
+                                <field name="day_date"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Department Attendance" name="attendance_lines">
+                                <field name="line_ids">
+                                    <list editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="department_id"/>
+                                        <field name="description"/>
+                                        <field name="night_count"/>
+                                        <field name="day_count"/>
+                                        <field name="total_count" readonly="1"/>
+                                    </list>
+                                </field>
+                                <group class="oe_subtotal_footer oe_right">
+                                    <field name="total_night" class="oe_subtotal_footer_separator"/>
+                                    <field name="total_day" class="oe_subtotal_footer_separator"/>
+                                    <field name="total_attendance" class="oe_subtotal_footer_separator"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_hr_custom_form_dept_attendance_search" model="ir.ui.view">
+            <field name="name">hr.custom.form.dept_attendance.search</field>
+            <field name="model">hr.custom.form.dept_attendance</field>
+            <field name="arch" type="xml">
+                <search string="Department Wise Attendance">
+                    <field name="name"/>
+                    <field name="form_date"/>
+                    <field name="night_date"/>
+                    <field name="day_date"/>
+                    <field name="company_id"/>
+                    <filter string="Today" name="filter_today" domain="[('form_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="This Week" name="filter_this_week" domain="[('form_date', '>=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                    <filter string="This Month" name="filter_this_month" domain="[('form_date', '>=', context_today().strftime('%Y-%m-01'))]"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Date" name="group_by_date" context="{'group_by': 'form_date'}"/>
+                        <filter string="Night Date" name="group_by_night_date" context="{'group_by': 'night_date'}"/>
+                        <filter string="Day Date" name="group_by_day_date" context="{'group_by': 'day_date'}"/>
+                        <filter string="Company" name="group_by_company" context="{'group_by': 'company_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_hr_custom_form_dept_attendance" model="ir.actions.act_window">
+            <field name="name">Department Wise Attendance</field>
+            <field name="res_model">hr.custom.form.dept_attendance</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_hr_custom_form_dept_attendance_search"/>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first Department Wise Attendance record
+                </p>
+                <p>Track department-wise attendance data for day and night shifts.</p>
+            </field>
+        </record>
+
+        <menuitem id="menu_hr_custom_form_dept_attendance" name="Dept. Wise Attendance" parent="menu_hr_custom_forms_root" action="action_hr_custom_form_dept_attendance" sequence="97"/>
     </data>
 </odoo>

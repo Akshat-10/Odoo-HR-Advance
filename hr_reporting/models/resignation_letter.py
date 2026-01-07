@@ -30,7 +30,7 @@ class HrCustomFormResignationLetter(models.Model):
         doc.add_paragraph(
             "To,\n"
             "The General Manager,\n"
-            "GERMAN TMX PVT LTD,\n" 
+            "GERMAN TMT PVT LTD,\n" 
         )
 
         # Subject & Department
@@ -77,7 +77,7 @@ class HrCustomFormResignationLetter(models.Model):
             "\nApproved By,\n\n"
             "____________________\n"
             "Authorized Signatory\n"
-            "GERMAN TMX PVT LTD"
+            "GERMAN TMT PVT LTD"
         )
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
 

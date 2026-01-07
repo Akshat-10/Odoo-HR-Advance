@@ -32,7 +32,7 @@ class HrCustomFormLeaveApplication(models.Model):
 
 
         # ===== Company Name =====    
-        add_p("GERMAN TMX PVT LTD", bold=True, center=True)
+        add_p("GERMAN TMT PVT LTD", bold=True, center=True)
         add_p("Leave Application Form\n", bold=True, center=True)
 
 

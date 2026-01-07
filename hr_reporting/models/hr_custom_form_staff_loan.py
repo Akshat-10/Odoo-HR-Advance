@@ -84,7 +84,7 @@ class HrCustomFormStaffLoan(models.Model):
             p.paragraph_format.space_after = Pt(2)
 
         # ================= COMPANY NAME =================
-        p = doc.add_paragraph("GERMAN TMX PVT LTD")
+        p = doc.add_paragraph("GERMAN TMT PVT LTD")
         compact(p, size=18, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER)
 
         # ================= TITLE =================
@@ -120,7 +120,7 @@ class HrCustomFormStaffLoan(models.Model):
 
         doc.add_paragraph(
             f"We named below hereby that we stand as sureties for the amount to be {self.employee_id.name or ''} "
-            "and GERMAN TMX PVT LTD  is authorized for recovery amount through guarantor, "
+            "and GERMAN TMT PVT LTD  is authorized for recovery amount through guarantor, "
             "if above named applicant fails to repay the issues amount."
         )
 

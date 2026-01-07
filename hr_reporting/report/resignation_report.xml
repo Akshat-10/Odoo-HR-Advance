@@ -7,7 +7,7 @@
 
         <p><strong>To,<br/>
         The General Manager,<br/>
-        GERMAN TMX PVT LTD,</strong></p>
+        GERMAN TMT PVT LTD,</strong></p>
 
         <p><strong>Sub: Resignation from the post of <t t-esc="docs.employee_id.job_id.name"/></strong><br/>
         <strong>DEPARTMENT <t t-esc="docs.employee_id.department_id.name"/></strong></p>
@@ -42,7 +42,7 @@
         <p>Approved By,<br/><br/>
         ____________________<br/>
         Authorized Signatory<br/>
-        GERMAN TMX PVT LTD</p>
+        GERMAN TMT PVT LTD</p>
       </div>
     </t>
   </template>

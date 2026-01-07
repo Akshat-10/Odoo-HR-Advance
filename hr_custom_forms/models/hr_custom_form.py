@@ -1038,3 +1038,134 @@ class HrCustomFormNominationFWitnessLine(models.Model):
     sequence = fields.Integer(string="Sr. No.", default=10)
     witness_name = fields.Char(string="Witness Name", required=True)
     witness_address = fields.Text(string="Witness Full Address", required=True)
+
+
+class HrCustomFormDeptAttendance(models.Model):
+    _name = "hr.custom.form.dept_attendance"
+    _description = "Department Wise Attendance"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _order = "form_date desc, name desc"
+
+    _sequence_code = "hr.custom.form.dept_attendance"
+
+    name = fields.Char(
+        string="Document Reference",
+        required=True,
+        default=lambda self: _("New"),
+        copy=False,
+        tracking=True,
+    )
+    company_id = fields.Many2one(
+        "res.company",
+        string="Company",
+        required=True,
+        default=lambda self: self.env.company,
+        tracking=True,
+    )
+    form_date = fields.Date(
+        string="Date",
+        required=True,
+        default=fields.Date.context_today,
+        tracking=True,
+        help="Document creation date (auto-filled with today's date)",
+    )
+    night_date = fields.Date(
+        string="Night Date",
+        tracking=True,
+        help="Date for night shift attendance",
+    )
+    day_date = fields.Date(
+        string="Day Date",
+        tracking=True,
+        help="Date for day shift attendance",
+    )
+    line_ids = fields.One2many(
+        "hr.custom.form.dept_attendance.line",
+        "form_id",
+        string="Department Attendance Lines",
+    )
+    total_night = fields.Integer(
+        string="Total Night",
+        compute="_compute_totals",
+        store=True,
+        help="Sum of all night shift counts",
+    )
+    total_day = fields.Integer(
+        string="Total Day",
+        compute="_compute_totals",
+        store=True,
+        help="Sum of all day shift counts",
+    )
+    total_attendance = fields.Integer(
+        string="Grand Total",
+        compute="_compute_totals",
+        store=True,
+        help="Sum of all attendance counts",
+    )
+
+    @api.depends("line_ids.night_count", "line_ids.day_count", "line_ids.total_count")
+    def _compute_totals(self):
+        for record in self:
+            record.total_night = sum(record.line_ids.mapped("night_count"))
+            record.total_day = sum(record.line_ids.mapped("day_count"))
+            record.total_attendance = sum(record.line_ids.mapped("total_count"))
+
+    def _next_sequence(self, company_id):
+        seq_code = self._sequence_code
+        seq_env = self.env["ir.sequence"]
+        if company_id:
+            company = self.env["res.company"].browse(company_id)
+            seq_env = seq_env.with_company(company)
+        return seq_env.next_by_code(seq_code) or _("New")
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            vals.setdefault("company_id", self.env.company.id)
+            if not vals.get("name") or vals.get("name") in ("New", _("New")):
+                vals["name"] = self._next_sequence(vals.get("company_id"))
+        return super().create(vals_list)
+
+
+class HrCustomFormDeptAttendanceLine(models.Model):
+    _name = "hr.custom.form.dept_attendance.line"
+    _description = "Department Wise Attendance Line"
+    _order = "sequence, id"
+
+    form_id = fields.Many2one(
+        "hr.custom.form.dept_attendance",
+        string="Department Attendance Form",
+        ondelete="cascade",
+        required=True,
+    )
+    sequence = fields.Integer(string="S.No.", default=10)
+    department_id = fields.Many2one(
+        "hr.department",
+        string="Department",
+        required=True,
+    )
+    description = fields.Text(
+        string="Description",
+        help="Additional notes or description for this department's attendance",
+    )
+    night_count = fields.Integer(
+        string="Night",
+        default=0,
+        help="Number of employees present in night shift",
+    )
+    day_count = fields.Integer(
+        string="Day",
+        default=0,
+        help="Number of employees present in day shift",
+    )
+    total_count = fields.Integer(
+        string="Total",
+        compute="_compute_total_count",
+        store=True,
+        help="Total attendance count (Night + Day)",
+    )
+
+    @api.depends("night_count", "day_count")
+    def _compute_total_count(self):
+        for line in self:
+            line.total_count = line.night_count + line.day_count

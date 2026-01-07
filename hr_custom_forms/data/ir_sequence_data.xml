@@ -84,5 +84,12 @@
             <field name="prefix">NOM-F/%(year)s/</field>
             <field name="padding">4</field>
         </record>
+
+        <record id="seq_hr_custom_form_dept_attendance" model="ir.sequence">
+            <field name="name">Department Wise Attendance</field>
+            <field name="code">hr.custom.form.dept_attendance</field>
+            <field name="prefix">DWA/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
     </data>
 </odoo>
