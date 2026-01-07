@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_hr_custom_form_nomination_form_report" model="ir.ui.view">
+            <field name="name">hr.custom.form.nomination_f.form.inherit.word</field>
+            <field name="model">hr.custom.form.nomination_f</field>
+            <field name="inherit_id" ref="hr_custom_forms.view_hr_custom_form_nomination_f_form"/>
+            <field name="arch" type="xml">
+
+                <!-- ✅ Insert HEADER INSIDE FORM -->
+                <xpath expr="//form" position="inside">
+                    <header>
+                        <button
+                            name="action_generate_nomination_f_docx"
+                            type="object"
+                            string="Download Form F (Word)"
+                            class="btn-primary"
+                            icon="fa-download"/>
+                    </header>
+                </xpath>
+
+            </field>
+        </record>
+
+    </data>
+</odoo>

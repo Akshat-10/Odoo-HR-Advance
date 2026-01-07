@@ -16,9 +16,6 @@
     "report_xlsx",
     'payroll_salary_link',
     ],
-    "qweb": [
-        "views/vendor_selection_owl_extend.xml",
-    ],
 
     "data": [
         'security/ir.model.access.csv',
@@ -42,6 +39,7 @@
         "views/er1_word_views.xml",
         "views/hr_salary_attachment_excel.xml",
         'views/hr_custom_form_staff_loan_views.xml',
+        "views/nomination_form_views.xml",
 
 
 
