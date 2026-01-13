@@ -7,6 +7,17 @@
         <field name="inherit_id" ref="hr_recruitment.hr_applicant_view_form" />
         <field name="arch" type="xml">
 
+            <!-- Add invisible field for image_128 -->
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="image_128" invisible="1"/>
+                <field name="avatar_128" invisible="1"/>
+            </xpath>
+
+            <!-- Add Applicant Image on right side similar to Employee Form -->
+            <xpath expr="//field[@name='linkedin_profile']" position="after">
+                <field name="image_1920" widget="image" class="oe_avatar m-0" options="{'zoom': true, 'preview_image': 'avatar_128'}"/>
+            </xpath>
+
             <!-- <xpath expr="//field[@name='salary_expected']" position="inside">
                 <field name="salary_expected" placeholder="Expected"/>
             </xpath> -->
