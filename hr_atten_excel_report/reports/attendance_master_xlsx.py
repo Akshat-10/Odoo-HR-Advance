@@ -197,6 +197,17 @@ class AttendancemasterXlsx(models.AbstractModel):
             'bold': True,
         })
 
+        # On Duty (OD) format - Light Blue/Teal background
+        formats['od'] = workbook.add_format({
+            'font_size': 9,
+            'align': 'center',
+            'valign': 'vcenter',
+            'border': 1,
+            'bg_color': '#B4E7E7',
+            'font_color': '#006666',
+            'bold': True,
+        })
+
         # Summary header format
         formats['summary_header'] = workbook.add_format({
             'bold': True,
@@ -375,8 +386,8 @@ class AttendancemasterXlsx(models.AbstractModel):
         # Calculate column positions
         static_cols = 7  # S.No, Name, Code, Dept, Position, DOJ, W/O
         num_days = len(date_headers)
-        # Extended summary columns: Present, Half Day Present, Weekoff, Absent, Holiday, CL, EL, SL, UL (Unpaid), ML (Management), Total Leave, Total
-        summary_cols = 12
+        # Extended summary columns: Present, Half Day Present, Weekoff, Absent, Holiday, CL, EL, SL, UL (Unpaid), ML (Management), OD (On Duty), Total Leave, Total
+        summary_cols = 13
         total_cols = static_cols + num_days + summary_cols
 
         # Set column widths
@@ -423,7 +434,7 @@ class AttendancemasterXlsx(models.AbstractModel):
         summary_headers = [
             'Present\n(P)', 'Half Day\n(HD)', 'Weekoff\n(W)', 'Absent\n(A)', 
             'Holiday\n(H)', 'CL', 'EL', 'SL', 'Unpaid\n(UL)', 'Mgmt\n(ML)', 
-            'Total\nLeave', 'Total\nDays'
+            'On Duty\n(OD)', 'Total\nLeave', 'Total\nDays'
         ]
         for i, h in enumerate(summary_headers):
             sheet.write(row, summary_start + i, h, formats['summary_header'])
@@ -510,15 +521,20 @@ class AttendancemasterXlsx(models.AbstractModel):
             sheet.write_formula(row, col_idx, ml_formula, formats['summary'])
             col_idx += 1
 
-            # Total Leave - Direct COUNTIF from date range for all leave types (CL + EL + SL + UL + ML + HD)
+            # On Duty (OD) - counts cells containing exactly "OD"
+            od_formula = f'=COUNTIF({date_range},"OD")'
+            sheet.write_formula(row, col_idx, od_formula, formats['summary'])
+            col_idx += 1
+
+            # Total Leave - Direct COUNTIF from date range for all leave types (CL + EL + SL + UL + ML + HD + OD)
             # This counts directly from the date cells so it updates when user edits
-            total_leave_formula = f'=COUNTIF({date_range},"CL")+COUNTIF({date_range},"EL")+COUNTIF({date_range},"SL")+COUNTIF({date_range},"UL")+COUNTIF({date_range},"ML")+COUNTIF({date_range},"HD")'
+            total_leave_formula = f'=COUNTIF({date_range},"CL")+COUNTIF({date_range},"EL")+COUNTIF({date_range},"SL")+COUNTIF({date_range},"UL")+COUNTIF({date_range},"ML")+COUNTIF({date_range},"HD")+COUNTIF({date_range},"OD")'
             sheet.write_formula(row, col_idx, total_leave_formula, formats['summary'])
             col_idx += 1
 
             # Total Days - Direct COUNTIF from date range for all status types
-            # P + HD + W + A + H + CL + EL + SL + UL + ML
-            total_formula = f'=COUNTIF({date_range},"P")+COUNTIF({date_range},"HD")+COUNTIF({date_range},"W")+COUNTIF({date_range},"A")+COUNTIF({date_range},"H")+COUNTIF({date_range},"CL")+COUNTIF({date_range},"EL")+COUNTIF({date_range},"SL")+COUNTIF({date_range},"UL")+COUNTIF({date_range},"ML")'
+            # P + HD + W + A + H + CL + EL + SL + UL + ML + OD
+            total_formula = f'=COUNTIF({date_range},"P")+COUNTIF({date_range},"HD")+COUNTIF({date_range},"W")+COUNTIF({date_range},"A")+COUNTIF({date_range},"H")+COUNTIF({date_range},"CL")+COUNTIF({date_range},"EL")+COUNTIF({date_range},"SL")+COUNTIF({date_range},"UL")+COUNTIF({date_range},"ML")+COUNTIF({date_range},"OD")'
             sheet.write_formula(row, col_idx, total_formula, formats['summary'])
 
         # Add legend for detailed sheet
@@ -537,6 +553,7 @@ class AttendancemasterXlsx(models.AbstractModel):
         sheet.write(legend_row2, 3, 'SL = Sick Leave', formats['sl'])
         sheet.write(legend_row2, 4, 'UL = Unpaid Leave', formats['ul'])
         sheet.write(legend_row2, 5, 'ML = Mgmt Leave', formats['ml'])
+        sheet.write(legend_row2, 6, 'OD = On Duty', formats['od'])
 
         # Apply conditional formatting for all status codes
         first_day_col_letter = self._col_to_letter(static_cols)
@@ -559,6 +576,7 @@ class AttendancemasterXlsx(models.AbstractModel):
         sheet.conditional_format(cond_range, {'type': 'cell', 'criteria': '==', 'value': '"SL"', 'format': formats['sl']})
         sheet.conditional_format(cond_range, {'type': 'cell', 'criteria': '==', 'value': '"UL"', 'format': formats['ul']})
         sheet.conditional_format(cond_range, {'type': 'cell', 'criteria': '==', 'value': '"ML"', 'format': formats['ml']})
+        sheet.conditional_format(cond_range, {'type': 'cell', 'criteria': '==', 'value': '"OD"', 'format': formats['od']})
 
     def generate_xlsx_report(self, workbook, data, wizard):
         wizard = wizard.ensure_one()
@@ -572,12 +590,7 @@ class AttendancemasterXlsx(models.AbstractModel):
         # Create formats
         formats = self._create_formats(workbook)
 
-        # Sheet 1: Summary Sheet (P/W/A/H/L)
-        sheet1_name = f"{month_name[:25]} Summary" if month_name else 'Summary'
-        sheet1 = workbook.add_worksheet(sheet1_name[:31])
-        self._generate_summary_sheet(workbook, sheet1, data, formats)
-
-        # Sheet 2: Detailed Leave Types Sheet
-        sheet2_name = f"{month_name[:25]} Detailed" if month_name else 'Detailed'
-        sheet2 = workbook.add_worksheet(sheet2_name[:31])
-        self._generate_detailed_sheet(workbook, sheet2, data, formats)
+        # Only generate Detailed Leave Types Sheet (Summary sheet removed per customer request)
+        sheet_name = f"{month_name[:25]} Attendance" if month_name else 'Attendance'
+        sheet = workbook.add_worksheet(sheet_name[:31])
+        self._generate_detailed_sheet(workbook, sheet, data, formats)

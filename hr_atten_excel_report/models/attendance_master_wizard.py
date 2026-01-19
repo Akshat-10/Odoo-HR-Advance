@@ -81,6 +81,8 @@ class AttendancemasterWizard(models.TransientModel):
             return 'UL'
         elif 'management' in name_lower or 'mgmt' in name_lower:
             return 'ML'
+        elif 'on duty' in name_lower or name_lower == 'od' or 'onduty' in name_lower:
+            return 'OD'
         elif 'half' in name_lower:
             return 'HD'
         else:

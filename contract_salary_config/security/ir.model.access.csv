@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_contract_salary_structure_line_user,hr.contract.salary.structure.line user,model_hr_contract_salary_structure_line,base.group_user,1,0,0,0
+access_hr_contract_salary_structure_line_hr,hr.contract.salary.structure.line hr,model_hr_contract_salary_structure_line,hr.group_hr_user,1,1,1,1
+access_hr_contract_salary_structure_line_manager,hr.contract.salary.structure.line manager,model_hr_contract_salary_structure_line,hr_contract.group_hr_contract_manager,1,1,1,1
