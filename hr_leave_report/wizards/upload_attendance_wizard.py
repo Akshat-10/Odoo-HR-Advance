@@ -197,6 +197,7 @@ class UploadAttendanceWizard(models.TransientModel):
             'EL': 'Earned Leave',
             'SL': 'Sick Leave',
             'ML': 'Management Leave',
+            'OD': 'On Duty',
             'UL': 'Unpaid',
             'L': 'Legal Leaves 2024',
         }
@@ -310,6 +311,7 @@ class UploadAttendanceWizard(models.TransientModel):
                 leave_days.append((current_date, status, leave_type.id, is_half_day))
 
             # Group consecutive leaves of the same type
+            leaves_for_employee = 0  # Initialize to avoid UnboundLocalError
             if leave_days:
                 _logger.info(f"\n--- Consolidating {len(leave_days)} leave days for {employee.name} ---")
                 leave_days.sort(key=lambda x: x[0])  # Sort by date
@@ -402,6 +404,10 @@ class UploadAttendanceWizard(models.TransientModel):
 
                     try:
                         new_leave = leave_obj.create(vals)
+                        new_leave.action_approve()  # Auto-approve
+                        if new_leave.state != 'validate':
+                            new_leave.action_validate()  # Final validation if needed
+                        
                         created_count += 1
                         leaves_for_employee += 1
                         _logger.info(f"  ✓ Created: {status} from {start_date} to {end_date} ({num_days} days) - ID: {new_leave.id}")
