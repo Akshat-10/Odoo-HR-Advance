@@ -5,7 +5,7 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from datetime import datetime
 import io
 import base64
-import os
+from PIL import Image
 
 class ApplicantReport(models.Model):
     _inherit = "hr.applicant"
@@ -67,14 +67,23 @@ class ApplicantReport(models.Model):
         p.alignment = 1   # center
         run = p.add_run()
         
-        # Get the absolute path to the image file
-        module_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        image_path = os.path.join(module_path, "static", "images", "image.png")
-        if os.path.exists(image_path):
-            run.add_picture(image_path, width=Cm(3))
+        # Get the applicant's image from image_1920 field
+        if self.image_1920:
+            image_data = base64.b64decode(self.image_1920)
+            # Convert image to PNG format for docx compatibility
+            image_stream = io.BytesIO(image_data)
+            img = Image.open(image_stream)
+            # Convert to RGB if necessary (for RGBA or other modes)
+            if img.mode in ('RGBA', 'LA', 'P'):
+                img = img.convert('RGB')
+            # Save as PNG to a new stream
+            png_stream = io.BytesIO()
+            img.save(png_stream, format='PNG')
+            png_stream.seek(0)
+            run.add_picture(png_stream, width=Cm(3))
         
         t4.cell(0,2).text = f"Full Signature: ____________\nInitial: _____________________"
-     
+    
 
         # Personal Details
         ptext(f"1. Full Name : Mr./Ms. {self.candidate_id.partner_name or ''}",bold=True)

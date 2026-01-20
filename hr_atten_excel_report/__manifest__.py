@@ -24,6 +24,7 @@
     'depends': ['hr_attendance', 'hr_holidays', 'hr', 'report_xlsx', 'resource', 'EHS', 'hr_employee_entended'],
     'data': [
         'security/ir.model.access.csv',
+        'data/hr_leave_type_data.xml',
         'views/attendance_master_wizard_views.xml',
         'reports/attendance_master_report.xml',
     ],

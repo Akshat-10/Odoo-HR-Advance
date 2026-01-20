@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add Upload Attendance button to Time Off list view -->
+    <record id="hr_leave_view_tree_inherit" model="ir.ui.view">
+        <field name="name">hr.leave.tree.inherit.upload</field>
+        <field name="model">hr.leave</field>
+        <field name="inherit_id" ref="hr_holidays.hr_leave_view_tree"/>
+        <field name="arch" type="xml">
+            <!-- In Odoo 18, use <list> instead of <tree> -->
+            <xpath expr="//list" position="inside">
+                <control>
+                    <button name="%(action_upload_attendance_wizard)d"
+                            string="Upload Attendance"
+                            type="action"
+                            class="btn-primary"/>
+                </control>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Add as a menu item under Leaves Management -->
+    <menuitem id="menu_upload_attendance"
+              name="Upload Attendance Report"
+              parent="hr_holidays.menu_hr_holidays_management"
+              action="action_upload_attendance_wizard"
+              groups="hr_holidays.group_hr_holidays_user"
+              sequence="5"/>
+</odoo>

@@ -100,6 +100,46 @@ class ApplicantEmployment(models.Model):
 class Applicant(models.Model):
     _inherit = 'hr.applicant'
 
+    # Image fields similar to hr.employee (avatar.mixin functionality)
+    image_1920 = fields.Image("Image", max_width=1920, max_height=1920)
+    image_1024 = fields.Image("Image 1024", related="image_1920", max_width=1024, max_height=1024, store=True)
+    image_512 = fields.Image("Image 512", related="image_1920", max_width=512, max_height=512, store=True)
+    image_256 = fields.Image("Image 256", related="image_1920", max_width=256, max_height=256, store=True)
+    image_128 = fields.Image("Image 128", related="image_1920", max_width=128, max_height=128, store=True)
+
+    # Avatar fields (with fallback to default avatar)
+    avatar_1920 = fields.Image("Avatar 1920", compute='_compute_avatar_1920', store=False)
+    avatar_1024 = fields.Image("Avatar 1024", compute='_compute_avatar_1024', store=False)
+    avatar_512 = fields.Image("Avatar 512", compute='_compute_avatar_512', store=False)
+    avatar_256 = fields.Image("Avatar 256", compute='_compute_avatar_256', store=False)
+    avatar_128 = fields.Image("Avatar 128", compute='_compute_avatar_128', store=False)
+
+    def _compute_avatar(self, avatar_field, image_field):
+        for record in self:
+            avatar = record[image_field]
+            if not avatar:
+                avatar = record._get_default_avatar()
+            record[avatar_field] = avatar
+
+    def _compute_avatar_1920(self):
+        self._compute_avatar('avatar_1920', 'image_1920')
+
+    def _compute_avatar_1024(self):
+        self._compute_avatar('avatar_1024', 'image_1024')
+
+    def _compute_avatar_512(self):
+        self._compute_avatar('avatar_512', 'image_512')
+
+    def _compute_avatar_256(self):
+        self._compute_avatar('avatar_256', 'image_256')
+
+    def _compute_avatar_128(self):
+        self._compute_avatar('avatar_128', 'image_128')
+
+    def _get_default_avatar(self):
+        """Return the default avatar for applicants without an image."""
+        return False
+
     document_attachment_ids = fields.Many2many(
         'ir.attachment',
         string="Document Attachments",
