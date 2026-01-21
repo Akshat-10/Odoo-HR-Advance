@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_hr_custom_form_labour_colony_agreement_form_report" model="ir.ui.view">
+        <field name="name">hr.custom.form.labour_colony_agreement.form.inherit.report</field>
+        <field name="model">hr.custom.form.labour_colony_agreement</field>
+        <field name="inherit_id" ref="hr_custom_forms.view_hr_custom_form_labour_colony_agreement_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//form/sheet" position="before">
+                <header>
+                    <button name="action_download_labour_colony_word"
+                            type="object"
+                            string="Download Agreement (Word)"
+                            class="btn-primary"
+                            icon="fa-file-word-o"/>
+                </header>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

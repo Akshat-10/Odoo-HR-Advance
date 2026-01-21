@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- List View -->
+        <record id="view_hr_custom_form_labour_colony_agreement_list" model="ir.ui.view">
+            <field name="name">hr.custom.form.labour_colony_agreement.list</field>
+            <field name="model">hr.custom.form.labour_colony_agreement</field>
+            <field name="arch" type="xml">
+                <list default_order="sequence,name">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="location"/>
+                    <field name="form_date"/>
+                    <field name="company_id" optional="hide"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_hr_custom_form_labour_colony_agreement_form" model="ir.ui.view">
+            <field name="name">hr.custom.form.labour_colony_agreement.form</field>
+            <field name="model">hr.custom.form.labour_colony_agreement</field>
+            <field name="arch" type="xml">
+                <form string="Labour Colony Agreement">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group string="Employee Information">
+                                <field name="employee_id"/>
+                                <field name="employee_code"/>
+                                <field name="department_id"/>
+                                <field name="job_id"/>
+                            </group>
+                            <group string="Document Details">
+                                <field name="form_date"/>
+                                <field name="location" placeholder="e.g., VIRAMGAM"/>
+                                <field name="company_id"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Agreement Content">
+                                <group>
+                                    <field name="agreement_content_hindi_title" string="Hindi Title"/>
+                                </group>
+                                <separator string="Policy for Accommodation / Residence provided by the Company"/>
+                                <field name="agreement_content" widget="html"/>
+                            </page>
+                        </notebook>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_hr_custom_form_labour_colony_agreement" model="ir.actions.act_window">
+            <field name="name">Labour Colony Agreement</field>
+            <field name="res_model">hr.custom.form.labour_colony_agreement</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new Labour Colony Agreement
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu Item -->
+        <menuitem
+            id="menu_hr_custom_form_labour_colony_agreement"
+            name="Labour Colony Agreement"
+            parent="menu_hr_custom_forms_root"
+            action="action_hr_custom_form_labour_colony_agreement"
+            sequence="110"
+        />
+
+    </data>
+</odoo>

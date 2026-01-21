@@ -42,6 +42,7 @@
         "views/er1_word_views.xml",
         "views/hr_salary_attachment_excel.xml",
         'views/hr_custom_form_staff_loan_views.xml',
+        'views/labour_colony_agreement_views.xml',
 
 
 

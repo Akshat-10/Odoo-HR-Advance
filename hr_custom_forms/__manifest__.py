@@ -16,6 +16,7 @@
         "security/ir.model.access.csv",
         "data/ir_sequence_data.xml",
         "views/hr_custom_form_views.xml",
+        "views/hr_custom_form_labour_colony_views.xml",
     ],
     
     

@@ -1,5 +1,23 @@
 from odoo import _, api, fields, models
 
+# Default HTML content for Labour Colony Agreement
+LABOUR_COLONY_AGREEMENT_DEFAULT_HTML = """
+<div style="font-family: 'Noto Sans Devanagari', Arial, sans-serif; font-size: 12pt; line-height: 1.8;">
+    <p style="text-align: justify;">
+        कम्पनीके सभी कर्मचारी एवं मजदूर को सूचित किया जाता है की लेबर कोलोनी/ आवास में आप सभी को अनुशाशन बनाकर रखना है और निन्मलिखित बातो का जिम्मेदारीपूर्ण ध्यान रखना है।
+    </p>
+    <ol style="text-align: justify;">
+        <li>लेबर कॉलोनी/ आवास में साफ सफाई का सम्पूर्ण ध्यान रखना है।</li>
+        <li>कूड़ा या अन्य किसीभी प्रकार का कचरा सिर्फ और सिर्फ कूड़े दान में ही डालना है।कूड़ेदान का उपयोग अवश्य करना है ओर अन्य साथी कोभी इसका प्रयोग करने हेतु प्रेरित करना है।</li>
+        <li>ऊँची आवाज़ में बात नहीं करना हे व् किसी अन्यसह-कर्मचारी के काममें या आराममें दखल न पहुंचे उस बातका ध्यान रखना है।</li>
+        <li>गुजरात राज्य में दारूबन्धी है।दारू पीना, रखनायाबेचनागैर क़ानूनी है।इस बात को ध्यान में रखते हुए लेबर कॉलोनीमें कोईभी कर्मचारी या मज़दूर या अन्यकोई भी बहार के व्यक्तिको दारूलाना या दारुका का सेवन न करने की कड़ी चेतावनी दिजाती है। अगर कोई भी कर्मचारी या मजदूर एसे किसीभी प्रकार के नशीले पदार्थो का सेवन करता हुआपकड़ा जाएगा तो उसके खिलाफ सख्त से सख्त कार्यवाही की जाएगी।</li>
+        <li>कोई भी कर्मचारी या मज़दूरलेबर कॉलोनी में कोई भी अवेध काम करेगा तो उसकी सम्पूर्ण जवाबदारी उस व्यक्ति की खुद की रहेगी। इसके लिए कम्पनी की कोई भी ज़िम्मेदारी नहींरहेगी।</li>
+        <li>दारूया अन्य किसीभी तरह के नशीले पदार्थ के सेवनके कारणअगर किसीभी कर्मचारी या मज़दूर को कोईभी बीमारी होती हे याउसके साथ कोई भी हादसा होता है, तो उसकी सम्पूर्ण जिम्मेद्दारी उसकर्मचारी या मज़दूरकी अपनी खुद की रहेगी।</li>
+        <li>ऊपरदी गई सभी सूचनाओ का जिम्मेदारी पूर्वक पालन करे।</li>
+    </ol>
+</div>
+"""
+
 
 class HrCustomFormBase(models.AbstractModel):
     _name = "hr.custom.form.base"
@@ -1169,3 +1187,26 @@ class HrCustomFormDeptAttendanceLine(models.Model):
     def _compute_total_count(self):
         for line in self:
             line.total_count = line.night_count + line.day_count
+
+
+class HrCustomFormLabourColonyAgreement(models.Model):
+    _name = "hr.custom.form.labour_colony_agreement"
+    _description = "Labour Colony Agreement"
+    _inherit = "hr.custom.form.base"
+
+    _sequence_code = "hr.custom.form.labour_colony_agreement"
+
+    location = fields.Char(
+        string="Location",
+        help="Location/Colony name (e.g., VIRAMGAM)",
+    )
+    agreement_content = fields.Html(
+        string="Policy for Accommodation / Residence provided by the Company",
+        default=LABOUR_COLONY_AGREEMENT_DEFAULT_HTML,
+        help="Content of the Labour Colony Agreement policy in Hindi",
+    )
+    agreement_content_hindi_title = fields.Char(
+        string="Hindi Title",
+        default="कंपनीद्वाराप्रदानकीगईआवास / निवासकेलिएनीति",
+        help="Hindi title for the policy",
+    )
