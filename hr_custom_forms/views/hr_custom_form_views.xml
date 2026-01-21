@@ -975,7 +975,7 @@
         </record>
 
         <!-- Configuration Menu -->
-        <menuitem id="menu_hr_custom_forms_config" name="Configuration" parent="menu_hr_custom_forms_root" sequence="100"/>
+        <menuitem id="menu_hr_custom_forms_config" name="Configuration" parent="menu_hr_custom_forms_root" sequence="200"/>
         <menuitem id="menu_hr_relationship" name="Relationships" parent="menu_hr_custom_forms_config" action="action_hr_relationship" sequence="10"/>
         <menuitem id="menu_hr_caste" name="Castes" parent="menu_hr_custom_forms_config" action="action_hr_caste" sequence="20"/>
 
