@@ -40,6 +40,7 @@
         "views/hr_salary_attachment_excel.xml",
         'views/hr_custom_form_staff_loan_views.xml',
         "views/nomination_form_views.xml",
+        'views/labour_colony_agreement_views.xml',
 
 
 

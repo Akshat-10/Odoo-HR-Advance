@@ -91,5 +91,12 @@
             <field name="prefix">DWA/%(year)s/</field>
             <field name="padding">4</field>
         </record>
+
+        <record id="seq_hr_custom_form_labour_colony_agreement" model="ir.sequence">
+            <field name="name">Labour Colony Agreement</field>
+            <field name="code">hr.custom.form.labour_colony_agreement</field>
+            <field name="prefix">LCA/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
     </data>
 </odoo>
