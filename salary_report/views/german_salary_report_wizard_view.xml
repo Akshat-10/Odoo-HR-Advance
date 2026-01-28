@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- German Salary Report Wizard Form -->
+    <record id="view_german_salary_report_wizard_form" model="ir.ui.view">
+        <field name="name">german.salary.report.wizard.form</field>
+        <field name="model">german.salary.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="German Salary Report">
+                <group>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="all_employee"/>
+                    <field name="employee_ids"
+                           widget="many2many_tags"
+                           invisible="all_employee"/>
+                    <button name="action_generate_excel"
+                            type="object"
+                            string="Generate German Excel"
+                            class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_german_salary_report_wizard" model="ir.actions.act_window">
+        <field name="name">German Salary Report</field>
+        <field name="res_model">german.salary.report.wizard</field>
+        <field name="view_mode">list,form</field>
+        <field name="target">current</field>
+    </record>
+
+    <!-- 🔴 Child Menu 2: German Salary Report -->
+    <menuitem id="menu_german_salary_report"
+              name="German Salary Report"
+              parent="salary_report.menu_salary_report_root"
+              action="action_german_salary_report_wizard"
+              sequence="20"/>
+
+</odoo>
