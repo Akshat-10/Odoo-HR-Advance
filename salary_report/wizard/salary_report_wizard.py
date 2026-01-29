@@ -3,6 +3,7 @@ from odoo.exceptions import UserError
 from io import BytesIO
 import base64
 from collections import defaultdict
+import calendar
 
 
 class SalaryReportWizard(models.TransientModel):
@@ -67,7 +68,7 @@ class SalaryReportWizard(models.TransientModel):
         header_font = Font(bold=True)
         title_font = Font(size=20, bold=True)
 
-        ws.row_dimensions[1].height = 101   # 🔴 FIX: Increased height for address
+        ws.row_dimensions[1].height = 101
         ws.row_dimensions[2].height = 20
         ws.row_dimensions[3].height = 41
 
@@ -81,7 +82,7 @@ class SalaryReportWizard(models.TransientModel):
                 raise UserError("Please select employees or tick All Employees.")
             employees = self.employee_ids
 
-        # ================= 🔴 FIX: HEADERS (OTHER BANK + ICICI FIXED) =================
+
         headers = [
             "Emp Code", "Other Bank Ac No", "ICICI Ac No",
             "PF?", "ESIC?", "UAN", "ESIC NO", "Employee Name",
@@ -99,8 +100,14 @@ class SalaryReportWizard(models.TransientModel):
         total_cols = len(headers)
 
 
-        # ================= 🔴 FIX: COMPANY NAME + ADDRESS =================
-        # 🔴 FIX: FETCH COMPANY NAME & ADDRESS FROM COMPANY ID
+        # Get the year and month from date_from
+        year = self.date_from.year
+        month = self.date_from.month
+        # Calculate the number of days in the selected month
+        days_in_month = calendar.monthrange(year, month)[1]
+
+
+
         company = self.env.company
         partner = company.partner_id
 
@@ -131,6 +138,18 @@ class SalaryReportWizard(models.TransientModel):
         ws["E2"].fill = grey_fill
         ws["G2"] = (self.date_to - self.date_from).days + 1
 
+        column_widths = {
+            "A": 12, "B": 20, "C": 20, "D": 17, "E": 17,
+            "F": 17, "G": 17, "H": 26, "I": 11, "J": 13,
+            "K": 13, "L": 11, "M": 12, "N": 10, "O": 10,
+            "P": 12, "Q": 10, "R": 11, "S": 11, "T": 10,
+            "U": 10, "V": 10, "W": 10, "X": 10, "Y": 10,
+            "Z": 10, "AA": 10, "AB": 10, "AC": 10, "AD": 10,
+            "AE": 10, "AF": 10, "AG": 10, "AH": 10, "AI": 10,
+            "AJ": 10, "AK": 10, "AL": 10, "AM": 10,
+            "AN": 10, "AO": 10, "AP": 14, "AQ": 12,
+        }
+
         header_row = 3
         for col, header in enumerate(headers, start=1):
             cell = ws.cell(header_row, col, header)
@@ -138,9 +157,8 @@ class SalaryReportWizard(models.TransientModel):
             cell.alignment = align_center
             cell.fill = blue_fill
             cell.border = border
-            ws.column_dimensions[get_column_letter(col)].width = 18
-
-
+            col_letter = get_column_letter(col)
+            ws.column_dimensions[col_letter].width = column_widths.get(col_letter, 18)
 
         payslips = self.env["hr.payslip"].search([
             ("employee_id", "in", employees.ids),
@@ -171,8 +189,8 @@ class SalaryReportWizard(models.TransientModel):
             gross = sum(
                 l.total for l in payslip_lines
                 if (
-                    (l.code and l.code.upper() in ('GROSS', 'GROSS_EARN', 'TOTAL_GROSS'))
-                    or (l.category_id and l.category_id.code == 'GROSS')
+                        (l.code and l.code.upper() in ('GROSS', 'GROSS_EARN', 'TOTAL_GROSS'))
+                        or (l.category_id and l.category_id.code == 'GROSS')
                 )
             )
 
@@ -182,13 +200,13 @@ class SalaryReportWizard(models.TransientModel):
             lta = sum(l.total for l in payslip_lines if 'LTA' in l.code.upper())
             bonus = sum(l.total for l in payslip_lines if l.category_id and l.category_id.code == 'BONUS')
             other_allowance = gross - basic - hra - conveyance - lta
-            pf = sum(l.total for l in payslip_lines if 'PF' in l.code.upper())
-            esic = sum(l.total for l in payslip_lines if 'ESIC' in l.code.upper())
+            pf = abs(sum(l.total for l in payslip_lines if 'PF' in l.code.upper()))
+            esic = abs(sum(l.total for l in payslip_lines if 'ESIC' in l.code.upper()))
             net = sum(l.total for l in payslip_lines if l.code.upper() == 'NET')
 
             pf_flag = "Yes" if pf != 0 else "No"
 
-            # ================= 🔴 FIX: BANK ROUTING LOGIC =================
+            # BANK ROUTING LOGIC
             other_bank_ac = ""
             icici_ac = ""
 
@@ -199,7 +217,7 @@ class SalaryReportWizard(models.TransientModel):
                     icici_ac = acc_no
                 else:
                     other_bank_ac = acc_no
-            # ================= 🔴 FIX END =================
+
 
             data = [
                 emp.employee_code or "",
@@ -231,13 +249,16 @@ class SalaryReportWizard(models.TransientModel):
             for col, value in enumerate(final_row_data, start=1):
                 ws.cell(row, col, value).border = border
 
+            #  USE DYNAMIC DAYS IN MONTH
             ws[f"W{row}"] = paid_days
-            ws[f"X{row}"] = f"=ROUND(N{row}*W{row}/30,0)"
-            ws[f"Y{row}"] = f"=ROUND(O{row}*W{row}/30,0)"
-            ws[f"Z{row}"] = f"=ROUND(P{row}*W{row}/30,0)"
-            ws[f"AA{row}"] = f"=ROUND(Q{row}*W{row}/30,0)"
-            ws[f"AB{row}"] = f"=ROUND(R{row}*W{row}/30,0)"
-            ws[f"AC{row}"] = f"=ROUND(T{row}*W{row}/30,0)"
+            ws[f"X{row}"] = f"=ROUND(N{row}*W{row}/{days_in_month},0)"
+            ws[f"Y{row}"] = f"=ROUND(O{row}*W{row}/{days_in_month},0)"
+            ws[f"Z{row}"] = f"=ROUND(P{row}*W{row}/{days_in_month},0)"
+            ws[f"AA{row}"] = f"=ROUND(Q{row}*W{row}/{days_in_month},0)"
+            ws[f"AB{row}"] = f"=ROUND(R{row}*W{row}/{days_in_month},0)"
+            ws[f"AC{row}"] = f"=ROUND(T{row}*W{row}/{days_in_month},0)"
+
+
             ws[f"AD{row}"] = ""
             ws[f"AE{row}"] = f"=SUM(X{row}:AD{row})"
             ws[f"AF{row}"] = (

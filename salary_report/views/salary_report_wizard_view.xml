@@ -28,7 +28,7 @@
     <record id="action_salary_report_wizard" model="ir.actions.act_window">
         <field name="name">Salary Report</field>
         <field name="res_model">salary.report.wizard</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">form</field>
         <field name="target">current</field>
     </record>
 
