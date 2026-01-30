@@ -29,7 +29,7 @@
                     </group>
                     <group>
                         <group>
-                            <field name="salary_structure_id" options="{'no_create': True}"/>
+                            <field name="salary_structure_id" options="{'no_create': True, 'no_edit': True}"/>
                         </group>
                         <group>
                             <button name="action_refresh_salary_structure" 
